@@ -1,0 +1,156 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: en-nl-completions-terms
+namespaces:
+
+  tokens:
+    X_COMMENCEMENT:
+      reduction: =global-fields/self.Commencement-Date
+
+    X_TERMINATION:
+      reduction: =global-fields/self.Expiration-Date
+
+    X_EFFECTIVE:
+      reduction: =global-fields/self.Effective-Date
+
+    X_EXECUTION:
+      reduction: =global-fields/self.Execution-Date
+  
+  self:
+
+    arrangement_start_date:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.arrangement_start_date
+          primary: =primary.arrangement_start_date
+          secondary: =secondary.arrangement_start_date
+
+    arrangement_end_date:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.arrangement_end_date
+          primary: =primary.arrangement_end_date
+          secondary: =secondary.arrangement_end_date
+
+    occupancy_date:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.occupancy_date
+          primary: =primary.occupancy_date
+          secondary: =secondary.occupancy_date
+
+    lease_term:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.lease_term
+          primary: =primary.lease_term
+          secondary: =secondary.lease_term
+
+    ref_lease_term_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.ref_lease_term_uom_desc
+          primary: =primary.ref_lease_term_uom_desc
+          secondary: =secondary.ref_lease_term_uom_desc
+
+    reserved_parking_spaces:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.reserved_parking_spaces
+          primary: =primary.reserved_parking_spaces
+          secondary: =secondary.reserved_parking_spaces
+
+    cost_per_reserved_parking_space:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.cost_per_reserved_parking_space
+          primary: =primary.cost_per_reserved_parking_space
+          secondary: =secondary.cost_per_reserved_parking_space
+
+    ref_cost_per_reserved_parking_space_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.ref_cost_per_reserved_parking_space_uom_desc
+          primary: =primary.ref_cost_per_reserved_parking_space_uom_desc
+          secondary: =secondary.ref_cost_per_reserved_parking_space_uom_desc
+
+  fuzzy:
+    arrangement_start_date:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.arrangement_start_date
+          - =secondary.arrangement_start_date
+
+    arrangement_end_date:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.arrangement_end_date
+          - =secondary.arrangement_end_date
+
+    occupancy_date:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.occupancy_date
+          - =secondary.occupancy_date
+
+    lease_term:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.lease_term
+          - =secondary.lease_term
+
+    ref_lease_term_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.ref_lease_term_uom_desc
+          - =secondary.ref_lease_term_uom_desc
+
+    reserved_parking_spaces:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.reserved_parking_spaces
+          - =secondary.reserved_parking_spaces
+
+    cost_per_reserved_parking_space:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.cost_per_reserved_parking_space
+          - =secondary.cost_per_reserved_parking_space
+
+    ref_cost_per_reserved_parking_space_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.ref_cost_per_reserved_parking_space_uom_desc
+          - =secondary.ref_cost_per_reserved_parking_space_uom_desc
+
+  primary:
+    Arrangement_start_date:
+      confidence: 0.95
+      kind:
+        Instance: Date
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          prompt: |
+            Extract the Arrangement Start Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+          templates: =templates.Arrangement_start_date
+
+
