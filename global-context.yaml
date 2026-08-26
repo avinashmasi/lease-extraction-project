@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: global-context
+namespaces:
+
+  # #################################
+  # context 
+  # #################################
+  # used for general searches and document sections
+
+  self:
+    ascii-formatted-clustered:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: caster
+          algorithm: default
+          max_tokens: 124000
+          chunk: document
+
+    ascii-formatted-clustered-10p:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: caster
+          algorithm: default
+          max_tokens: 124000
+          chunk: document
+          pages: 1-10
+
+    ascii-formatted-aligned:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: caster
+          algorithm: default
+          max_tokens: 124000
+          chunk: document

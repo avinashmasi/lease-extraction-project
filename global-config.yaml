@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: global-config
+namespaces:
+
+  # #################################
+  # configuration 
+  # #################################
+
+  # tools url configuration
+  # configuration:
+  #   tools_url: 
+  #     reduction: http://xero-lambda-tools-service.app-portfolio.svc.cluster.local:8080
+
+  #   relativedate_endpoint: 
+  #     reduction: http://xero-lambda-abstraction-service.app-portfolio.svc.cluster.local:8080
+  configuration:
+    tools_url:
+      reduction: http://localhost:8080
+
+    relativedate_endpoint:
+      reduction: https://develop.xero.uniti.cbre.com
+
+  # search options (vector-store)
+  search:
+    chunk-max-l2-distance:
+      reduction: 2.0
+
+  # model options
+  primary:
+    model:
+      reduction: gpt-4.1
+
+    baseline:
+      reduction: 0.95
+
+  secondary:
+    model:
+      reduction: gemini-2.5-flash
+
+    baseline:
+      reduction: 0.90
+
+  agent:
+    model:
+      reduction: gpt-5.1
+    baseline:
+      reduction: 0.95

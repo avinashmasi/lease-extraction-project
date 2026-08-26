@@ -1,0 +1,610 @@
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+#   "DM Change Details - 240916" (Lisa, Chris)
+#   "Data Management Fields" (Marlis, Sachin)
+kind: Ontology/v2
+
+# name - used by external ontologies to reference
+#        back to the current instance.
+#        this should always be the same as the file base-name
+name: portfolio-extract-en-us-lease
+
+# minimum version
+version: v2.2.126
+
+# entrypoint
+entrypoint: abstract
+
+# defaults
+defaults:
+
+  # embed metadata in all searches
+  search_adorn: false
+
+  # override completion instance confidence with token logits
+  completion_logprobs: true
+
+  # default date input style and output format
+  kind_date_input_format: 'MDY'
+  kind_date_output_format: '%m/%d/%y'
+
+  # turn off highlighted for testing
+  abstract_highlight: false
+  abstract_highlight_search_length: 128
+
+# namespaces
+namespaces:
+
+  # #################################
+  # abstract
+  # #################################
+
+  abstract:
+
+    # used to specialize prompts and logic for
+    # certain locales (a.k.a., jurisdictions), notice
+    # it will keep the value if preset, otherwise set to
+    # the default, e.g., en-us
+    # { "kind": "object" ... "jurisdiction": "en-us" }
+    jurisdiction:
+      reduction:
+        $precedence:
+        - $get: jurisdiction
+        - $set: en-us
+
+    validation:
+      reduction:
+        $precedence:
+        - $get: validation
+        - $set: fuzzy   # fuzzy, primary, secondary
+
+    $classifications:
+      reduction:
+        $set:
+        - name: Lease
+          confidence: 1.0
+
+    response_language:
+      reduction:
+        $precedence:
+          - $get: $response_language
+          - $set: en  # en - english, es - spanish, jp - japanese, de - german, etc.
+
+    response_encoding:
+      reduction:
+        $precedence:
+          - $get: $response_encoding
+          - $eval:
+              lang: =abstract.response_language
+              expression: "'ascii' if lang == 'en' else 'utf-8'"
+          - $set: 'ascii'
+
+    # the following semantics will all run in parallel
+    # (i.e., labels with the first letter capitalized run concurrently)
+    # however, the collate and join parameters run sequentially
+
+    Property-Terms:
+      reduction:
+        $collate:
+          - =global-fields/self.Commencement-Date
+          - =global-fields/self.Expiration-Date
+          - =global-fields/self.Start-Reason
+          - =global-fields/self.Is-Month-To-Month
+          - =global-fields/self.Is-Auto-Renew
+          - =global-fields/self.Auto-Renew-In-Months
+          - =global-fields/self.Lease-Term
+          - =global-fields/self.Execution-Date
+          - =global-fields/self.Effective-Date
+          - =global-fields/self.Reconciliation-Required
+
+    Premise-Address:
+      reduction:
+        $collate:
+          - =global-fields/self.Building-Name
+          - =global-fields/self.Building-Type
+          - =global-fields/self.Property-Address-Street
+          - =global-fields/self.Property-Address-Suite
+          - =global-fields/self.Property-Address-City
+          - =global-fields/self.Property-Address-State
+          - =global-fields/self.Property-Address-Zip
+
+    Record-Info:
+      reduction:
+        $collate:
+          - =global-fields/self.Premise-Rented-Area
+          - =global-fields/self.Premise-Useable-Area
+          - =global-fields/self.Alt-Property-Size
+          - =global-fields/self.Original-Property-Size # (Amendment)
+          - =global-fields/self.Prorata-Share
+          - =global-fields/self.Base-Year
+          - =global-fields/self.Client-Legal-Entity-Name
+          - =global-fields/self.Rent-Type
+          - =global-fields/self.Unit-Of-Measurement
+
+    Size-Change:
+      reduction:
+        $collate:
+          - =global-fields/self.Size-Change-Reason
+
+    Security-Deposit:
+      reduction:
+        $join:
+          Comment:
+            - =global-fields/AUTO.Security-Deposit-Cash-Comment
+            - =global-fields/AUTO.Security-Deposit-Guarantee-Comment
+            - =global-fields/AUTO.Security-Deposit-Letter-Of-Credit-Comment
+            - =global-fields/AUTO.Security-Deposit-Not-Required-Comment
+          Amount:
+            - =global-fields/AUTO.Security-Deposit-Cash-Amount
+            - =global-fields/AUTO.Security-Deposit-Guarantee-Amount
+            - =global-fields/AUTO.Security-Deposit-Letter-Of-Credit-Amount
+            - =global-fields/AUTO.Security-Deposit-Not-Required-Amount
+          Paid-Date:
+            - =global-fields/AUTO.Security-Deposit-Cash-Paid-Date
+            - =global-fields/AUTO.Security-Deposit-Guarantee-Paid-Date
+            - =global-fields/AUTO.Security-Deposit-Letter-Of-Credit-Paid-Date
+            - =global-fields/AUTO.Security-Deposit-Not-Required-Paid-Date
+          Due-Date:
+            - =global-fields/AUTO.Security-Deposit-Cash-Return-Date
+            - =global-fields/AUTO.Security-Deposit-Guarantee-Return-Date
+            - =global-fields/AUTO.Security-Deposit-Letter-Of-Credit-Return-Date
+            - =global-fields/AUTO.Security-Deposit-Not-Required-Return-Date
+
+    TI-Allowance:
+      reduction:
+        $join:
+          Comment:
+            - =global-fields/AUTO.Tenant-Improvement-Allowance-Comment
+          Amount:
+            - =global-fields/AUTO.Tenant-Improvement-Allowance-Amount
+          Paid-Date:
+            - =global-fields/AUTO.Tenant-Improvement-Allowance-Paid-Date
+          Due-Date:
+            - =global-fields/AUTO.Tenant-Improvement-Allowance-Return-Date
+
+    Contacts:
+      reduction:
+        $join:
+          Company:
+            - =global-fields/AUTO.Contact-Guarantor-Company
+            - =global-fields/AUTO.Contact-Lessee-Company
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Company
+            - =global-fields/AUTO.Contact-Lessor-Company
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Company
+            - =global-fields/AUTO.Contact-Master-Landlord-Company
+            - =global-fields/AUTO.Contact-Payment-Company
+            - =global-fields/AUTO.Contact-Property-Manager-Company
+            - =global-fields/AUTO.Contact-Sublessee-Company
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Company
+            - =global-fields/AUTO.Contact-Sublessor-Company
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Company
+          Name:
+            - =global-fields/AUTO.Contact-Guarantor-Name
+            - =global-fields/AUTO.Contact-Lessee-Name
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Name
+            - =global-fields/AUTO.Contact-Lessor-Name
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Name
+            - =global-fields/AUTO.Contact-Master-Landlord-Name
+            - =global-fields/AUTO.Contact-Payment-Name
+            - =global-fields/AUTO.Contact-Property-Manager-Name
+            - =global-fields/AUTO.Contact-Sublessee-Name
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Name
+            - =global-fields/AUTO.Contact-Sublessor-Name
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Name
+          Title:
+            - =global-fields/AUTO.Contact-Guarantor-Title
+            - =global-fields/AUTO.Contact-Lessee-Title
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Title
+            - =global-fields/AUTO.Contact-Lessor-Title
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Title
+            - =global-fields/AUTO.Contact-Master-Landlord-Title
+            - =global-fields/AUTO.Contact-Payment-Title
+            - =global-fields/AUTO.Contact-Property-Manager-Title
+            - =global-fields/AUTO.Contact-Sublessee-Title
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Title
+            - =global-fields/AUTO.Contact-Sublessor-Title
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Title
+          Street:
+            - =global-fields/AUTO.Contact-Guarantor-Street
+            - =global-fields/AUTO.Contact-Lessee-Street
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Street
+            - =global-fields/AUTO.Contact-Lessor-Street
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Street
+            - =global-fields/AUTO.Contact-Master-Landlord-Street
+            - =global-fields/AUTO.Contact-Payment-Street
+            - =global-fields/AUTO.Contact-Property-Manager-Street
+            - =global-fields/AUTO.Contact-Sublessee-Street
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Street
+            - =global-fields/AUTO.Contact-Sublessor-Street
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Street
+          Location-Name:
+            - =global-fields/AUTO.Contact-Guarantor-Location-Name
+            - =global-fields/AUTO.Contact-Lessee-Location-Name
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Location-Name
+            - =global-fields/AUTO.Contact-Lessor-Location-Name
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Location-Name
+            - =global-fields/AUTO.Contact-Master-Landlord-Location-Name
+            - =global-fields/AUTO.Contact-Payment-Location-Name
+            - =global-fields/AUTO.Contact-Property-Manager-Location-Name
+            - =global-fields/AUTO.Contact-Sublessee-Location-Name
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Location-Name
+            - =global-fields/AUTO.Contact-Sublessor-Location-Name
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Location-Name
+          City:
+            - =global-fields/AUTO.Contact-Guarantor-City
+            - =global-fields/AUTO.Contact-Lessee-City
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-City
+            - =global-fields/AUTO.Contact-Lessor-City
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-City
+            - =global-fields/AUTO.Contact-Master-Landlord-City
+            - =global-fields/AUTO.Contact-Payment-City
+            - =global-fields/AUTO.Contact-Property-Manager-City
+            - =global-fields/AUTO.Contact-Sublessee-City
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-City
+            - =global-fields/AUTO.Contact-Sublessor-City
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-City
+          State:
+            - =global-fields/AUTO.Contact-Guarantor-State
+            - =global-fields/AUTO.Contact-Lessee-State
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-State
+            - =global-fields/AUTO.Contact-Lessor-State
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-State
+            - =global-fields/AUTO.Contact-Master-Landlord-State
+            - =global-fields/AUTO.Contact-Payment-State
+            - =global-fields/AUTO.Contact-Property-Manager-State
+            - =global-fields/AUTO.Contact-Sublessee-State
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-State
+            - =global-fields/AUTO.Contact-Sublessor-State
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-State
+          Zip:
+            - =global-fields/AUTO.Contact-Guarantor-Zip
+            - =global-fields/AUTO.Contact-Lessee-Zip
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Zip
+            - =global-fields/AUTO.Contact-Lessor-Zip
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Zip
+            - =global-fields/AUTO.Contact-Master-Landlord-Zip
+            - =global-fields/AUTO.Contact-Payment-Zip
+            - =global-fields/AUTO.Contact-Property-Manager-Zip
+            - =global-fields/AUTO.Contact-Sublessee-Zip
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Zip
+            - =global-fields/AUTO.Contact-Sublessor-Zip
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Zip
+          Country:
+            - =global-fields/AUTO.Contact-Guarantor-Country
+            - =global-fields/AUTO.Contact-Lessee-Country
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Country
+            - =global-fields/AUTO.Contact-Lessor-Country
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Country
+            - =global-fields/AUTO.Contact-Master-Landlord-Country
+            - =global-fields/AUTO.Contact-Payment-Country
+            - =global-fields/AUTO.Contact-Property-Manager-Country
+            - =global-fields/AUTO.Contact-Sublessee-Country
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Country
+            - =global-fields/AUTO.Contact-Sublessor-Country
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Country
+          PO-Box:
+            - =global-fields/AUTO.Contact-Guarantor-PO-Box
+            - =global-fields/AUTO.Contact-Lessee-PO-Box
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-PO-Box
+            - =global-fields/AUTO.Contact-Lessor-PO-Box
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-PO-Box
+            - =global-fields/AUTO.Contact-Master-Landlord-PO-Box
+            - =global-fields/AUTO.Contact-Payment-PO-Box
+            - =global-fields/AUTO.Contact-Property-Manager-PO-Box
+            - =global-fields/AUTO.Contact-Sublessee-PO-Box
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-PO-Box
+            - =global-fields/AUTO.Contact-Sublessor-PO-Box
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-PO-Box
+          Phone:
+            - =global-fields/AUTO.Contact-Guarantor-Phone
+            - =global-fields/AUTO.Contact-Lessee-Phone
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Phone
+            - =global-fields/AUTO.Contact-Lessor-Phone
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Phone
+            - =global-fields/AUTO.Contact-Master-Landlord-Phone
+            - =global-fields/AUTO.Contact-Payment-Phone
+            - =global-fields/AUTO.Contact-Property-Manager-Phone
+            - =global-fields/AUTO.Contact-Sublessee-Phone
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Phone
+            - =global-fields/AUTO.Contact-Sublessor-Phone
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Phone
+          Email:
+            - =global-fields/AUTO.Contact-Guarantor-Email
+            - =global-fields/AUTO.Contact-Lessee-Email
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Email
+            - =global-fields/AUTO.Contact-Lessor-Email
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Email
+            - =global-fields/AUTO.Contact-Master-Landlord-Email
+            - =global-fields/AUTO.Contact-Payment-Email
+            - =global-fields/AUTO.Contact-Property-Manager-Email
+            - =global-fields/AUTO.Contact-Sublessee-Email
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Email
+            - =global-fields/AUTO.Contact-Sublessor-Email
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Email
+          Department:
+            - =global-fields/AUTO.Contact-Guarantor-Department
+            - =global-fields/AUTO.Contact-Lessee-Department
+            - =global-fields/AUTO.Contact-Lessee-Notice-Copy-Department
+            - =global-fields/AUTO.Contact-Lessor-Department
+            - =global-fields/AUTO.Contact-Lessor-Notice-Copy-Department
+            - =global-fields/AUTO.Contact-Master-Landlord-Department
+            - =global-fields/AUTO.Contact-Payment-Department
+            - =global-fields/AUTO.Contact-Property-Manager-Department
+            - =global-fields/AUTO.Contact-Sublessee-Department
+            - =global-fields/AUTO.Contact-Sublessee-Notice-Copy-Department
+            - =global-fields/AUTO.Contact-Sublessor-Department
+            - =global-fields/AUTO.Contact-Sublessor-Notice-Copy-Department
+
+    Clauses:
+      reduction:
+        $collate:
+          - =global-fields/summaries.Clause-Alterations
+          - =global-fields/summaries.Clause-Assignment-Or-Sublet
+          - =global-fields/summaries.Clause-Audit-Rights
+          - =global-fields/summaries.Clause-Building-Insurance
+          - =global-fields/summaries.Clause-Estoppel
+          - =global-fields/summaries.Clause-Holdover
+          - =global-fields/summaries.Clause-Late-Charge
+          - =global-fields/summaries.Clause-Maintenance-And-Repairs
+          - =global-fields/summaries.Clause-Opex-Or-Service-Charges
+          - =global-fields/summaries.Clause-Other-Fees-And-Charges
+          - =global-fields/summaries.Clause-Parking
+          - =global-fields/summaries.Clause-Permitted-Use
+          - =global-fields/summaries.Clause-RE-Taxes-Or-Rates-Or-Appeals
+          - =global-fields/summaries.Clause-Redecoration # (UK)
+          - =global-fields/summaries.Clause-Relocation
+          - =global-fields/summaries.Clause-Right-Of-First-Offer-Or-Refusal
+          - =global-fields/summaries.Clause-Signage
+          - =global-fields/summaries.Clause-Surrender-Or-Reinstatement
+          - =global-fields/summaries.Clause-TI-Tenant-Allowance
+          - =global-fields/summaries.Clause-Landlord-Tenant-1954-Act # (UK)
+          - =global-fields/summaries.Clause-Utilities
+
+    Expenses:
+      reduction:
+        $join:
+          Comment:
+            - =global-fields/AUTO.Expense-Peppercorn-Comment
+            - =global-fields/AUTO.Expense-Base-Rent-Comment
+            - =global-fields/AUTO.Expense-Abatement-Comment
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-Comment
+            - =global-fields/AUTO.Expense-Opex-Or-Service-Charges-Comment
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-Comment
+            - =global-fields/AUTO.Expense-Parking-Comment
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Comment
+            - =global-fields/AUTO.Expense-Storage-Comment
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-Comment
+            - =global-fields/AUTO.Expense-Utilities-Comment
+            - =global-fields/AUTO.Expense-Building-Insurance-Comment
+          Unit:
+            - =global-fields/self.Expense-Base-Rent-Unit
+          Amount:
+            - =global-fields/AUTO.Expense-Peppercorn-Amount
+            - =global-fields/self.Expense-Base-Rent-Amount
+            - =global-fields/self.Expense-Abatement-Amount
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-Amount
+            - =global-fields/self.Expense-Opex-Or-Service-Charges-Amount
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-Amount
+            - =global-fields/AUTO.Expense-Parking-Amount
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Amount
+            - =global-fields/AUTO.Expense-Storage-Amount
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-Amount
+            - =global-fields/AUTO.Expense-Utilities-Amount
+            - =global-fields/AUTO.Expense-Building-Insurance-Amount
+          Start-Date:
+            - =global-fields/AUTO.Expense-Peppercorn-Start-Date
+            - =global-fields/self.Expense-Base-Rent-Start-Date
+            - =global-fields/self.Expense-Abatement-Start-Date
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-Start-Date
+            - =global-fields/self.Expense-Opex-Or-Service-Charges-Start-Date
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-Start-Date
+            - =global-fields/AUTO.Expense-Parking-Start-Date
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Start-Date
+            - =global-fields/AUTO.Expense-Storage-Start-Date
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-Start-Date
+            - =global-fields/AUTO.Expense-Utilities-Start-Date      
+            - =global-fields/AUTO.Expense-Building-Insurance-Start-Date
+          End-Date:
+            - =global-fields/AUTO.Expense-Peppercorn-End-Date
+            - =global-fields/self.Expense-Base-Rent-End-Date
+            - =global-fields/self.Expense-Abatement-End-Date
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-End-Date
+            - =global-fields/self.Expense-Opex-Or-Service-Charges-End-Date
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-End-Date
+            - =global-fields/AUTO.Expense-Parking-End-Date
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-End-Date
+            - =global-fields/AUTO.Expense-Storage-End-Date
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-End-Date
+            - =global-fields/AUTO.Expense-Utilities-End-Date  
+            - =global-fields/AUTO.Expense-Building-Insurance-End-Date
+          Is-End-Date-Same-As-Expiration-Date:
+            - =global-fields/AUTO.Expense-Peppercorn-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Base-Rent-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Abatement-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Opex-Or-Service-Charges-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Parking-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Storage-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Utilities-Is-End-Date-Same-As-Expiration-Date
+            - =global-fields/AUTO.Expense-Building-Insurance-Is-End-Date-Same-As-Expiration-Date          
+          Period-Start-Date:
+            - =global-fields/AUTO.Expense-Peppercorn-Period-Start-Date
+            - =global-fields/self.Expense-Base-Rent-Period-Start-Date
+            - =global-fields/self.Expense-Abatement-Period-Start-Date
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-Period-Start-Date
+            - =global-fields/AUTO.Expense-Opex-Or-Service-Charges-Period-Start-Date
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-Period-Start-Date
+            - =global-fields/AUTO.Expense-Parking-Period-Start-Date
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Period-Start-Date
+            - =global-fields/AUTO.Expense-Storage-Period-Start-Date
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-Period-Start-Date
+            - =global-fields/AUTO.Expense-Utilities-Period-Start-Date
+            - =global-fields/AUTO.Expense-Building-Insurance-Period-Start-Date
+          Frequency:
+            - =global-fields/AUTO.Expense-Peppercorn-Frequency
+            - =global-fields/self.Expense-Base-Rent-Frequency
+            - =global-fields/self.Expense-Abatement-Frequency
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-Frequency
+            - =global-fields/self.Expense-Opex-Or-Service-Charges-Frequency
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-Frequency
+            - =global-fields/AUTO.Expense-Parking-Frequency
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Frequency
+            - =global-fields/AUTO.Expense-Storage-Frequency
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-Frequency
+            - =global-fields/AUTO.Expense-Utilities-Frequency       
+            - =global-fields/AUTO.Expense-Building-Insurance-Frequency
+          First-Payment-Date:
+            - =global-fields/AUTO.Expense-Peppercorn-First-Payment-Date
+            - =global-fields/self.Expense-Base-Rent-First-Payment-Date
+            - =global-fields/self.Expense-Abatement-First-Payment-Date
+            - =global-fields/AUTO.Expense-Maintenance-And-Repairs-First-Payment-Date
+            - =global-fields/AUTO.Expense-Opex-Or-Service-Charges-First-Payment-Date
+            - =global-fields/AUTO.Expense-Other-Fees-And-Charges-First-Payment-Date
+            - =global-fields/AUTO.Expense-Parking-First-Payment-Date
+            - =global-fields/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-First-Payment-Date
+            - =global-fields/AUTO.Expense-Storage-First-Payment-Date
+            - =global-fields/AUTO.Expense-TI-Tenant-Allowance-First-Payment-Date
+            - =global-fields/AUTO.Expense-Utilities-First-Payment-Date
+            - =global-fields/AUTO.Expense-Building-Insurance-First-Payment-Date
+          Increase-Type:
+            - =global-fields/self.Expense-Base-Rent-Increase-Type
+          Increase-Amount:
+            - =global-fields/self.Expense-Base-Rent-Increase-Amount
+          Increase-Frequency:
+            - =global-fields/self.Expense-Base-Rent-Increase-Frequency  
+          Indexation:
+            - =global-fields/self.Expense-Base-Rent-Indexation
+
+
+    Options:
+      reduction:
+        $join:
+          Comment:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-Comment
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-Comment
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-Comment
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-Comment
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-Comment
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-Comment
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-Comment
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-Comment
+            - =global-fields/AUTO.Option-Contraction-Comment
+            - =global-fields/AUTO.Option-Expansion-Comment
+            - =global-fields/AUTO.Option-Must-Reduce-Comment
+            - =global-fields/AUTO.Option-Must-Expand-Comment
+            - =global-fields/AUTO.Option-Option-To-Buy-Comment
+            - =global-fields/AUTO.Option-Renewal-Comment
+            - =global-fields/AUTO.Option-Rent-Change-Index-Comment
+            - =global-fields/AUTO.Option-Rent-Change-Market-Comment
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-Comment
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-Comment
+          Frequency:
+            - =global-fields/self.Option-Rent-Change-Index-Frequency
+            - =global-fields/self.Option-Rent-Change-Market-Frequency
+          Effective:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-Effective
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-Effective
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-Effective
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-Effective
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-Effective
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-Effective
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-Effective
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-Effective
+            - =global-fields/AUTO.Option-Contraction-Effective
+            - =global-fields/AUTO.Option-Expansion-Effective
+            - =global-fields/AUTO.Option-Must-Reduce-Effective
+            - =global-fields/AUTO.Option-Must-Expand-Effective
+            - =global-fields/AUTO.Option-Option-To-Buy-Effective
+            - =global-fields/AUTO.Option-Renewal-Effective
+            - =global-fields/AUTO.Option-Rent-Change-Index-Effective
+            - =global-fields/AUTO.Option-Rent-Change-Market-Effective
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-Effective
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-Effective
+          Expiration:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-Expiration
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-Expiration
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-Expiration
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-Expiration
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-Expiration
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-Expiration
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-Expiration
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-Expiration
+            - =global-fields/AUTO.Option-Contraction-Expiration
+            - =global-fields/AUTO.Option-Expansion-Expiration
+            - =global-fields/AUTO.Option-Must-Reduce-Expiration
+            - =global-fields/AUTO.Option-Must-Expand-Expiration
+            - =global-fields/AUTO.Option-Option-To-Buy-Expiration
+            - =global-fields/AUTO.Option-Renewal-Expiration
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-Expiration
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-Expiration
+          Begin-Notice:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-Begin-Notice
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-Begin-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-Begin-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-Begin-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-Begin-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-Begin-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-Begin-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-Begin-Notice
+            - =global-fields/AUTO.Option-Contraction-Begin-Notice
+            - =global-fields/AUTO.Option-Expansion-Begin-Notice
+            - =global-fields/AUTO.Option-Must-Reduce-Begin-Notice
+            - =global-fields/AUTO.Option-Must-Expand-Begin-Notice
+            - =global-fields/AUTO.Option-Option-To-Buy-Begin-Notice
+            - =global-fields/AUTO.Option-Renewal-Begin-Notice
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-Begin-Notice
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-Begin-Notice
+          End-Notice:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-End-Notice
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-End-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-End-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-End-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-End-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-End-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-End-Notice
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-End-Notice
+            - =global-fields/AUTO.Option-Contraction-End-Notice
+            - =global-fields/AUTO.Option-Expansion-End-Notice
+            - =global-fields/AUTO.Option-Must-Reduce-End-Notice
+            - =global-fields/AUTO.Option-Must-Expand-End-Notice
+            - =global-fields/AUTO.Option-Option-To-Buy-End-Notice
+            - =global-fields/AUTO.Option-Renewal-End-Notice
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-End-Notice
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-End-Notice
+          Is-Conditional:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-Is-Conditional
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-Is-Conditional
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-Is-Conditional
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-Is-Conditional
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-Is-Conditional
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-Is-Conditional
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-Is-Conditional
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-Is-Conditional
+            - =global-fields/AUTO.Option-Contraction-Is-Conditional
+            - =global-fields/AUTO.Option-Expansion-Is-Conditional
+            - =global-fields/AUTO.Option-Must-Reduce-Is-Conditional
+            - =global-fields/AUTO.Option-Must-Expand-Is-Conditional
+            - =global-fields/AUTO.Option-Option-To-Buy-Is-Conditional
+            - =global-fields/AUTO.Option-Renewal-Is-Conditional
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-Is-Conditional
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-Is-Conditional
+          Penalty:
+            - =global-fields/AUTO.Option-Auto-Renew-Notice-Penalty
+            - =global-fields/AUTO.Option-Auto-Expiry-Notice-Penalty
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-LL-Penalty
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-TT-Penalty
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Standard-Mutual-Penalty
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-LL-Penalty
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-TT-Penalty
+            - =global-fields/AUTO.Option-Cancel-Or-Break-Rolling-Mutual-Penalty
+            - =global-fields/AUTO.Option-Contraction-Penalty
+            - =global-fields/AUTO.Option-Expansion-Penalty
+            - =global-fields/AUTO.Option-Must-Reduce-Penalty
+            - =global-fields/AUTO.Option-Must-Expand-Penalty
+            - =global-fields/AUTO.Option-Option-To-Buy-Penalty
+            - =global-fields/AUTO.Option-Renewal-Penalty
+            - =global-fields/AUTO.Option-Right-Of-First-Offer-Penalty
+            - =global-fields/AUTO.Option-Right-Of-First-Refusal-Penalty
+
