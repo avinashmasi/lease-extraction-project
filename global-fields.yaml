@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=../schemas/ontology.schema.json
-# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
 kind: Ontology/v2
 name: global-fields
 namespaces:
@@ -40,6 +38,7 @@ namespaces:
     # #################################
     # Terms
 
+<<<<<<< HEAD
     Arrangement_Start_Date:
       reduction:
         $match:
@@ -104,3 +103,41 @@ namespaces:
           en-nl: =en-nl-completions-terms/self.Ref_cost_per_reserved_parking_space_uom_desc
 
     
+=======
+    # Contacts
+
+    contact_display_name:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-contacts/self.contact_display_name
+          en-nl: =en-nl-completions-contacts/self.contact_display_name
+
+    first_name:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-contacts/self.first_name
+          en-nl: =en-nl-completions-contacts/self.first_name
+
+    last_name:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-contacts/self.last_name
+          en-nl: =en-nl-completions-contacts/self.last_name
+
+    email:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-contacts/self.email
+          en-nl: =en-nl-completions-contacts/self.email
+
+    full_phone_number:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-contacts/self.full_phone_number
+          en-nl: =en-nl-completions-contacts/self.full_phone_number
+>>>>>>> 0254e21 (changes contacts)

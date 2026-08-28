@@ -6,7 +6,7 @@ kind: Ontology/v2
 # name - used by external ontologies to reference
 #        back to the current instance.
 #        this should always be the same as the file base-name
-name: portfolio-extract-en-us-lease
+name: en-nl-lease
 
 # minimum version
 version: v2.2.126
@@ -78,6 +78,7 @@ namespaces:
               expression: "'ascii' if lang == 'en' else 'utf-8'"
           - $set: 'ascii'
 
+<<<<<<< HEAD
     # the following semantics will all run in parallel
     # (i.e., labels with the first letter capitalized run concurrently)
     # however, the collate and join parameters run sequentially
@@ -96,3 +97,13 @@ namespaces:
           - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
 
     
+=======
+    Contacts:
+      reduction:
+        $collate:
+          - =global-fields/self.contact_display_name
+          - =global-fields/self.first_name
+          - =global-fields/self.last_name
+          - =global-fields/self.email
+          - =global-fields/self.full_phone_number
+>>>>>>> 0254e21 (changes contacts)

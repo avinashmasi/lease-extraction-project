@@ -1,5 +1,4 @@
-# yaml-language-server: $schema=../schemas/ontology.schema.json
-# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+
 kind: Ontology/v2
 name: global-prompts
 namespaces:

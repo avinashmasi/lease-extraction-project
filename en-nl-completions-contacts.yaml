@@ -1,0 +1,571 @@
+kind: Ontology/v2
+name: en-nl-completions-contacts
+namespaces:
+ self:
+
+  contact_display_name:
+    reduction:
+      $match:
+        key: =global-fields/self.validation
+        default: =fuzzy.contact_display_name
+        primary: =primary.contact_display_name
+        secondary: =secondary.contact_display_name
+
+  first_name:
+    reduction:
+      $match:
+        key: =global-fields/self.validation
+        default: =fuzzy.first_name
+        primary: =primary.first_name
+        secondary: =secondary.first_name
+
+  last_name:
+    reduction:
+      $match:
+        key: =global-fields/self.validation
+        default: =fuzzy.last_name
+        primary: =primary.last_name
+        secondary: =secondary.last_name
+
+  email:
+    reduction:
+      $match:
+        key: =global-fields/self.validation
+        default: =fuzzy.email
+        primary: =primary.email
+        secondary: =secondary.email
+
+  full_phone_number:
+    reduction:
+      $match:
+        key: =global-fields/self.validation
+        default: =fuzzy.full_phone_number
+        primary: =primary.full_phone_number
+        secondary: =secondary.full_phone_number
+
+  fuzzy:
+
+    contact_display_name:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.contact_display_name
+          - =secondary.contact_display_name
+
+    first_name:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.first_name
+          - =secondary.first_name
+
+    last_name:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.last_name
+          - =secondary.last_name
+
+    email:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.email
+          - =secondary.email
+
+    full_phone_number:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.full_phone_number
+          - =secondary.full_phone_number
+
+  primary:
+
+    contact_display_name:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            Identify the display name of the contact associated with the company.
+          templates: =templates.contact_display_name
+
+    first_name:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the first name of the contact associated with the company?
+          templates: =templates.first_name
+
+    last_name:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the last name of the contact associated with the company?
+          templates: =templates.last_name
+
+    email:
+      confidence: 0.99
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the email address associated with this contact?
+          templates: =templates.email
+
+    full_phone_number:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the phone number associated with this contact?
+          templates: =templates.full_phone_number
+
+  secondary:
+
+    contact_display_name:
+      confidence: 0.911
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            Identify the display name of the contact associated with the company.
+          templates: =templates.contact_display_name
+
+    first_name:
+      confidence: 0.911
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the first name of the contact associated with the company?
+          templates: =templates.first_name
+
+    last_name:
+      confidence: 0.911
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the last name of the contact associated with the company?
+          templates: =templates.last_name
+
+    email:
+      confidence: 0.99
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the email address associated with this contact?
+          templates: =templates.email
+
+    full_phone_number:
+      confidence: 0.911
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Contacts-Context
+          prompt: |
+            What is the phone number associated with this contact?
+          templates: =templates.full_phone_number
+
+  templates:
+
+    contact_display_name:
+      reduction:
+        $const:
+
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Definition
+
+            Contact Display Name is the complete name of an individual person associated with a company referenced in the lease document.
+
+            The company may be associated with the leased property as:
+
+            - Tenant
+            - Tenant Representative
+            - Legal Owner
+            - Landlord
+            - Landlord Representative
+            - Broker
+            - Property Manager
+            - Asset Manager
+            - Facilities Manager
+            - Notice Recipient
+            - Authorized Signatory
+
+            Locations To Search
+
+            Contact names frequently appear in:
+
+            - Notice sections
+            - Attn / Attention lines
+            - Contact information sections
+            - Landlord information sections
+            - Tenant information sections
+            - Representative sections
+            - Signature blocks
+            - Execution pages
+            - Correspondence sections
+            - Broker information
+            - Property management information
+
+            Multi-Contact Rule
+
+            A lease document may contain multiple contacts.
+
+            Extract every valid contact.
+
+            Each contact must be treated as a separate contact record.
+
+            Do not combine multiple contacts into a single record.
+
+            Extraction Rules
+
+            1. Extract only individual people.
+
+            2. Extract the complete name exactly as written.
+
+            3. Preserve middle names and initials.
+
+            4. Preserve suffixes when present.
+
+            5. Ignore titles such as Director, Manager, VP, EVP, CEO and COO.
+
+            6. If First Name and Last Name appear separately, combine them into a complete display name.
+
+            7. If only a company name is listed without an individual, return "i dont know".
+
+            Do NOT Extract
+
+            - Company names
+            - Property names
+            - Building names
+            - Department names
+            - Job titles
+            - Email addresses
+            - Phone numbers
+
+            Examples
+
+            Given:
+            Attention: Jennifer Thompson
+
+            Response:
+            Jennifer Thompson
+
+            Given:
+            By: Paula Pryor
+
+            Response:
+            Paula Pryor
+
+            Given:
+            CBRE Group, Inc.
+
+            Response:
+            i dont know
+
+        - role: user
+          content: "{prompt}"
+
+    first_name:
+      reduction:
+        $const:
+
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Definition
+
+            First Name is the given name of an individual contact associated with a company referenced in the lease document.
+
+            Multi-Contact Rule
+
+            Each contact must be treated independently.
+
+            The first name must belong to the same contact record.
+
+            Do not use another contact's first name.
+
+            Extraction Rules
+
+            1. Extract only the first name.
+
+            2. Ignore middle names.
+
+            3. Ignore titles.
+
+            4. Preserve spelling exactly.
+
+            5. If a valid first name cannot be identified, return "i dont know".
+
+            Do NOT Extract
+
+            - Company names
+            - Last names
+            - Email addresses
+            - Phone numbers
+            - Job titles
+            Examples:
+
+            Jennifer Thompson
+            Response: Jennifer
+
+            Michael J. Anderson
+            Response: Michael
+
+            CBRE Group, Inc.
+            Response: i dont know
+
+        - role: user
+          content: "{prompt}"
+
+    last_name:
+      reduction:
+        $const:
+
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Definition
+
+            Last Name is the surname or family name of an individual contact.
+
+            Multi-Contact Rule
+
+            The last name must belong to the same contact record.
+
+            Do not use another contact's surname.
+
+            Extraction Rules
+
+            1. Extract only the surname.
+
+            2. Ignore titles.
+
+            3. Ignore middle names and initials.
+
+            4. Preserve spelling exactly.
+
+            5. If a valid surname cannot be identified, return "i dont know".
+
+            Do NOT Extract
+
+            - Company names
+            - First names
+            - Email addresses
+            - Phone numbers
+
+            Examples
+
+            Jennifer Thompson
+            Response: Thompson
+
+            Michael J. Anderson
+            Response: Anderson
+
+            CBRE Group, Inc.
+            Response: i dont know
+
+        - role: user
+          content: "{prompt}"
+
+    email:
+      reduction:
+        $const:
+
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Definition
+
+            Email is the electronic mail address associated with an individual contact.
+
+            Locations To Search
+
+            - Contact information sections
+            - Notice sections
+            - Signature blocks
+            - Broker information
+            - Property management sections
+            - Representative sections
+            - Correspondence sections
+
+            Multi-Contact Rule
+
+            Associate the email only with the current contact.
+
+            Do not assign another contact's email.
+
+            Extraction Rules
+
+            1. Extract only the contact's email address.
+
+            2. Preserve the email exactly as written.
+
+            3. Associate the email with the correct contact.
+
+            4. If multiple contacts exist, ensure the email belongs to the same contact.
+
+            5. If no email exists for the contact, return "i dont know".
+
+            Do NOT Extract
+
+            - Company URLs
+            - Websites
+            - Phone numbers
+            - Company names
+
+            Examples
+
+            Jennifer Thompson
+            Email: jthompson@acme.com
+
+            Response:
+            jthompson@acme.com
+
+            Website: www.acme.com
+
+            Response:
+            i dont know
+
+        - role: user
+          content: "{prompt}"
+
+    full_phone_number:
+      reduction:
+        $const:
+
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Definition
+
+            Full Phone Number is the primary telephone number associated with an individual contact.
+
+            Locations To Search
+
+            - Contact information sections
+            - Notice sections
+            - Signature pages
+            - Representative sections
+            - Broker information
+            - Property management sections
+
+            Multi-Contact Rule
+
+            Associate the phone number only with the current contact.
+
+            Do not assign another contact's phone number.
+
+            Extraction Rules
+
+            1. Extract only the contact's phone number.
+
+            2. Preserve formatting exactly as written.
+
+            3. Include country codes.
+
+            4. Include area codes.
+
+            5. Include extensions when present.
+
+            6. If multiple phone numbers exist, select the phone number associated with that contact.
+
+            7. If no phone number exists for the contact, return "i dont know".
+
+            Do NOT Extract
+
+            - Postal codes
+            - Building numbers
+            - Address numbers
+            - Fax numbers unless clearly designated as the contact phone number
+
+            Examples
+
+            Phone: +1 312 555 6789
+
+            Response:
+            +1 312 555 6789
+
+            Tel: (312) 425-0658
+
+            Response:
+            (312) 425-0658
+
+            Fax: +1 312 555 1111
+
+            Response:
+            i dont know
+
+        - role: user
+          content: "{prompt}"
+
