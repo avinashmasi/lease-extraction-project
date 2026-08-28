@@ -1,0 +1,84 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: en-nl-searches
+namespaces:
+
+
+  self:
+    Occupancy_Date-Searches:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find the explicit occupancy date, possession date, delivery date, or date on which the tenant may occupy or use the leased premises. Include dates tied to conditional occupancy language and exclude unrelated execution, effective, rent, or expiration dates.
+
+    Reserved-Parking-Spaces-Searches:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find clauses specifying the total count or allocation of reserved, designated, assigned, exclusive, or guaranteed parking spaces, stalls, spots, or ratio of spaces for the tenant. Exclude unreserved, visitor, common, customer, floating, general parking references, and parking fee-only clauses.
+
+    Cost-per-Reserved-Parking-Space-Searches:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find the explicit fee or rate charged per reserved, assigned, or exclusive parking space, including its billing period. Exclude unreserved, visitor, general, and aggregate parking charges.
+
+    Arrangement-Start-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find the explicit lease commencement or arrangement start date, including lease start date, commencement date, or extended term commencement date. Exclude execution, effective, possession, rent commencement, expiration, and projected dates unless the lease explicitly defines them as the commencement date.
+
+    Arrangement-End-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score:  =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find the explicit date on which the initial or current lease term expires, ends, or terminates. Exclude renewal or extension options, optional termination rights, notices, rent schedules, and unrelated dates.
+
+    Lease-Term-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find the explicit duration of the initial or current lease term, including the number of months, years, or days. Exclude renewal terms, extension options, notice periods, rent-free periods, construction periods, and holdover periods.
+
+    Parking-Search-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 15
+          prompt: |
+            Find all lease language describing reserved or assigned parking spaces, parking counts, parking fees, rates, billing periods, and whether parking is free or charged. Exclude unreserved, visitor, general, and unrelated parking information.
