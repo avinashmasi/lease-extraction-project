@@ -78,7 +78,6 @@ namespaces:
               expression: "'ascii' if lang == 'en' else 'utf-8'"
           - $set: 'ascii'
 
-<<<<<<< HEAD
     # the following semantics will all run in parallel
     # (i.e., labels with the first letter capitalized run concurrently)
     # however, the collate and join parameters run sequentially
@@ -97,7 +96,6 @@ namespaces:
           - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
 
     
-=======
     Contacts:
       reduction:
         $collate:
@@ -106,4 +104,3 @@ namespaces:
           - =global-fields/self.last_name
           - =global-fields/self.email
           - =global-fields/self.full_phone_number
->>>>>>> 0254e21 (changes contacts)

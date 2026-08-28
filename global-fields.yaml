@@ -38,106 +38,4821 @@ namespaces:
     # #################################
     # Terms
 
-<<<<<<< HEAD
-    Arrangement_Start_Date:
+    Commencement-Date:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Arrangement_Start_Date
-          en-nl: =en-nl-completions-terms/self.Arrangement_Start_Date
+          default: =en-us-completions-key-dates/self.Commencement-Date
+          en-us: =en-us-completions-key-dates/self.Commencement-Date
+          en-gb: =en-gb-completions-key-dates/self.Commencement-Date
 
-    Arrangement_End_Date:
+    Expiration-Date:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Arrangement_End_Date
-          en-nl: =en-nl-completions-terms/self.Arrangement_End_Date
+          default: =en-us-completions-key-dates/self.Expiration-Date
+          en-us: =en-us-completions-key-dates/self.Expiration-Date
+          en-gb: =en-gb-completions-key-dates/self.Expiration-Date
 
-    Occupancy_Date:
+    Lease-Term:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Occupancy_Date
-          en-nl: =en-nl-completions-terms/self.Occupancy_Date
+          default: =en-us-completions-key-dates/self.Lease-Term
+          en-us: =en-us-completions-key-dates/self.Lease-Term
+          en-gb: =en-gb-completions-key-dates/self.Lease-Term
 
-    Occupancy-Date-Explicit:
+    Execution-Date:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Occupancy-Date-Explicit
-          en-nl: =en-nl-completions-terms/self.Occupancy-Date-Explicit
+          default: =en-us-completions-key-dates/self.Execution-Date
+          en-us: =en-us-completions-key-dates/self.Execution-Date
+          en-gb: =en-gb-completions-key-dates/self.Execution-Date
 
-    Lease_Term:
+    Effective-Date:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Lease_Term
-          en-nl: =en-nl-completions-terms/self.Lease_Term
+          default: =en-us-completions-key-dates/self.Effective-Date
+          en-us: =en-us-completions-key-dates/self.Effective-Date
+          en-gb: =en-gb-completions-key-dates/self.Effective-Date
 
-    Ref_lease_term_uom_desc:
+    Start-Reason:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Ref_lease_term_uom_desc
-          en-nl: =en-nl-completions-terms/self.Ref_lease_term_uom_desc
+          default: =en-us-completions-expenses/self.Start-Reason
+          en-us: =en-us-completions-expenses/self.Start-Reason
+          en-gb: =en-gb-completions-expenses/self.Start-Reason
 
-    Reserved_parking_spaces:
+    Is-Month-To-Month:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Reserved_Parking_Spaces
-          en-nl: =en-nl-completions-terms/self.Reserved_Parking_Spaces
+          default: =en-us-completions-expenses/self.Is-Month-To-Month
+          en-us: =en-us-completions-expenses/self.Is-Month-To-Month
+          en-gb: =en-gb-completions-expenses/self.Is-Month-To-Month
 
-    Cost_per_Reserved_Parking_Space:
+    Is-Auto-Renew:
+      kind:
+        Enum: [ "Yes", "No" ]
+      reduction:
+        $precedence:
+          - $eval:
+              value:
+                $match:
+                  key: =self.jurisdiction
+                  default: =en-us-completions-expenses/self.Is-Auto-Renew
+                  en-us: =en-us-completions-expenses/self.Is-Auto-Renew
+                  en-gb: =en-gb-completions-expenses/self.Is-Auto-Renew
+              expression: "'Yes' if value and value.lower() == 'yes' else 'No'"
+          - $const: "No"
+
+    Reconciliation-Required:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Cost_per_Reserved_Parking_Space
-          en-nl: =en-nl-completions-terms/self.Cost_per_Reserved_Parking_Space
+          default: =en-us-completions-expenses/self.Is-Reconciliation-Required
+          en-us: =en-us-completions-expenses/self.Is-Reconciliation-Required
+          en-gb: =en-gb-completions-expenses/self.Is-Reconciliation-Required
 
-    Ref_cost_per_reserved_parking_space_uom_desc:
+    # #################################
+    # Premise Address
+
+    Building-Name:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Ref_cost_per_reserved_parking_space_uom_desc
-          en-nl: =en-nl-completions-terms/self.Ref_cost_per_reserved_parking_space_uom_desc
+          default: =en-us-completions-premise-address/self.Building-Name
+          en-us: =en-us-completions-premise-address/self.Building-Name
+          en-gb: =en-gb-completions-premise-address/self.Building-Name
 
-    
-=======
+    Building-Type:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-premise-address/self.Building-Type
+          en-us: =en-us-completions-premise-address/self.Building-Type
+          en-gb: =en-gb-completions-premise-address/self.Building-Type
+
+    Property-Address-Suite:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-premise-address/self.Property-Address-Suite
+          en-us: =en-us-completions-premise-address/self.Property-Address-Suite
+          en-gb: =en-gb-completions-premise-address/self.Property-Address-Suite
+
+    Property-Address-Street:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-premise-address/self.Property-Address-Street
+          en-us: =en-us-completions-premise-address/self.Property-Address-Street
+          en-gb: =en-gb-completions-premise-address/self.Property-Address-Street
+
+    Property-Address-City:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-premise-address/self.Property-Address-City
+          en-us: =en-us-completions-premise-address/self.Property-Address-City
+          en-gb: =en-gb-completions-premise-address/self.Property-Address-City
+
+    Property-Address-State:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-premise-address/self.Property-Address-State
+          en-us: =en-us-completions-premise-address/self.Property-Address-State
+          en-gb: =en-gb-completions-premise-address/self.Property-Address-State
+
+    Property-Address-Zip:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-premise-address/self.Property-Address-Zip
+          en-us: =en-us-completions-premise-address/self.Property-Address-Zip
+          en-gb: =en-gb-completions-premise-address/self.Property-Address-Zip
+
+    # #################################
+    # Record-Info
+
+    Premise-Rented-Area:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Premise-Rented-Area
+          en-us: =en-us-completions-record-info/self.Premise-Rented-Area
+          en-gb: =en-gb-completions-record-info/self.Premise-Rented-Area
+
+    Premise-Useable-Area:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Premise-Useable-Area
+          # warning: en-gb defaults to en-us
+
+    Alt-Property-Size:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Alt-Property-Size
+          en-us: =en-us-completions-record-info/self.Alt-Property-Size
+          en-gb: =en-gb-completions-record-info/self.Alt-Property-Size
+
+    Original-Property-Size:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Original-Property-Size
+          # warning: en-gb defaults to en-us
+
+    Prorata-Share:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Prorata-Share
+          en-us: =en-us-completions-record-info/self.Prorata-Share
+          en-gb: =en-gb-completions-record-info/self.Prorata-Share
+
+    Base-Year:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Base-Year
+          # warning: en-gb defaults to en-us
+
+    Rent-Type:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Rent-Type
+          en-us: =en-us-completions-record-info/self.Rent-Type
+          en-gb: =en-gb-completions-record-info/self.Rent-Type
+
+    Client-Legal-Entity-Name:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Client-Legal-Entity-Name
+          # warning: en-gb defaults to en-us
+
+    # Note, related Is-Auto-Renew is in the property terms section above 
+    Auto-Renew-In-Months:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Auto-Renew-In-Months
+          # warning: en-gb defaults to en-us
+
+    Unit-Of-Measurement:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-record-info/self.Unit-Of-Measurement
+          en-us: =en-us-completions-record-info/self.Unit-Of-Measurement
+          en-gb: =en-gb-completions-record-info/self.Unit-Of-Measurement
+
+    Size-Change-Reason:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Size-Change-Reason
+          # warning: en-gb defaults to en-us
+
+    # #################################
+    # Security-Deposit
+
+    Security-Deposit-Cash:
+      type: Security-Deposit-Cash
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-security-deposit/self.Cash
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Guarantee:
+      type: Security-Deposit-Guarantee
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-security-deposit/self.Guarantee
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Letter-Of-Credit:
+      type: Security-Deposit-Letter-Of-Credit
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-security-deposit/self.Letter-Of-Credit
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Not-Required:
+      type: Security-Deposit-Not-Required
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-security-deposit/self.Not-Required
+          # warning: en-gb defaults to en-us
+
+    # #################################
+    # TI Allowance 
+
+    Tenant-Improvement-Allowance:
+      type: TI-Allowance
+      reduction:
+        =self.Clause-TI-Tenant-Allowance
+
+    # #################################
     # Contacts
 
-    contact_display_name:
+    Contact-Guarantor:
+      type: Contact-Guarantor
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.contact_display_name
-          en-nl: =en-nl-completions-contacts/self.contact_display_name
+          default: =en-us-completions-contacts/self.Guarantor
+          # warning: en-gb defaults to en-us
 
-    first_name:
+    Contact-Lessee:
+      type: Contact-Lessee
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.first_name
-          en-nl: =en-nl-completions-contacts/self.first_name
+          default: =en-us-completions-contacts/self.Lessee
+          # warning: en-gb defaults to en-us
 
-    last_name:
+    Contact-Lessee-Notice-Copy:
+      type: Contact-Lessee-Notice-Copy
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.last_name
-          en-nl: =en-nl-completions-contacts/self.last_name
+          default: =en-us-completions-contacts/self.Lessee-Notice-Copy
+          # warning: en-gb defaults to en-us
 
-    email:
+    Contact-Lessor:
+      type: Contact-Lessor
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.email
-          en-nl: =en-nl-completions-contacts/self.email
+          default: =en-us-completions-contacts/self.Lessor
+          # warning: en-gb defaults to en-us
 
-    full_phone_number:
+    Contact-Lessor-Notice-Copy:
+      type: Contact-Lessor-Notice-Copy
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.full_phone_number
-          en-nl: =en-nl-completions-contacts/self.full_phone_number
->>>>>>> 0254e21 (changes contacts)
+          default: =en-us-completions-contacts/self.Lessor-Notice-Copy
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord:
+      type: Contact-Master-Landlord
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Master-Landlord
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment:
+      type: Contact-Payment
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Payment
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager:
+      type: Contact-Property-Manager
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Property-Manager
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee:
+      type: Contact-Sublessee
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Sublessee
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy:
+      type: Contact-Sublessee-Notice-Copy
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Sublessee-Notice-Copy
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor:
+      type: Contact-Sublessor
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Sublessor
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy:
+      type: Contact-Sublessor-Notice-Copy
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-contacts/self.Sublessor-Notice-Copy
+          # warning: en-gb defaults to en-us
+
+    Clause-Abatement:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Abatement-Summary
+          # warning: en-gb defaults to en-us
+
+    Clause-Alterations:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Alterations
+          # warning: en-gb defaults to en-us
+
+    Clause-Base-Rent:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Base-Rent-Summary
+          # warning: en-gb defaults to en-us
+
+    Clause-Assignment-Or-Sublet:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Assignment-Or-Sublet
+          # warning: en-gb defaults to en-us
+
+    Clause-Audit-Rights:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Audit-Rights
+          # warning: en-gb defaults to en-us
+
+    Clause-Building-Insurance:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Building-Insurance
+          # warning: en-gb defaults to en-us
+
+    Clause-Estoppel:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Estoppel
+          # warning: en-gb defaults to en-us
+
+    Clause-Holdover:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Holdover
+          # warning: en-gb defaults to en-us
+
+    Clause-Late-Charge:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Late-Charge
+          # warning: en-gb defaults to en-us
+
+    Clause-Maintenance-And-Repairs:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Maintenance-And-Repairs
+          # warning: en-gb defaults to en-us
+
+    Clause-Opex-Or-Service-Charges:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Opex-Or-Service-Charges
+          # warning: en-gb defaults to en-us
+
+    Clause-Other-Fees-And-Charges:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Other-Fees-And-Charges
+          # warning: en-gb defaults to en-us
+
+    Clause-Parking:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Parking
+          # warning: en-gb defaults to en-us
+
+    Clause-Permitted-Use:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Permitted-Use
+          # warning: en-gb defaults to en-us
+
+    Clause-RE-Taxes-Or-Rates-Or-Appeals:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.RE-Taxes-Or-Rates-Or-Appeals
+          # warning: en-gb defaults to en-us
+
+    Clause-Redecoration:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Redecoration
+          # warning: en-gb defaults to en-us
+
+    Clause-Relocation:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Relocation
+          # warning: en-gb defaults to en-us
+
+    Clause-Right-Of-First-Offer-Or-Refusal:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Right-Of-First-Offer-Or-Refusal
+          # warning: en-gb defaults to en-us
+
+    Clause-Signage:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Signage
+          # warning: en-gb defaults to en-us
+
+    Clause-Surrender-Or-Reinstatement:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Surrender-Or-Reinstatement
+          # warning: en-gb defaults to en-us
+
+    Clause-TI-Tenant-Allowance:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.TI-Tenant-Allowance-Summary
+          # warning: en-gb defaults to en-us
+
+    Clause-Landlord-Tenant-1954-Act:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Landlord-Tenant-1954-Act
+          # warning: en-gb defaults to en-us
+
+    Clause-Utilities:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Utilities
+          # warning: en-gb defaults to en-us
+
+    # #################################
+    # Options
+
+    # Option-Auto-Renew-Or-Expiry-Notice
+    #
+    # The match operator is used since the UI requires only the 
+    # specific label to be returned for some of the is-or attributes.
+    # Using $match, is the key return value is "Renew" then only the 
+    # Option-Auto-Renew-Notice is returned and vice versa for Expiry Notice.
+    #
+    # NOTE: If $match does not find a matching key, it will return an empty set.
+    # This has been implemented this way due to a limitation of the UI.
+    Option-Auto-Renew-Notice:
+      type: Option-Auto-Renew-Notice
+      kind: 
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $match:
+          key: =self.is-auto-renew-or-expiry-notice
+          Renew: =self.option-auto-renew-or-expiry-notice
+
+    option-auto-renew-or-expiry-notice:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Or-Expiry-Notice
+          # warning: en-gb defaults to en-us
+
+    is-auto-renew-or-expiry-notice:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-options/self.Is-Auto-Renew-Or-Expiry-Notice
+          # warning: en-gb defaults to en-us
+
+    # Option-Rent-Change-Index-Or-Market
+    #
+    # The match operator is used since the UI requires only the 
+    # specific label to be returned for some of the is-or attributes.
+    #
+    # NOTE: If $match does not find a matching key, it will return an empty set.
+    # This has been implemented this way due to a limitation of the UI.
+
+    Option-Rent-Change-Index-Frequency:
+      type: Option-Rent-Change-Index
+      reduction:
+        $match:
+          key: =self.is-rent-change-index-or-market
+          Index: =self.option-rent-change-index-or-market-frequency
+
+    Option-Rent-Change-Market-Frequency:
+      type: Option-Rent-Change-Market
+      reduction:
+        $match:
+          key: =self.is-rent-change-index-or-market
+          Market: =self.option-rent-change-index-or-market-frequency
+
+    option-rent-change-index-or-market-frequency:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Or-Market-Frequency
+          # NOTE: goes to expenses
+          # warning: en-gb defaults to en-us
+
+    is-rent-change-index-or-market:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-options/self.Is-Rent-Change-Index-Or-Market
+          # warning: en-gb defaults to en-us
+
+    # Context
+    # provide LLM-centric phrase of lease duration 
+    # used in some completions
+    Start:
+      kind: 
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $precedence:
+          - =self.Commencement-Date
+          - $const: "Not Present"
+
+    End:
+      kind: 
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $precedence:
+          - =self.Expiration-Date
+          - $const: "Not Present"
+
+    Term:
+      kind: 
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $precedence:
+          - =self.Lease-Term
+          - $const: "Not Present"
+
+    Lease-Context:
+      kind: 
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $eval:
+          start: =self.Start
+          end: =self.End
+          term: =self.Term
+          expression: f"Lease Commencement Date is {start}\nLease Expiration Date is {end}\nLease Term is {term}"
+
+    # Expenses
+    # override auto-gen versions
+    Expense-Base-Rent-Unit:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-Unit
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-Unit
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-Unit
+
+    Expense-Base-Rent-Amount:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-Amount
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-Amount
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-Amount
+
+    Expense-Base-Rent-Start-Date:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-Start-Date
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-Start-Date
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-Start-Date
+
+    Expense-Base-Rent-End-Date:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-End-Date
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-End-Date
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-End-Date
+
+    Expense-Base-Rent-Period-Start-Date:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-Period-Start-Date
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-Period-Start-Date
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-Period-Start-Date
+
+    Expense-Base-Rent-First-Payment-Date:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-First-Payment-Date
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-First-Payment-Date
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-First-Payment-Date
+
+    # Payment Frequency
+    Expense-Base-Rent-Frequency:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Base-Rent-Frequency
+          en-us: =en-us-completions-expenses-base-rent/self.Base-Rent-Frequency
+          en-gb: =en-gb-completions-expenses-base-rent/self.Base-Rent-Frequency
+
+    Expense-Base-Rent-Increase-Type:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Base-Rent-Increase-Type
+          # warning: en-gb defaults to en-us
+
+    Expense-Base-Rent-Increase-Amount:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Base-Rent-Increase-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Base-Rent-Increase-Frequency:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Base-Rent-Increase-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Base-Rent-Indexation:
+      type: Expense-Base-Rent
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Base-Rent-Indexation
+          # warning: en-gb defaults to en-us
+        
+    Expense-Abatement-Amount:
+      type: Expense-Abatement
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Abatement-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-Start-Date:
+      type: Expense-Abatement
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Abatement-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-End-Date:
+      type: Expense-Abatement
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Abatement-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-First-Payment-Date:
+      type: Expense-Abatement
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Abatement-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-Frequency:
+      type: Expense-Abatement
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Abatement-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-Period-Start-Date:
+      type: Expense-Abatement
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses-base-rent/self.Abatement-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Amount:
+      type: Expense-Opex-Or-Service-Charges
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Opex-Or-Service-Charges-Amount
+          # warning: en-gb defaults to en-us
+        
+    Expense-Opex-Or-Service-Charges-Start-Date:
+      type: Expense-Opex-Or-Service-Charges
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Opex-Or-Service-Charges-Start-Date
+          # warning: en-gb defaults to en-us
+        
+    Expense-Opex-Or-Service-Charges-End-Date:
+      type: Expense-Opex-Or-Service-Charges
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Opex-Or-Service-Charges-End-Date
+          # warning: en-gb defaults to en-us
+        
+    Expense-Opex-Or-Service-Charges-Frequency:
+      type: Expense-Opex-Or-Service-Charges
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-expenses/self.Expense-Opex-Or-Service-Charges-Frequency
+          # warning: en-gb defaults to en-us
+        
+  summaries:
+
+    Clause-Alterations:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Alterations-Summary
+
+    Clause-Assignment-Or-Sublet:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Assignment-Or-Sublet-Summary
+
+    Clause-Audit-Rights:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Audit-Rights-Summary
+
+    Clause-Building-Insurance:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Building-Insurance-Summary
+
+    Clause-Estoppel:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Estoppel-Summary
+
+    Clause-Holdover:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Holdover-Summary
+
+    Clause-Late-Charge:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Late-Charge-Summary
+
+    Clause-Maintenance-And-Repairs:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Maintenance-And-Repairs-Summary
+
+    Clause-Opex-Or-Service-Charges:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Opex-Or-Service-Charges-Summary
+
+    Clause-Other-Fees-And-Charges:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Other-Fees-And-Charges-Summary
+
+    Clause-Parking:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Parking-Summary
+
+    Clause-Permitted-Use:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Permitted-Use-Summary
+
+    Clause-RE-Taxes-Or-Rates-Or-Appeals:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.RE-Taxes-Or-Rates-Or-Appeals-Summary
+
+    Clause-Redecoration:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Redecoration-Summary
+
+    Clause-Relocation:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Relocation-Summary
+
+    Clause-Right-Of-First-Offer-Or-Refusal:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Right-Of-First-Offer-Or-Refusal-Summary
+
+    Clause-Signage:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Signage-Summary
+
+    Clause-Surrender-Or-Reinstatement:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Surrender-Or-Reinstatement-Summary
+
+    Clause-TI-Tenant-Allowance:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.TI-Tenant-Allowance-Summary
+
+    Clause-Landlord-Tenant-1954-Act:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Landlord-Tenant-1954-Act-Summary
+
+    Clause-Utilities:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-us-completions-clauses/self.Utilities-Summary
+  
+  AUTO:
+
+    #
+    # TI Allowance Fields 
+
+    Tenant-Improvement-Allowance-Comment:
+      type: Tenant-Improvement-Allowance
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-ti-allowance/AUTO.Allowance-Comment
+          # warning: en-gb defaults to en-us
+
+    Tenant-Improvement-Allowance-Amount:
+      type: Tenant-Improvement-Allowance
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-ti-allowance/AUTO.Allowance-Amount
+          # warning: en-gb defaults to en-us
+
+    Tenant-Improvement-Allowance-Paid-Date:
+      type: Tenant-Improvement-Allowance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-ti-allowance/AUTO.Allowance-Paid-Date
+          # warning: en-gb defaults to en-us
+
+    Tenant-Improvement-Allowance-Return-Date:
+      type: Tenant-Improvement-Allowance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-ti-allowance/AUTO.Allowance-Return-Date
+          # warning: en-gb defaults to en-us
+
+    #
+    # Security Deposit Fields 
+
+    Security-Deposit-Cash-Comment:
+      type: Security-Deposit-Cash
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Cash-Comment
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Cash-Amount:
+      type: Security-Deposit-Cash
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Cash-Amount
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Cash-Paid-Date:
+      type: Security-Deposit-Cash
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Cash-Paid-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Cash-Return-Date:
+      type: Security-Deposit-Cash
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Cash-Return-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Guarantee-Comment:
+      type: Security-Deposit-Guarantee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Guarantee-Comment
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Guarantee-Amount:
+      type: Security-Deposit-Guarantee
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Guarantee-Amount
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Guarantee-Paid-Date:
+      type: Security-Deposit-Guarantee
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Guarantee-Paid-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Guarantee-Return-Date:
+      type: Security-Deposit-Guarantee
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Guarantee-Return-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Letter-Of-Credit-Comment:
+      type: Security-Deposit-Letter-Of-Credit
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Letter-Of-Credit-Comment
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Letter-Of-Credit-Amount:
+      type: Security-Deposit-Letter-Of-Credit
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Letter-Of-Credit-Amount
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Letter-Of-Credit-Paid-Date:
+      type: Security-Deposit-Letter-Of-Credit
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Letter-Of-Credit-Paid-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Letter-Of-Credit-Return-Date:
+      type: Security-Deposit-Letter-Of-Credit
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Letter-Of-Credit-Return-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Not-Required-Comment:
+      type: Security-Deposit-Not-Required
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Not-Required-Comment
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Not-Required-Amount:
+      type: Security-Deposit-Not-Required
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Not-Required-Amount
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Not-Required-Paid-Date:
+      type: Security-Deposit-Not-Required
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Not-Required-Paid-Date
+          # warning: en-gb defaults to en-us
+
+    Security-Deposit-Not-Required-Return-Date:
+      type: Security-Deposit-Not-Required
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-security-deposit/AUTO.Not-Required-Return-Date
+          # warning: en-gb defaults to en-us
+
+    #
+    # Contact Fields 
+
+    Contact-Guarantor-Company:
+      type: Contact-Guarantor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Name:
+      type: Contact-Guarantor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Title:
+      type: Contact-Guarantor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Street:
+      type: Contact-Guarantor
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Location-Name:
+      type: Contact-Guarantor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-City:
+      type: Contact-Guarantor
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-State:
+      type: Contact-Guarantor
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Zip:
+      type: Contact-Guarantor
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Country:
+      type: Contact-Guarantor
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-PO-Box:
+      type: Contact-Guarantor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Phone:
+      type: Contact-Guarantor
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Email:
+      type: Contact-Guarantor
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Guarantor-Department:
+      type: Contact-Guarantor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Guarantor-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Company:
+      type: Contact-Lessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Name:
+      type: Contact-Lessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Title:
+      type: Contact-Lessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Street:
+      type: Contact-Lessee
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Location-Name:
+      type: Contact-Lessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-City:
+      type: Contact-Lessee
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-State:
+      type: Contact-Lessee
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Zip:
+      type: Contact-Lessee
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Country:
+      type: Contact-Lessee
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-PO-Box:
+      type: Contact-Lessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Phone:
+      type: Contact-Lessee
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Email:
+      type: Contact-Lessee
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Department:
+      type: Contact-Lessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Company:
+      type: Contact-Lessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Name:
+      type: Contact-Lessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Title:
+      type: Contact-Lessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Street:
+      type: Contact-Lessee-Notice-Copy
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Location-Name:
+      type: Contact-Lessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-City:
+      type: Contact-Lessee-Notice-Copy
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-State:
+      type: Contact-Lessee-Notice-Copy
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Zip:
+      type: Contact-Lessee-Notice-Copy
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Country:
+      type: Contact-Lessee-Notice-Copy
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-PO-Box:
+      type: Contact-Lessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Phone:
+      type: Contact-Lessee-Notice-Copy
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Email:
+      type: Contact-Lessee-Notice-Copy
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessee-Notice-Copy-Department:
+      type: Contact-Lessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessee-Notice-Copy-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Company:
+      type: Contact-Lessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Name:
+      type: Contact-Lessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Title:
+      type: Contact-Lessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Street:
+      type: Contact-Lessor
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Location-Name:
+      type: Contact-Lessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-City:
+      type: Contact-Lessor
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-State:
+      type: Contact-Lessor
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Zip:
+      type: Contact-Lessor
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Country:
+      type: Contact-Lessor
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-PO-Box:
+      type: Contact-Lessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Phone:
+      type: Contact-Lessor
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Email:
+      type: Contact-Lessor
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Department:
+      type: Contact-Lessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Company:
+      type: Contact-Lessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Name:
+      type: Contact-Lessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Title:
+      type: Contact-Lessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Street:
+      type: Contact-Lessor-Notice-Copy
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Location-Name:
+      type: Contact-Lessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-City:
+      type: Contact-Lessor-Notice-Copy
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-State:
+      type: Contact-Lessor-Notice-Copy
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Zip:
+      type: Contact-Lessor-Notice-Copy
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Country:
+      type: Contact-Lessor-Notice-Copy
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-PO-Box:
+      type: Contact-Lessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Phone:
+      type: Contact-Lessor-Notice-Copy
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Email:
+      type: Contact-Lessor-Notice-Copy
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Lessor-Notice-Copy-Department:
+      type: Contact-Lessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Lessor-Notice-Copy-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Company:
+      type: Contact-Master-Landlord
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Name:
+      type: Contact-Master-Landlord
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Title:
+      type: Contact-Master-Landlord
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Street:
+      type: Contact-Master-Landlord
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Location-Name:
+      type: Contact-Master-Landlord
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-City:
+      type: Contact-Master-Landlord
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-State:
+      type: Contact-Master-Landlord
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Zip:
+      type: Contact-Master-Landlord
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Country:
+      type: Contact-Master-Landlord
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-PO-Box:
+      type: Contact-Master-Landlord
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Phone:
+      type: Contact-Master-Landlord
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Email:
+      type: Contact-Master-Landlord
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Master-Landlord-Department:
+      type: Contact-Master-Landlord
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Master-Landlord-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Company:
+      type: Contact-Payment
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Name:
+      type: Contact-Payment
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Title:
+      type: Contact-Payment
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Street:
+      type: Contact-Payment
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Location-Name:
+      type: Contact-Payment
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-City:
+      type: Contact-Payment
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-State:
+      type: Contact-Payment
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Zip:
+      type: Contact-Payment
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Country:
+      type: Contact-Payment
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-PO-Box:
+      type: Contact-Payment
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Phone:
+      type: Contact-Payment
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Email:
+      type: Contact-Payment
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Payment-Department:
+      type: Contact-Payment
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Payment-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Company:
+      type: Contact-Property-Manager
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Name:
+      type: Contact-Property-Manager
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Title:
+      type: Contact-Property-Manager
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Street:
+      type: Contact-Property-Manager
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Location-Name:
+      type: Contact-Property-Manager
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-City:
+      type: Contact-Property-Manager
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-State:
+      type: Contact-Property-Manager
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Zip:
+      type: Contact-Property-Manager
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Country:
+      type: Contact-Property-Manager
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-PO-Box:
+      type: Contact-Property-Manager
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Phone:
+      type: Contact-Property-Manager
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Email:
+      type: Contact-Property-Manager
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Property-Manager-Department:
+      type: Contact-Property-Manager
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Property-Manager-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Company:
+      type: Contact-Sublessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Name:
+      type: Contact-Sublessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Title:
+      type: Contact-Sublessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Street:
+      type: Contact-Sublessee
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Location-Name:
+      type: Contact-Sublessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-City:
+      type: Contact-Sublessee
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-State:
+      type: Contact-Sublessee
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Zip:
+      type: Contact-Sublessee
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Country:
+      type: Contact-Sublessee
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-PO-Box:
+      type: Contact-Sublessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Phone:
+      type: Contact-Sublessee
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Email:
+      type: Contact-Sublessee
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Department:
+      type: Contact-Sublessee
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Company:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Name:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Title:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Street:
+      type: Contact-Sublessee-Notice-Copy
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Location-Name:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-City:
+      type: Contact-Sublessee-Notice-Copy
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-State:
+      type: Contact-Sublessee-Notice-Copy
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Zip:
+      type: Contact-Sublessee-Notice-Copy
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Country:
+      type: Contact-Sublessee-Notice-Copy
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-PO-Box:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Phone:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Email:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessee-Notice-Copy-Department:
+      type: Contact-Sublessee-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessee-Notice-Copy-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Company:
+      type: Contact-Sublessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Name:
+      type: Contact-Sublessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Title:
+      type: Contact-Sublessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Street:
+      type: Contact-Sublessor
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Location-Name:
+      type: Contact-Sublessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-City:
+      type: Contact-Sublessor
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-State:
+      type: Contact-Sublessor
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Zip:
+      type: Contact-Sublessor
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Country:
+      type: Contact-Sublessor
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-PO-Box:
+      type: Contact-Sublessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Phone:
+      type: Contact-Sublessor
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Email:
+      type: Contact-Sublessor
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Department:
+      type: Contact-Sublessor
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Department
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Company:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Company
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Name:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Title:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Title
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Street:
+      type: Contact-Sublessor-Notice-Copy
+      kind: USPSStreet
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Street
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Location-Name:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Location-Name
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-City:
+      type: Contact-Sublessor-Notice-Copy
+      kind: USPSCity
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-City
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-State:
+      type: Contact-Sublessor-Notice-Copy
+      kind: USPSState
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-State
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Zip:
+      type: Contact-Sublessor-Notice-Copy
+      kind: USPSPostalCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Zip
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Country:
+      type: Contact-Sublessor-Notice-Copy
+      kind: USPSCountryCode
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Country
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-PO-Box:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-PO-Box
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Phone:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Phone
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Phone
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Email:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Email
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Email
+          # warning: en-gb defaults to en-us
+
+    Contact-Sublessor-Notice-Copy-Department:
+      type: Contact-Sublessor-Notice-Copy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-contacts/AUTO.Sublessor-Notice-Copy-Department
+          # warning: en-gb defaults to en-us
+
+    #
+    # Expense Fields 
+
+    Expense-Peppercorn-Comment:
+      type: Expense-Peppercorn
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-Amount:
+      type: Expense-Peppercorn
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-Start-Date:
+      type: Expense-Peppercorn
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-End-Date:
+      type: Expense-Peppercorn
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Peppercorn
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-Frequency:
+      type: Expense-Peppercorn
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-Period-Start-Date:
+      type: Expense-Peppercorn
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Peppercorn-First-Payment-Date:
+      type: Expense-Peppercorn
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Peppercorn-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Base-Rent-Comment:
+      type: Expense-Base-Rent
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Base-Rent-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Base-Rent-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Base-Rent
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Base-Rent-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-Comment:
+      type: Expense-Building-Insurance
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-Amount:
+      type: Expense-Building-Insurance
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-Start-Date:
+      type: Expense-Building-Insurance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-End-Date:
+      type: Expense-Building-Insurance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Building-Insurance
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-Frequency:
+      type: Expense-Building-Insurance
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-Period-Start-Date:
+      type: Expense-Building-Insurance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Building-Insurance-First-Payment-Date:
+      type: Expense-Building-Insurance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Building-Insurance-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-Comment:
+      type: Expense-Abatement
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Abatement-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Abatement-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Abatement
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Abatement-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-Comment:
+      type: Expense-Maintenance-And-Repairs
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-Amount:
+      type: Expense-Maintenance-And-Repairs
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-Start-Date:
+      type: Expense-Maintenance-And-Repairs
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-End-Date:
+      type: Expense-Maintenance-And-Repairs
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Maintenance-And-Repairs
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-Frequency:
+      type: Expense-Maintenance-And-Repairs
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-Period-Start-Date:
+      type: Expense-Maintenance-And-Repairs
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Maintenance-And-Repairs-First-Payment-Date:
+      type: Expense-Maintenance-And-Repairs
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Maintenance-And-Repairs-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Comment:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Amount:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Start-Date:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-End-Date:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Frequency:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-Period-Start-Date:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Opex-Or-Service-Charges-First-Payment-Date:
+      type: Expense-Opex-Or-Service-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Opex-Or-Service-Charges-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-Comment:
+      type: Expense-Other-Fees-And-Charges
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-Amount:
+      type: Expense-Other-Fees-And-Charges
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-Start-Date:
+      type: Expense-Other-Fees-And-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-End-Date:
+      type: Expense-Other-Fees-And-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Other-Fees-And-Charges
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-Frequency:
+      type: Expense-Other-Fees-And-Charges
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-Period-Start-Date:
+      type: Expense-Other-Fees-And-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Other-Fees-And-Charges-First-Payment-Date:
+      type: Expense-Other-Fees-And-Charges
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Other-Fees-And-Charges-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-Comment:
+      type: Expense-Parking
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-Amount:
+      type: Expense-Parking
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-Start-Date:
+      type: Expense-Parking
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-End-Date:
+      type: Expense-Parking
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Parking
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-Frequency:
+      type: Expense-Parking
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-Period-Start-Date:
+      type: Expense-Parking
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Parking-First-Payment-Date:
+      type: Expense-Parking
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Parking-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-Comment:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-Amount:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-Start-Date:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-End-Date:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-Frequency:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-Period-Start-Date:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-RE-Taxes-Or-Rates-Or-Appeals-First-Payment-Date:
+      type: Expense-RE-Taxes-Or-Rates-Or-Appeals
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-RE-Taxes-Or-Rates-Or-Appeals-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-Comment:
+      type: Expense-Storage
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-Amount:
+      type: Expense-Storage
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-Start-Date:
+      type: Expense-Storage
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-End-Date:
+      type: Expense-Storage
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Storage
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-Frequency:
+      type: Expense-Storage
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-Period-Start-Date:
+      type: Expense-Storage
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Storage-First-Payment-Date:
+      type: Expense-Storage
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Storage-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-Comment:
+      type: Expense-TI-Tenant-Allowance
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-Amount:
+      type: Expense-TI-Tenant-Allowance
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-Start-Date:
+      type: Expense-TI-Tenant-Allowance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-End-Date:
+      type: Expense-TI-Tenant-Allowance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-TI-Tenant-Allowance
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-Frequency:
+      type: Expense-TI-Tenant-Allowance
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-Period-Start-Date:
+      type: Expense-TI-Tenant-Allowance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-TI-Tenant-Allowance-First-Payment-Date:
+      type: Expense-TI-Tenant-Allowance
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-TI-Tenant-Allowance-First-Payment-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-Comment:
+      type: Expense-Utilities
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-Comment
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-Amount:
+      type: Expense-Utilities
+      kind: Currency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-Amount
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-Start-Date:
+      type: Expense-Utilities
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-End-Date:
+      type: Expense-Utilities
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-End-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-Is-End-Date-Same-As-Expiration-Date:
+      type: Expense-Utilities
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-Is-End-Date-Same-As-Expiration-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-Frequency:
+      type: Expense-Utilities
+      kind: Frequency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-Frequency
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-Period-Start-Date:
+      type: Expense-Utilities
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-Period-Start-Date
+          # warning: en-gb defaults to en-us
+
+    Expense-Utilities-First-Payment-Date:
+      type: Expense-Utilities
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-expenses/AUTO.Expense-Utilities-First-Payment-Date
+          # warning: en-gb defaults to en-us
+    
+    #
+    # Option Fields 
+
+    Option-Auto-Renew-Notice-Comment:
+      type: Option-Auto-Renew-Notice
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Renew-Notice-Effective:
+      type: Option-Auto-Renew-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Renew-Notice-Expiration:
+      type: Option-Auto-Renew-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Renew-Notice-Begin-Notice:
+      type: Option-Auto-Renew-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Renew-Notice-End-Notice:
+      type: Option-Auto-Renew-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Renew-Notice-Is-Conditional:
+      type: Option-Auto-Renew-Notice
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Renew-Notice-Penalty:
+      type: Option-Auto-Renew-Notice
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Renew-Notice-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-Comment:
+      type: Option-Auto-Expiry-Notice
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-Effective:
+      type: Option-Auto-Expiry-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-Expiration:
+      type: Option-Auto-Expiry-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-Begin-Notice:
+      type: Option-Auto-Expiry-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-End-Notice:
+      type: Option-Auto-Expiry-Notice
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-Is-Conditional:
+      type: Option-Auto-Expiry-Notice
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Auto-Expiry-Notice-Penalty:
+      type: Option-Auto-Expiry-Notice
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Auto-Expiry-Notice-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-Comment:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-Effective:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-Expiration:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-Begin-Notice:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-End-Notice:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-Is-Conditional:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-LL-Penalty:
+      type: Option-Cancel-Or-Break-Standard-LL
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-LL-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-Comment:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-Effective:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-Expiration:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-Begin-Notice:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-End-Notice:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-Is-Conditional:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-TT-Penalty:
+      type: Option-Cancel-Or-Break-Standard-TT
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-TT-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-Comment:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-Effective:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-Expiration:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-Begin-Notice:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-End-Notice:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-Is-Conditional:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Standard-Mutual-Penalty:
+      type: Option-Cancel-Or-Break-Standard-Mutual
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Standard-Mutual-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-Comment:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-Effective:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-Expiration:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-Begin-Notice:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-End-Notice:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-Is-Conditional:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-LL-Penalty:
+      type: Option-Cancel-Or-Break-Rolling-LL
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-LL-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-Comment:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-Effective:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-Expiration:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-Begin-Notice:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-End-Notice:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-Is-Conditional:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-TT-Penalty:
+      type: Option-Cancel-Or-Break-Rolling-TT
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-TT-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-Comment:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-Effective:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-Expiration:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-Begin-Notice:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-End-Notice:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-Is-Conditional:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Cancel-Or-Break-Rolling-Mutual-Penalty:
+      type: Option-Cancel-Or-Break-Rolling-Mutual
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Cancel-Or-Break-Rolling-Mutual-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-Comment:
+      type: Option-Contraction
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-Effective:
+      type: Option-Contraction
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-Expiration:
+      type: Option-Contraction
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-Begin-Notice:
+      type: Option-Contraction
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-End-Notice:
+      type: Option-Contraction
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-Is-Conditional:
+      type: Option-Contraction
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Contraction-Penalty:
+      type: Option-Contraction
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Contraction-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-Comment:
+      type: Option-Expansion
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-Effective:
+      type: Option-Expansion
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-Expiration:
+      type: Option-Expansion
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-Begin-Notice:
+      type: Option-Expansion
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-End-Notice:
+      type: Option-Expansion
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-Is-Conditional:
+      type: Option-Expansion
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Expansion-Penalty:
+      type: Option-Expansion
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Expansion-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-Comment:
+      type: Option-Must-Reduce
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-Effective:
+      type: Option-Must-Reduce
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-Expiration:
+      type: Option-Must-Reduce
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-Begin-Notice:
+      type: Option-Must-Reduce
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-End-Notice:
+      type: Option-Must-Reduce
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-Is-Conditional:
+      type: Option-Must-Reduce
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Reduce-Penalty:
+      type: Option-Must-Reduce
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Reduce-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-Comment:
+      type: Option-Must-Expand
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-Effective:
+      type: Option-Must-Expand
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-Expiration:
+      type: Option-Must-Expand
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-Begin-Notice:
+      type: Option-Must-Expand
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-End-Notice:
+      type: Option-Must-Expand
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-Is-Conditional:
+      type: Option-Must-Expand
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Must-Expand-Penalty:
+      type: Option-Must-Expand
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Must-Expand-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-Comment:
+      type: Option-Option-To-Buy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-Effective:
+      type: Option-Option-To-Buy
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-Expiration:
+      type: Option-Option-To-Buy
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-Begin-Notice:
+      type: Option-Option-To-Buy
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-End-Notice:
+      type: Option-Option-To-Buy
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-Is-Conditional:
+      type: Option-Option-To-Buy
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Option-To-Buy-Penalty:
+      type: Option-Option-To-Buy
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Option-To-Buy-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-Comment:
+      type: Option-Rent-Change-Index
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-Effective:
+      type: Option-Rent-Change-Index
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-Expiration:
+      type: Option-Rent-Change-Index
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-Begin-Notice:
+      type: Option-Rent-Change-Index
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-End-Notice:
+      type: Option-Rent-Change-Index
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-Is-Conditional:
+      type: Option-Rent-Change-Index
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Index-Penalty:
+      type: Option-Rent-Change-Index
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Index-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-Comment:
+      type: Option-Rent-Change-Market
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-Effective:
+      type: Option-Rent-Change-Market
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-Expiration:
+      type: Option-Rent-Change-Market
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-Begin-Notice:
+      type: Option-Rent-Change-Market
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-End-Notice:
+      type: Option-Rent-Change-Market
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-Is-Conditional:
+      type: Option-Rent-Change-Market
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Rent-Change-Market-Penalty:
+      type: Option-Rent-Change-Market
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Rent-Change-Market-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-Comment:
+      type: Option-Right-Of-First-Offer
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-Effective:
+      type: Option-Right-Of-First-Offer
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-Expiration:
+      type: Option-Right-Of-First-Offer
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-Begin-Notice:
+      type: Option-Right-Of-First-Offer
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-End-Notice:
+      type: Option-Right-Of-First-Offer
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-Is-Conditional:
+      type: Option-Right-Of-First-Offer
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Offer-Penalty:
+      type: Option-Right-Of-First-Offer
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Offer-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-Comment:
+      type: Option-Right-Of-First-Refusal
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-Effective:
+      type: Option-Right-Of-First-Refusal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-Expiration:
+      type: Option-Right-Of-First-Refusal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-Begin-Notice:
+      type: Option-Right-Of-First-Refusal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-End-Notice:
+      type: Option-Right-Of-First-Refusal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-Is-Conditional:
+      type: Option-Right-Of-First-Refusal
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Right-Of-First-Refusal-Penalty:
+      type: Option-Right-Of-First-Refusal
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Right-Of-First-Refusal-Penalty
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-Comment:
+      type: Option-Renewal
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-Comment
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-Effective:
+      type: Option-Renewal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-Effective
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-Expiration:
+      type: Option-Renewal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-Expiration
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-Begin-Notice:
+      type: Option-Renewal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-Begin-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-End-Notice:
+      type: Option-Renewal
+      kind: Date
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-End-Notice
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-Is-Conditional:
+      type: Option-Renewal
+      kind: Text
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-Is-Conditional
+          # warning: en-gb defaults to en-us
+
+    Option-Renewal-Penalty:
+      type: Option-Renewal
+      kind: PercentageOrCurrency
+      reduction:
+        $match:
+          key:
+            $get: jurisdiction
+          default: =en-us-completions-options/self.Renewal-Penalty
+          # warning: en-gb defaults to en-us
