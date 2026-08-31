@@ -88,7 +88,6 @@ namespaces:
           - =global-fields/self.Arrangement_Start_Date
           - =global-fields/self.Arrangement_End_Date
           - =global-fields/self.Occupancy_Date
-          - =global-fields/self.Occupancy-Date-Explicit
           - =global-fields/self.Lease_Term
           - =global-fields/self.Ref_lease_term_uom_desc
           - =global-fields/self.Reserved_Parking_Spaces
@@ -96,11 +95,13 @@ namespaces:
           - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
 
     
-    Contacts:
-      reduction:
-        $collate:
-          - =global-fields/self.contact_display_name
-          - =global-fields/self.first_name
-          - =global-fields/self.last_name
-          - =global-fields/self.email
-          - =global-fields/self.full_phone_number
+    # Contacts:
+    #   reduction:
+    #     $collate:
+    #       - =global-fields/self.contact_display_name
+    #       - =global-fields/self.first_name
+    #       - =global-fields/self.last_name
+    #       - =global-fields/self.email
+    #       - =global-fields/self.full_phone_number
+
+    

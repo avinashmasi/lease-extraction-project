@@ -93,3 +93,108 @@ namespaces:
             property manager phone number,
             notice contact phone number,
             contact information
+
+  ##Terms
+
+    Terms-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $unique:
+        - =self.Arrangement-Start-Date-Search
+        - =self.Arrangement-End-Date-Search
+        - =self.Occupancy-Date-Search
+        - =self.Lease-Term-Search
+        - =self.Reserved-Parking-Spaces-Search
+        - =self.Cost-per-Reserved-Parking-Space-Search
+        - =self.Parking-Search-Context
+
+    Arrangement-Start-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Lease Commencement Date / Start Date (Ingangsdatum/Aanvangsdatum van de huur) and format it as DD/MM/YYYY. If not found, respond "i dont know".
+
+    Arrangement-End-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Lease Expiration Date / End Date  (Einddatum/Expiratiedatum van de huur) and format it as DD/MM/YYYY. If not found, respond "i dont know".
+
+    Occupancy-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Occupation Date / Possession Date (Opleverdatum / datum van ingebruikname) and format it as DD/MM/YYYY. If not found, respond "i dont know".
+
+    Lease-Term-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Lease term, lease duration, term length, initial term,
+            fixed term, lease period, term of lease, number of months,
+            number of years, duration of tenancy
+
+    Reserved-Parking-Spaces-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Reserved parking spaces, parking stalls allocated,
+            total parking spaces, number of reserved spaces,
+            allocated parking, parking permits, covered parking spaces,
+            assigned spaces
+
+    Cost-per-Reserved-Parking-Space-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Cost per reserved parking space, fee per parking space,
+            monthly parking fee, rate per reserved stall, parking charge,
+            parking space rent, charge per space, price for each parking space
+
+    Parking-Search-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Parking terms, parking fees, parking rental, reserved parking,
+            parking spaces, parking cost, parking charges, cost per space,
+            monthly parking rate, allocated parking, parking permit fee
+
+    
+
+

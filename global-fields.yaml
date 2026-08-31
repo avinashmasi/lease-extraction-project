@@ -59,13 +59,6 @@ namespaces:
           default: =en-nl-completions-terms/self.Occupancy_Date
           en-nl: =en-nl-completions-terms/self.Occupancy_Date
 
-    Occupancy-Date-Explicit:
-      reduction:
-        $match:
-          key: =self.jurisdiction
-          default: =en-nl-completions-terms/self.Occupancy-Date-Explicit
-          en-nl: =en-nl-completions-terms/self.Occupancy-Date-Explicit
-
     Lease_Term:
       reduction:
         $match:
@@ -80,7 +73,7 @@ namespaces:
           default: =en-nl-completions-terms/self.Ref_lease_term_uom_desc
           en-nl: =en-nl-completions-terms/self.Ref_lease_term_uom_desc
 
-    Reserved_parking_spaces:
+    Reserved_Parking_Spaces:
       reduction:
         $match:
           key: =self.jurisdiction
@@ -138,3 +131,5 @@ namespaces:
           key: =self.jurisdiction
           default: =en-nl-completions-contacts/self.full_phone_number
           en-nl: =en-nl-completions-contacts/self.full_phone_number
+
+    
