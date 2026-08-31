@@ -1,0 +1,544 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: en-nl-completions-lease-comp-details
+
+namespaces:
+
+  self:
+    total_leased_space:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.total_leased_space
+          primary: =primary.total_leased_space
+          secondary: =secondary.total_leased_space
+
+    ref_total_leased_space_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.ref_total_leased_space_uom_desc
+          primary: =primary.ref_total_leased_space_uom_desc
+          secondary: =secondary.ref_total_leased_space_uom_desc
+
+    ref_lease_activity_type_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.ref_lease_activity_type_desc
+          primary: =primary.ref_lease_activity_type_desc
+          secondary: =secondary.ref_lease_activity_type_desc
+
+    ref_lease_arrangement_type_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.ref_lease_arrangement_type_desc
+          primary: =primary.ref_lease_arrangement_type_desc
+          secondary: =secondary.ref_lease_arrangement_type_desc
+
+  fuzzy:
+    total_leased_space:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.total_leased_space
+          - =secondary.total_leased_space
+
+    ref_total_leased_space_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.ref_total_leased_space_uom_desc
+          - =secondary.ref_total_leased_space_uom_desc
+
+    ref_lease_activity_type_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.ref_lease_activity_type_desc
+          - =secondary.ref_lease_activity_type_desc
+
+    ref_lease_arrangement_type_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.ref_lease_arrangement_type_desc
+          - =secondary.ref_lease_arrangement_type_desc
+
+  primary:
+    total_leased_space:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            Extract the total rentable square footage leased by the tenant from the original lease document. Sum all individual leased areas if multiple exist. If the total cannot be determined, respond with "i dont know"
+          templates: =templates.total_leased_space
+
+    ref_total_leased_space_uom_desc:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            Identify the unit of measurement used for the Total Leased Space from the lease agreement.
+          templates: =templates.ref_total_leased_space_uom_desc
+
+    ref_lease_activity_type_desc:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            Extract the Lease Activity Type from the lease agreement.
+          templates: =templates.ref_lease_activity_type_desc
+
+    ref_lease_arrangement_type_desc:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            TASK: Follow the rules properly and identify the lease arrangement type from the provided context.
+          templates: =templates.ref_lease_arrangement_type_desc
+
+  secondary:
+    total_leased_space:
+      confidence: 0.91
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            Extract the total rentable square footage leased by the tenant from the original lease document. Sum all individual leased areas if multiple exist. If the total cannot be determined, respond with "i dont know"
+          templates: =templates.total_leased_space
+
+    ref_total_leased_space_uom_desc:
+      confidence: 0.91
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            Identify the unit of measurement used for the Total Leased Space from the lease agreement.
+          templates: =templates.ref_total_leased_space_uom_desc
+
+    ref_lease_activity_type_desc:
+      confidence: 0.91
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            Identify the Lease Activity Type from the context. Choose the most accurate category from the allowed list.
+          templates: =templates.ref_lease_activity_type_desc
+
+    ref_lease_arrangement_type_desc:
+      confidence: 0.91
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Lease-Comp-Details-Context
+          prompt: |
+            TASK: Follow the rules properly and identify the lease arrangement type from the provided context.
+          templates: =templates.ref_lease_arrangement_type_desc
+
+  templates:
+    total_leased_space:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+        - role: system 
+          content: |
+            ## ROLE:
+                You are a expert in US commercial real estate leases with a deep understanding of lease structures, legal language, and commercial real estate terminology. Your primary responsibility is to extract the total rentable square footage leased by the tenant from the original lease agreements. You must strictly adhere to the following guidelines to ensure accurate and consistent extraction.
+
+                ### DEFINITION:
+                **Property Total Area** is the combined sum of all individual rentable square footage values that are explicitly leased to the tenant under the **original lease agreement** (not amendments or expansions).
+
+                ### PRIMARY OBJECTIVE:
+                Extract and calculate the total rentable square footage explicitly leased to the tenant from the **original lease document only**.
+                - If a **single** leased area is found, return it as the total.
+                - If **multiple** leased areas are found, sum them to calculate the total.
+                - If an explicitly stated total is provided in the lease and it matches the sum of individual areas, use that total. If it does not match, calculate the sum yourself like a strict enforcement.
+
+                ### CRITICAL EXTRACTION RULES (MUST BE STRICTLY FOLLOWED):
+                - **Extract ONLY rentable square footage values that are explicitly leased to the tenant in the original lease document.**
+                - **Do NOT extract leased areas from amendments, expansions, or modifications to the original lease.**
+                - **Do NOT extract areas from exhibits, attachments, or referenced plans unless they are explicitly stated as leased premises in the main lease text.**
+                - **Do NOT consider the building area or building-wide measurements as the total leased area under any circumstances.**
+                - **If only one individual leased area is found in the entire lease document, treat it as the total leased area.**
+                - **If multiple individual leased areas are found, sum all valid individual areas to calculate the total.**
+                - **Look for an explicitly stated total area in the lease. If found and it matches the sum of individual areas, use it. If it does not match, calculate the sum yourself.**
+                - **Do NOT stop at the first result — search the entire lease document for all individually stated leased areas.**
+                - **Do NOT include areas leased to other tenants, subtenants, or third parties.**
+                - **Never infer, estimate, or interpolate values. Use only exact numbers as explicitly stated in the lease document.**
+                - **If the total area cannot be determined or is ambiguous, respond with: "i dont know"**
+
+                ### CRITICAL EXCLUSION RULES (MUST BE EXCLUDED - VERY STRICTLY ENFORCED):
+                - **Strictly do not extract or consider any references to office area, building area, building-wide measurements, leasable area of building, total square footage of the building. Strictly respond with 'i dont know' if such references are found.**
+                - **Any area not explicitly identified as leased premises for the tenant in the original lease document.**
+                - **Right of First Offer (ROFO) and Right of First Refusal (ROFR) spaces.**
+                - **Temporary premises, temporary spaces, or future expansion rights.**
+                - **Storage areas, unless explicitly leased as permanent premises.**
+                - **Building addresses, property information, or building improvement references.**
+                - **Areas leased to or referenced for other tenants, subtenants, or third parties (e.g., Starbucks or other co-tenants).**
+                - **Expanded, additional, or modified premises referenced in lease amendments or expansion agreements.**
+                - **Option spaces, ROFO spaces, or any future or conditional rights to lease additional space.**
+                - **Any ambiguous, unclear, or non-explicitly leased area.**
+
+                ### CALCULATE TOTAL — CRITICAL MATH RULES:
+                - **If only one individual leased area exists in the entire lease document, return it as the total.**
+                - **If an explicit total is provided AND matches the sum of individual areas, use that total.**
+                - **If an explicit total is provided BUT does not match the sum of individual areas, calculate the sum yourself.**
+                - **If no explicit total is provided, sum all valid individual areas: Area1 + Area2 + Area3 = Total.**
+                - **Example calculation: 1865 + 1205 = 3070.**
+                - **Double-check your arithmetic before responding.**
+                - Return ONLY the numeric total — no units, no formatting, no explanations.
+                - If the total area cannot be determined or is ambiguous, respond with: **i dont know**
+
+            - role: system
+              content: |
+                #### Critical Math Examples:
+                1. Given:
+                PREMISES: Landlord leases to Tenant the premises in the Building, commonly known as Regency Square and located at 7211 Regency Square Boulevard, Houston, Texas 77036 (the "Property"), consisting of Suite 104, containing approximately 1,388 square feet; Suite 110, containing approximately 1,344 square feet; and Suite 116, containing approximately 1,056 square feet for a combined total of approximately 3,788 square feet ("Premises")
+                Calculation: 1388 + 1344 + 1056 = 3788
+                Response: 3788
+
+                2. Given:
+                "Premises: Suite No.: 1100 and 1200
+                Square Feet (Rentable):
+                12th Floor: 23,967
+                11th Floor: 12,254
+                Total: 36,221"
+                Calculation: 23967 + 12254 = 36221 (matches given total)
+                Response: 36221
+
+                3. Given:
+                "Tenant desires to lease the space depicted on Exhibit A hereto, containing approximately 3,708 rentable square feet and commonly known as Suite 210 (the "Suite 210 Premises"), and Landlord has agreed to lease such space to Tenant on the terms and conditions contained herein."
+                Calculation: Single area = 3708
+                Response: 3708
+
+                4. Given: 
+                "Landlord leases to Tenant the premises in the building commonly known as Westwood Plaza, located at 9800 Westheimer Road, Houston, Texas 77042 (the "Property"), consisting of Suite 210, containing approximately 1,250 square feet; Suite 214, containing approximately 1,175 square feet; and Suite 218, containing approximately 1,300 square feet (collectively, the "Premises")."
+                Calculation: 1250 + 1175 + 1300 = 3725
+                Response: 3725
+
+                5. Given: 
+                "Landlord leases to Tenant the premises in the building commonly known as The Galleria Office Tower, located at 5051 Westheimer Road, Houston, Texas 77056 (the "Property"), consisting of Suite 305, containing approximately 980 square feet; Suite 307, containing approximately 1,020 square feet; and Suite 309, containing approximately 1,150 square feet (collectively, the "Premises")."
+                Calculation: 980 + 1020 + 1150 = 3150
+                Response: 3150
+
+                6. Given: 
+                "Right of First Offer. (a) Landlord hereby grants to Tenant an ongoing right of first offer (the "ROFO") to lease all of the leasable area located on the third and fourth (3rd and 4th) floors of the Building, consisting of approximately 45,290 rentable square feet in the aggregate, as shown on Exhibit A-2 attached hereto (referred to herein as the "ROFO Space"). Prior to leasing any or all of the ROFO Space to a third party tenant"
+                Calculation: ROFO space excluded
+                Response: i dont know
+
+                7. Given:
+                Premises: That portion of the Shopping Center containing approximately 1,066 square feet of Floor Area, and adjacent basement area of approximately 1,000 square feet, commonly known as 1342 Shermer Road, Northbrook.
+                Response: 2066
+
+                8. Given:
+                "Landlord leases to Tenant the premises located in Commerce Plaza, situated at 7890 Bellaire Boulevard, Houston, Texas 77036, consisting of Suite 120 on the 1st Floor, containing approximately 980 square feet; and Suite 220 on the 2nd Floor, containing approximately 1,310 square feet (collectively, the 'Premises')."
+                Calculation: 980 + 1310 = 2290
+                Response: 2290
+
+                9. Given:
+                "The parties hereto agree, that for the purposes of this Lease, the Premises consist of 14,100 rentable square feet (broken down as follows: 11,585 rentable square feet for Suite 100 and 2,515 rentable square feet for Suite 110)."
+                Calculation: 11585 + 2515 = 14100
+                Response: 14100
+
+                10. Given:
+                Premises: From and after the Commencement Date until the day prior to the Level 1 Commencement Date, Level 2 East, containing 34,232 rentable square feet (the "Level 2 Premises"), in the office building (the "Building") whose street address is 3033 W. President George Bush Highway, Plano, Collin County, Texas 75075.
+                From and after the Level 1 Commencement Date, the Level 2 Premises, together with Level 1 East, containing 33,694 rentable square feet (the "Level 1 Premises") in the Building, for a total of 67,926 rentable square feet.
+                Calculation: 34232 + 33694 = 67926
+                Response: 67926
+
+                11. Given:
+                RECITALS: 
+                A. Landlord is the owner of a building containing approximately 18,000.00 square feet of rentable area (“Building”) located on the real property commonly known as 138 W. Sylvania Avenue, Toledo, Ohio 43612 (“Land”), which is legally described on Exhibit A and made a part of this Lease (collectively, the “Premises”).
+                Response: i dont know
+
+                12. Given:
+                "Approximate Lease Area: The Premises contain approximately 1,000,015 square feet of rentable area of the Building, as more particularly described in the Lease."
+                Correct Response: i dont know
+                Incorrect Response: 1000015
+
+                13. Given:
+                "Approximate Lease Area Of Building: 50218"
+                Correct Response: i dont know
+                Incorrect Response: 50218
+        - role: user
+          content: "{prompt}"
+
+    ref_total_leased_space_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Identify the unit of measurement used for the Total Leased Space.
+
+            Respond ONLY with one of the following values exactly as written:
+
+              "SqM"
+
+            Rules:
+              - "SqM" applies when the leased area is measured in Square Meters.
+              - Look for terms such as:
+                - Square Meter
+                - Square Meters
+                - SqM
+                - sqm
+                - sq. m.
+                - m²
+                - square metre
+                - square metres
+              - Return only the allowed value.
+              - Do not return the area value.
+              - Do not include explanations, quotations, or additional text.
+              - If the unit cannot be determined, respond with "i dont know".
+
+            ####
+
+            Examples:
+
+            1. Given:
+              "The Premises contain 500 Square Meters."
+
+              Response:
+              SqM
+
+            2. Given:
+              "Tenant leases approximately 1,200 sqm."
+
+              Response:
+              SqM
+
+            3. Given:
+              "The rentable area is 800 m²."
+
+              Response:
+              SqM
+
+            4. Given:
+              "The Premises contain 10,000 square feet."
+
+              Response:
+              i dont know
+
+            ####
+
+        - role: user
+          content: "{prompt}"
+
+    ref_lease_activity_type_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Classify the Lease Activity Type strictly into the allowed categories.
+
+            Do not explain.
+            Do not use quotes.
+            Respond with ONLY the category name.
+
+            Allowed categories:
+              - "Expansion"
+              - "New Lease"
+              - "Owner Occupation"
+              - "Pre-Lease"
+              - "Renewal"
+              - "Sale/Leaseback"
+              - "Unknown"
+
+            #### Classification Rules:
+
+            - "Expansion":
+              The lease or amendment increases the size of the tenant's premises.
+              Look for terms such as "Expansion Space", "Additional Premises", "Additional Space", or language indicating an increase in leased area.
+
+            - "New Lease":
+              A new lease agreement creating an initial tenancy relationship between landlord and tenant.
+              Use when the document is an original lease and not a renewal, expansion, or sale/leaseback transaction.
+
+            - "Owner Occupation":
+              The property is occupied by the owner rather than leased to a third-party tenant.
+              Look for language indicating ownership occupancy or owner-user arrangements.
+
+            - "Pre-Lease":
+              The lease is executed before the premises are available for occupancy.
+              Common indicators include future construction, build-to-suit projects, premises under development, or future delivery dates.
+
+            - "Renewal":
+              The document extends, renews, or continues an existing lease term.
+              Look for phrases such as "Renewal Amendment", "Lease Renewal", "Extension of Term", or exercise of a renewal option.
+
+            - "Sale/Leaseback":
+              The property owner sells the property and leases the property back from the purchaser as part of the same transaction.
+              Use only when a sale-leaseback structure is clearly stated.
+
+            - "Unknown":
+              Use only if none of the above categories can be confidently determined from the lease document.
+
+            #### Examples:
+
+            Given:
+            "First Amendment adding approximately 5,000 rentable square feet of Expansion Space."
+
+            Response:
+            Expansion
+
+            Given:
+            "Office Lease Agreement entered into between Landlord and Tenant effective January 1, 2025."
+
+            Response:
+            New Lease
+
+            Given:
+            "Tenant exercises its option to renew the Lease for an additional five-year term."
+
+            Response:
+            Renewal
+
+            Given:
+            "Lease Agreement for premises currently under construction with delivery scheduled upon completion."
+
+            Response:
+            Pre-Lease
+
+            Given:
+            "Seller shall convey the Property to Purchaser and subsequently lease the Property from Purchaser."
+
+            Response:
+            Sale/Leaseback
+
+            Given:
+            "Insufficient information to determine the transaction type."
+
+            Response:
+            Unknown
+
+        - role: user
+          content: "{prompt}"
+
+    ref_lease_arrangement_type_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Identify the lease arrangement type from the provided context.
+
+            Respond ONLY with one of the following, exactly as written:
+
+              "Assignment"
+              "Direct"
+              "Flex Lease"
+              "SubLease"
+              "Unknown"
+
+            **Rules**
+
+              - "Assignment" → Applies when an existing tenant transfers its lease rights and obligations to another party. Look for terms such as "Assignment of Lease", "Assignee", "Assignor", or lease transfer language.
+
+              - "Direct" → Applies when the lease is executed directly between the Landlord and Tenant without any sublease or assignment arrangement.
+
+              - "Flex Lease" → Applies when the premises, lease structure, occupancy arrangement, or usage is described as flexible, shared, coworking, executive suite, managed office, or flexible workspace.
+
+              - "SubLease" → Applies when a tenant (Sublessor) leases all or part of the premises to another party (Subtenant). Look for terms such as "Sublease Agreement", "Subtenant", "Sublessor", or "Subleased Premises".
+
+              - "Unknown" → Applies when none of the above categories can be clearly determined from the lease document.
+
+            **Exclusions**
+
+              - Do not classify an Assignment as a SubLease.
+              - Do not classify a standard Landlord-Tenant lease as a SubLease.
+              - Do not infer a Flex Lease unless the document contains clear indicators of a flexible occupancy structure.
+              - If the lease arrangement type cannot be confidently identified, respond with "Unknown".
+              - Do not include quotes, explanations, or additional text.
+
+            ####
+
+            Examples:
+
+            1. Given:
+              "Assignment and Assumption of Lease Agreement between Assignor and Assignee"
+
+              Response:
+              Assignment
+
+            2. Given:
+              "Lease Agreement entered into by and between Landlord and Tenant"
+
+              Response:
+              Direct
+
+            3. Given:
+              "Sublease Agreement between Tenant and Subtenant for a portion of the Premises"
+
+              Response:
+              SubLease
+
+            4. Given:
+              "Flexible office membership agreement for shared workspace occupancy"
+
+              Response:
+              Flex Lease
+
+            5. Given:
+              "Insufficient information to determine the lease arrangement"
+
+              Response:
+              Unknown
+
+            ####
+
+        - role: user
+          content: "{prompt}"

@@ -132,4 +132,42 @@ namespaces:
           default: =en-nl-completions-contacts/self.full_phone_number
           en-nl: =en-nl-completions-contacts/self.full_phone_number
 
-    
+    # Lease comp details
+
+    total_leased_space:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.total_leased_space
+          en-nl: =en-nl-completions-lease-comp-details/self.total_leased_space
+
+    ref_total_leased_space_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.ref_total_leased_space_uom_desc
+          en-nl: =en-nl-completions-lease-comp-details/self.ref_total_leased_space_uom_desc
+
+    ref_lease_activity_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.ref_lease_activity_type_desc
+          en-nl: =en-nl-completions-lease-comp-details/self.ref_lease_activity_type_desc
+
+    ref_lease_arrangement_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.ref_lease_arrangement_type_desc
+          en-nl: =en-nl-completions-lease-comp-details/self.ref_lease_arrangement_type_desc
+
+    # Property type parking details
+
+    parking_cost_monthly:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
+

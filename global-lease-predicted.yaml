@@ -94,7 +94,6 @@ namespaces:
           - =global-fields/self.Cost_per_Reserved_Parking_Space
           - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
 
-    
     # Contacts:
     #   reduction:
     #     $collate:
@@ -104,4 +103,15 @@ namespaces:
     #       - =global-fields/self.email
     #       - =global-fields/self.full_phone_number
 
-    
+    Lease_Comp_Details:
+      reduction:
+        $collate:
+          - =global-fields/self.total_leased_space
+          - =global-fields/self.ref_total_leased_space_uom_desc
+          - =global-fields/self.ref_lease_activity_type_desc
+          - =global-fields/self.ref_lease_arrangement_type_desc
+
+    Parking_Details:
+      reduction:
+        $collate:
+          - =global-fields/self.parking_cost_monthly

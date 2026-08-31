@@ -195,6 +195,168 @@ namespaces:
             parking spaces, parking cost, parking charges, cost per space,
             monthly parking rate, allocated parking, parking permit fee
 
-    
+  ##  Lease-Comp-Details
+  
+    Lease-Comp-Details-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $unique:
+        - =self.Total-Leased-Space-Search
+        - =self.Ref-Total-Leased-Space-UOM-Search
+        - =self.Ref-Lease-Activity-Type-Search
+        - =self.Ref-Lease-Arrangement-Type-Search
+
+    Total-Leased-Space-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find every explicit rentable area leased to the tenant in the original lease premises, including suite, floor, premises area statements, and explicit leased-area totals. Exclude building-wide area, other tenants' areas, amendments, expansion or option space, ROFO or ROFR space, temporary space, and areas not explicitly identified as the tenant's leased premises.
+
+    Ref-Total-Leased-Space-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find the unit of measurement used for the tenant's total leased space, including square meters, square metres, sqm, sq. m., or m². Exclude numeric area amounts and unrelated building measurements.
+
+    Ref-Lease-Activity-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find lease language identifying the transaction or activity type, including expansion, new lease, owner occupation, pre-lease, renewal, sale/leaseback, or language showing the type cannot be determined.
+
+    Ref-Lease-Arrangement-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find lease language identifying the arrangement type, including assignment, direct landlord-to-tenant leasing, flex or shared workspace, or sublease. Include assignor, assignee, sublessor, subtenant, subleased premises, coworking, managed office, and flexible workspace terms.
+
+    Parking-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $unique:
+        - =self.Parking-Cost-Monthly-Search
+
+    Parking-Cost-Monthly-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find the explicit monthly fee or rate charged for parking spaces assigned, reserved, or available to the tenant. Include the amount and billing period. Exclude annual, daily, weekly, reimbursement, validation, aggregate, visitor, and unrelated parking charges.
+
+
+    Contacts-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $unique:
+        - =self.Contact-Display-Name-Search
+        - =self.First-Name-Search
+        - =self.Last-Name-Search
+        - =self.Email-Search
+        - =self.Full-Phone-Number-Search
+
+    Contact-Display-Name-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Contact person, contact name, primary contact, authorized representative,
+            representative, attention, attn, signatory, broker contact,
+            property manager contact, notice contact, correspondence contact,
+            company contact information
+
+    First-Name-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            First name of contact person, representative name,
+            authorized representative, primary contact,
+            individual associated with company,
+            execution page signatory
+
+    Last-Name-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Last name of contact person, surname,
+            representative name,
+            authorized representative,
+            company contact,
+            execution page signatory
+
+    Email-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Email address of contact person,
+            company contact email,
+            representative email,
+            broker email,
+            property manager email,
+            notice contact email,
+            contact information
+
+    Full-Phone-Number-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Phone number of contact person,
+            contact telephone number,
+            mobile number,
+            representative phone number,
+            broker phone number,
+            property manager phone number,
+            notice contact phone number,
+            contact information
 
 

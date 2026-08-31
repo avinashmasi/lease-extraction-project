@@ -1,0 +1,130 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: en-nl-completions-property-type-parking-details
+
+namespaces:
+  self:
+    parking_cost_monthly:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.parking_cost_monthly
+          primary: =primary.parking_cost_monthly
+          secondary: =secondary.parking_cost_monthly
+
+  fuzzy:
+    parking_cost_monthly:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.parking_cost_monthly
+          - =secondary.parking_cost_monthly
+
+  primary:
+    parking_cost_monthly:
+      confidence: 0.95
+      kind:
+        Instance: 
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Parking-Context
+          prompt: |
+            What is the monthly parking cost specified in the lease agreement?
+          templates: =templates.parking_cost_monthly
+
+  secondary:
+    parking_cost_monthly:
+      confidence: 0.91
+      kind:
+        Instance: 
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Parking-Context
+          prompt: |
+            What is the monthly parking cost specified in the lease agreement?
+          templates: =templates.parking_cost_monthly
+
+  templates:
+    parking_cost_monthly:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Parking Cost Monthly refers to the monthly fee charged for a parking
+            space under the lease agreement.
+
+            Extract the monthly parking cost amount associated with parking spaces
+            allocated or available to the tenant.
+
+            Rules:
+            - Extract only the monthly parking rate.
+            - Return only the numeric amount.
+            - Do not include currency symbols, commas, units, or explanatory text.
+            - If multiple parking rates exist, prioritize reserved parking rates
+              over unreserved parking rates.
+            - If both current and future/escalated rates are present, return the
+              current initial monthly parking rate.
+            - Do not calculate totals unless the monthly parking cost is explicitly stated.
+            - Ignore annual, daily, weekly, validation, or reimbursement amounts.
+            - If parking is provided at no charge, or no monthly parking cost is
+              specified, respond with "i dont know".
+
+        - role: system
+          content: |
+            ####
+
+            Examples:
+
+            1. Given:
+              "Tenant shall rent a total of 3 parking spaces at an initial parking
+              rate of $100 per space per month."
+
+              Response:
+              "100"
+
+            2. Given:
+              "One reserved parking space shall be provided at $85.00 per month."
+
+              Response:
+              "85"
+
+            3. Given:
+              "The current parking rates are $125.00 per month per unreserved
+              parking space."
+
+              Response:
+              "125"
+
+            4. Given:
+              "Parking fee shall be $150 per parking space monthly beginning on the
+              Commencement Date."
+
+              Response:
+              "150"
+
+            5. Given:
+              "Tenant shall be entitled to four complimentary parking spaces."
+
+              Response:
+              "i dont know"
+
+            6. Given:
+              "Parking charge: $175.00 per month for each reserved parking stall."
+
+              Response:
+              "175"
+
+            ####
+
+        - role: user
+          content: "{prompt}"
