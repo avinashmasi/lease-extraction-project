@@ -94,14 +94,14 @@ namespaces:
           - =global-fields/self.Cost_per_Reserved_Parking_Space
           - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
 
-    # Contacts:
-    #   reduction:
-    #     $collate:
-    #       - =global-fields/self.contact_display_name
-    #       - =global-fields/self.first_name
-    #       - =global-fields/self.last_name
-    #       - =global-fields/self.email
-    #       - =global-fields/self.full_phone_number
+    Contacts:
+      reduction:
+        $collate:
+          - =global-fields/self.contact_display_name
+          - =global-fields/self.first_name
+          - =global-fields/self.last_name
+          - =global-fields/self.email
+          - =global-fields/self.full_phone_number
 
     Lease_Comp_Details:
       reduction:

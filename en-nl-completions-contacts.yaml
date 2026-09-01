@@ -1,47 +1,47 @@
 kind: Ontology/v2
 name: en-nl-completions-contacts
 namespaces:
- self:
+  self:
 
-  contact_display_name:
-    reduction:
-      $match:
-        key: =global-fields/self.validation
-        default: =fuzzy.contact_display_name
-        primary: =primary.contact_display_name
-        secondary: =secondary.contact_display_name
+    contact_display_name:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.contact_display_name
+          primary: =primary.contact_display_name
+          secondary: =secondary.contact_display_name
 
-  first_name:
-    reduction:
-      $match:
-        key: =global-fields/self.validation
-        default: =fuzzy.first_name
-        primary: =primary.first_name
-        secondary: =secondary.first_name
+    first_name:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.first_name
+          primary: =primary.first_name
+          secondary: =secondary.first_name
 
-  last_name:
-    reduction:
-      $match:
-        key: =global-fields/self.validation
-        default: =fuzzy.last_name
-        primary: =primary.last_name
-        secondary: =secondary.last_name
+    last_name:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.last_name
+          primary: =primary.last_name
+          secondary: =secondary.last_name
 
-  email:
-    reduction:
-      $match:
-        key: =global-fields/self.validation
-        default: =fuzzy.email
-        primary: =primary.email
-        secondary: =secondary.email
+    email:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.email
+          primary: =primary.email
+          secondary: =secondary.email
 
-  full_phone_number:
-    reduction:
-      $match:
-        key: =global-fields/self.validation
-        default: =fuzzy.full_phone_number
-        primary: =primary.full_phone_number
-        secondary: =secondary.full_phone_number
+    full_phone_number:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.full_phone_number
+          primary: =primary.full_phone_number
+          secondary: =secondary.full_phone_number
 
   fuzzy:
 
