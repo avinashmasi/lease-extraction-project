@@ -108,6 +108,16 @@ namespaces:
         - =self.Reserved-Parking-Spaces-Search
         - =self.Cost-per-Reserved-Parking-Space-Search
         - =self.Parking-Search-Context
+        - =self.Property-Space-Quality-Type-Search
+        - =self.Arrangement-Signed-Date-Search
+        - =self.Asking-Rent-Monthly-Search
+        - =self.Asking-Rent-Yearly-Search
+        - =self.Effective-Rent-Monthly-Search
+        - =self.Effective-Rent-Yearly-Search
+        - =self.Service-Charge-Per-Area-Value-Search
+        - =self.Number-Of-Month-Free-Rent-Search
+        - =self.Tenant-Improvement-Allowance-Search
+        - =self.Option-Notes-Search
 
     Arrangement-Start-Date-Search:
       kind:
@@ -194,6 +204,182 @@ namespaces:
             Parking terms, parking fees, parking rental, reserved parking,
             parking spaces, parking cost, parking charges, cost per space,
             monthly parking rate, allocated parking, parking permit fee
+
+    Property-Space-Quality-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the property space quality classification. Look for Class A, Class B, Class C, building classification, property class, office class, industrial class, or property grade. If not found, respond "i dont know".
+
+    Arrangement-Signed-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Arrangement Signed Date / Execution Date / Signature Date and format it as DD/MM/YYYY. Look for signed date, executed date, execution date, date signed, fully executed date, or agreement execution date. If not found, respond "i dont know".
+
+    Asking-Rent-Monthly-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Monthly Asking Rent, Monthly Base Rent, Monthly Rental Amount, Monthly Rent Schedule, Advertised Monthly Rent, or Quoted Monthly Rent. If not found, respond "i dont know".
+
+    Ref-Asking-Rent-Monthly-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Monthly Asking Rent Unit of Measure. Look for per month, per square foot per month, per square metre per month, monthly rental rate, PSF monthly, square meter monthly rent. If not found, respond "i dont know".
+
+    Asking-Rent-Yearly-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Annual Asking Rent, Annual Base Rent, Annual Rental Amount, Yearly Rent, Annual Fixed Rent, or Annual Rent Schedule. If not found, respond "i dont know".
+
+    Ref-Asking-Rent-Yearly-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Annual Asking Rent Unit of Measure. Look for per year, annual rental rate, per square foot per year, per square metre per year, annual PSF rate. If not found, respond "i dont know".
+
+    Effective-Rent-Monthly-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Monthly Effective Rent, Net Effective Monthly Rent, Effective Monthly Rental Rate, Discounted Monthly Rent, or Effective Lease Rate. If not found, respond "i dont know".
+
+    Ref-Effective-Rent-Monthly-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Monthly Effective Rent Unit of Measure. Look for per month, per square foot per month, per square metre per month, effective monthly rental rate. If not found, respond "i dont know".
+
+    Effective-Rent-Yearly-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Annual Effective Rent, Net Effective Annual Rent, Effective Annual Rental Rate, Discounted Annual Rent, or Effective Lease Rate. If not found, respond "i dont know".
+
+    Ref-Effective-Rent-Yearly-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Annual Effective Rent Unit of Measure. Look for per year, annual rental rate, per square foot per year, per square metre per year. If not found, respond "i dont know".
+
+    Service-Charge-Per-Area-Value-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Service Charge, Operating Charge, CAM Charge, Common Area Maintenance Charge, Building Service Charge, Service Cost, Operating Expense Recovery, or Service Charge Rate per Area. If not found, respond "i dont know".
+
+    Ref-Service-Charge-Per-Area-Value-Price-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Service Charge Unit of Measure. Look for per square foot per year, per square foot per month, per square metre per year, per square metre per month, annual service charge rate, monthly service charge rate. If not found, respond "i dont know".
+
+    Number-Of-Month-Free-Rent-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the number of free rent months, free rent period, rent abatement period, rent holiday, concession period, promotional free rent, or months of rent forgiveness. If not found, respond "i dont know".
+
+    Tenant-Improvement-Allowance-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Tenant Improvement Allowance, TI Allowance, Tenant Allowance, Construction Allowance, Build-Out Allowance, Improvement Allowance, Fit-Out Allowance, or Landlord Contribution. If not found, respond "i dont know".
+
+    Ref-Tenant-Improvement-Allowance-UOM-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract the Tenant Improvement Allowance Unit of Measure. Look for per square foot, per square metre, lump sum allowance, fixed allowance amount, TI allowance rate. If not found, respond "i dont know".
+
+    Option-Notes-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Extract lease option provisions including renewal options, extension options, rights of first refusal, rights of first offer, purchase options, expansion options, contraction rights, termination options, and tenant option clauses. If not found, respond "i dont know".
 
   ##  Lease-Comp-Details
   

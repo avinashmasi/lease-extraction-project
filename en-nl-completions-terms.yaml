@@ -69,6 +69,134 @@ namespaces:
           primary: =primary.Ref_cost_per_reserved_parking_space_uom_desc
           secondary: =secondary.Ref_cost_per_reserved_parking_space_uom_desc
 
+    Ref_property_space_quality_type_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_property_space_quality_type_desc
+          primary: =primary.Ref_property_space_quality_type_desc
+          secondary: =secondary.Ref_property_space_quality_type_desc
+
+    Arrangement_Signed_Date:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Arrangement_Signed_Date
+          primary: =primary.Arrangement_Signed_Date
+          secondary: =secondary.Arrangement_Signed_Date
+
+    Asking_Rent_Monthly:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Asking_Rent_Monthly
+          primary: =primary.Asking_Rent_Monthly
+          secondary: =secondary.Asking_Rent_Monthly
+
+    Ref_asking_rent_monthly_uom_desc: 
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_asking_rent_monthly_uom_desc
+          primary: =primary.Ref_asking_rent_monthly_uom_desc
+          secondary: =secondary.Ref_asking_rent_monthly_uom_desc
+
+    Asking_Rent_Yearly: 
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Asking_Rent_Yearly
+          primary: =primary.Asking_Rent_Yearly
+          secondary: =secondary.Asking_Rent_Yearly
+
+    Ref_asking_rent_yearly_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_asking_rent_yearly_uom_desc
+          primary: =primary.Ref_asking_rent_yearly_uom_desc
+          secondary: =secondary.Ref_asking_rent_yearly_uom_desc
+
+    Effective_Rent_Monthly:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Effective_Rent_Monthly
+          primary: =primary.Effective_Rent_Monthly
+          secondary: =secondary.Effective_Rent_Monthly
+
+    Ref_effective_rent_monthly_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_effective_rent_monthly_uom_desc
+          primary: =primary.Ref_effective_rent_monthly_uom_desc
+          secondary: =secondary.Ref_effective_rent_monthly_uom_desc
+
+    Effective_Rent_Yearly:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Effective_Rent_Yearly
+          primary: =primary.Effective_Rent_Yearly
+          secondary: =secondary.Effective_Rent_Yearly
+
+    Ref_effective_rent_yearly_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_effective_rent_yearly_uom_desc
+          primary: =primary.Ref_effective_rent_yearly_uom_desc
+          secondary: =secondary.Ref_effective_rent_yearly_uom_desc
+
+    Service_Charge_Per_Area_Value:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Service_Charge_Per_Area_Value
+          primary: =primary.Service_Charge_Per_Area_Value
+          secondary: =secondary.Service_Charge_Per_Area_Value
+
+    Ref_service_charge_per_area_value_price_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_service_charge_per_area_value_price_uom_desc
+          primary: =primary.Ref_service_charge_per_area_value_price_uom_desc
+          secondary: =secondary.Ref_service_charge_per_area_value_price_uom_desc
+
+    Number_Of_Month_Free_Rent:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Number_Of_Month_Free_Rent
+          primary: =primary.Number_Of_Month_Free_Rent
+          secondary: =secondary.Number_Of_Month_Free_Rent
+
+    Tenant_Improvement_Allowance:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Tenant_Improvement_Allowance
+          primary: =primary.Tenant_Improvement_Allowance
+          secondary: =secondary.Tenant_Improvement_Allowance
+
+    Ref_tenant_improvement_allowance_uom_desc:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Ref_tenant_improvement_allowance_uom_desc
+          primary: =primary.Ref_tenant_improvement_allowance_uom_desc
+          secondary: =secondary.Ref_tenant_improvement_allowance_uom_desc
+
+    Option_Notes:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Option_Notes
+          primary: =primary.Option_Notes
+          secondary: =secondary.Option_Notes
+
   fuzzy:
     Arrangement_Start_Date:
       reduction:
@@ -125,6 +253,118 @@ namespaces:
           $parallel:
           - =primary.Ref_cost_per_reserved_parking_space_uom_desc
           - =secondary.Ref_cost_per_reserved_parking_space_uom_desc
+
+    Ref_property_space_quality_type_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_property_space_quality_type_desc
+          - =secondary.Ref_property_space_quality_type_desc
+
+    Arrangement_Signed_Date:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Arrangement_Signed_Date
+          - =secondary.Arrangement_Signed_Date
+
+    Asking_Rent_Monthly:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Asking_Rent_Monthly
+          - =secondary.Asking_Rent_Monthly
+    
+    Ref_asking_rent_monthly_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_asking_rent_monthly_uom_desc
+          - =secondary.Ref_asking_rent_monthly_uom_desc
+
+    Asking_Rent_Yearly:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Asking_Rent_Yearly
+          - =secondary.Asking_Rent_Yearly
+
+    Ref_asking_rent_yearly_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_asking_rent_yearly_uom_desc
+          - =secondary.Ref_asking_rent_yearly_uom_desc
+
+    Effective_Rent_Monthly:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Effective_Rent_Monthly
+          - =secondary.Effective_Rent_Monthly
+
+    Ref_effective_rent_monthly_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_effective_rent_monthly_uom_desc
+          - =secondary.Ref_effective_rent_monthly_uom_desc
+
+    Effective_Rent_Yearly:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Effective_Rent_Yearly
+          - =secondary.Effective_Rent_Yearly
+
+    Ref_effective_rent_yearly_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_effective_rent_yearly_uom_desc
+          - =secondary.Ref_effective_rent_yearly_uom_desc
+
+    Service_Charge_Per_Area_Value:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Service_Charge_Per_Area_Value
+          - =secondary.Service_Charge_Per_Area_Value
+
+    Ref_service_charge_per_area_value_price_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_service_charge_per_area_value_price_uom_desc
+          - =secondary.Ref_service_charge_per_area_value_price_uom_desc
+
+    Number_Of_Month_Free_Rent:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Number_Of_Month_Free_Rent
+          - =secondary.Number_Of_Month_Free_Rent
+
+    Tenant_Improvement_Allowance:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Tenant_Improvement_Allowance
+          - =secondary.Tenant_Improvement_Allowance
+
+    Ref_tenant_improvement_allowance_uom_desc:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Ref_tenant_improvement_allowance_uom_desc
+          - =secondary.Ref_tenant_improvement_allowance_uom_desc
+
+    Option_Notes:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Option_Notes
+          - =secondary.Option_Notes
 
   primary:
     Arrangement_Start_Date:
@@ -240,10 +480,241 @@ namespaces:
         $completion:
           mode: chain
           model: =global-config/primary.model
-          citations: =en-nl-searches/self.Parking-Search-Context
+          citations: =en-nl-searches/self.Terms-Context
           prompt: |
             What is the unit of measure description for the reserved parking space cost? If not found, respond "i dont know".
           templates: =templates.Ref_cost_per_reserved_parking_space_uom_desc
+
+    Ref_property_space_quality_type_desc:
+      confidence: 0.85
+      kind:
+        Instance:
+          Enum: ["Class A", "Class B", "Class C"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the property space quality type description (e.g., Class A, Class B, Class C)? If not found, respond "i dont know".
+          templates: =templates.Ref_property_space_quality_type_desc
+
+    Arrangement_Signed_Date:
+      confidence: 0.85
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Arrangement Signed Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+          templates: =templates.Arrangement_Signed_Date
+
+    Asking_Rent_Monthly:
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Asking Rent Monthly value. If not found, respond "i dont know".
+          templates: =templates.Asking_Rent_Monthly
+
+    Ref_asking_rent_monthly_uom_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the asking rent monthly value? If not found, respond "i dont know".
+          templates: =templates.Ref_asking_rent_monthly_uom_desc
+
+    Asking_Rent_Yearly:
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Asking Rent Yearly value. If not found, respond "i dont know".
+          templates: =templates.Asking_Rent_Yearly
+
+    Ref_asking_rent_yearly_uom_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the asking rent yearly value? If not found, respond "i dont know".
+          templates: =templates.Ref_asking_rent_yearly_uom_desc
+    
+    Effective_Rent_Monthly:
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Effective Rent Monthly value. If not found, respond "i dont know".
+          templates: =templates.Effective_Rent_Monthly
+
+    Ref_effective_rent_monthly_uom_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the effective rent monthly value? If not found, respond "i dont know".
+          templates: =templates.Ref_effective_rent_monthly_uom_desc
+
+    Effective_Rent_Yearly:  
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Effective Rent Yearly value. If not found, respond "i dont know".
+          templates: =templates.Effective_Rent_Yearly
+
+    Ref_effective_rent_yearly_uom_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the effective rent yearly value? If not found, respond "i dont know".
+          templates: =templates.Ref_effective_rent_yearly_uom_desc
+
+    Service_Charge_Per_Area_Value:
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Service Charge per Area Value. If not found, respond "i dont know".
+          templates: =templates.Service_Charge_Per_Area_Value
+
+    Ref_service_charge_per_area_value_price_uom_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the service charge per area value? If not found, respond "i dont know".
+          templates: =templates.Ref_service_charge_per_area_value_price_uom_desc
+        
+    Number_Of_Month_Free_Rent:
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Number of Months of Free Rent. If not found, respond "i dont know".
+          templates: =templates.Number_Of_Month_Free_Rent
+
+    Tenant_Improvement_Allowance:
+      confidence: 0.85
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Tenant Improvement Allowance value. If not found, respond "i dont know".
+          templates: =templates.Tenant_Improvement_Allowance
+
+    Ref_tenant_improvement_allowance_uom_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the tenant improvement allowance value? If not found, respond "i dont know".
+          templates: =templates.Ref_tenant_improvement_allowance_uom_desc
+
+    Option_Notes:
+      confidence: 0.85
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract any Option Notes or related information. If not found, respond "i dont know".
+          templates: =templates.Option_Notes
 
   secondary:
     Arrangement_Start_Date:
@@ -364,7 +835,238 @@ namespaces:
             What is the unit of measure description for the reserved parking space cost? If not found, respond "i dont know".
           templates: =templates.Ref_cost_per_reserved_parking_space_uom_desc
 
-  templates:
+    Ref_property_space_quality_type_desc:
+      confidence: 0.80
+      kind:
+        Instance:
+          Enum: ["Class A", "Class B", "Class C"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the property space quality type description (e.g., Class A, Class B, Class C)? If not found, respond "i dont know".
+          templates: =templates.Ref_property_space_quality_type_desc
+
+    Arrangement_Signed_Date:
+      confidence: 0.80
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Arrangement Signed Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+          templates: =templates.Arrangement_Signed_Date
+
+    Asking_Rent_Monthly:
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Asking Rent Monthly value. If not found, respond "i dont know".
+          templates: =templates.Asking_Rent_Monthly
+
+    Ref_asking_rent_monthly_uom_desc:
+      confidence: 0.75
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the asking rent monthly value? If not found, respond "i dont know".
+          templates: =templates.Ref_asking_rent_monthly_uom_desc
+
+    Asking_Rent_Yearly:
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Asking Rent Yearly value. If not found, respond "i dont know".
+          templates: =templates.Asking_Rent_Yearly
+
+    Ref_asking_rent_yearly_uom_desc:
+      confidence: 0.75
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the asking rent yearly value? If not found, respond "i dont know".
+          templates: =templates.Ref_asking_rent_yearly_uom_desc
+
+    Effective_Rent_Monthly:
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Effective Rent Monthly value. If not found, respond "i dont know".
+          templates: =templates.Effective_Rent_Monthly
+
+    Ref_effective_rent_monthly_uom_desc:
+      confidence: 0.75
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the effective rent monthly value? If not found, respond "i dont know".
+          templates: =templates.Ref_effective_rent_monthly_uom_desc
+
+    Effective_Rent_Yearly:  
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Effective Rent Yearly value. If not found, respond "i dont know".
+          templates: =templates.Effective_Rent_Yearly
+
+    Ref_effective_rent_yearly_uom_desc:
+      confidence: 0.75
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the effective rent yearly value? If not found, respond "i dont know".
+          templates: =templates.Ref_effective_rent_yearly_uom_desc
+
+    Service_Charge_Per_Area_Value:
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Service Charge per Area Value. If not found, respond "i dont know".
+          templates: =templates.Service_Charge_Per_Area_Value
+
+    Ref_service_charge_per_area_value_price_uom_desc:
+      confidence: 0.75
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the service charge per area value? If not found, respond "i dont know".
+          templates: =templates.Ref_service_charge_per_area_value_price_uom_desc
+      
+    Number_Of_Month_Free_Rent:
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Number of Months of Free Rent. If not found, respond "i dont know".
+          templates: =templates.Number_Of_Month_Free_Rent
+
+    Tenant_Improvement_Allowance:
+      confidence: 0.80
+      kind:
+        Instance:
+          Number: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract the Tenant Improvement Allowance value. If not found, respond "i dont know".
+          templates: =templates.Tenant_Improvement_Allowance
+
+    Ref_tenant_improvement_allowance_uom_desc:
+      confidence: 0.75  
+      kind:
+        Instance:
+          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:  
+          mode: chain
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            What is the unit of measure description for the tenant improvement allowance value? If not found, respond "i dont know".
+          templates: =templates.Ref_tenant_improvement_allowance_uom_desc
+
+    Option_Notes:
+      confidence: 0.80
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chat
+          model: =global-config/secondary.model
+          citations: =en-nl-searches/self.Terms-Context
+          prompt: |
+            Extract any Option Notes or related information. If not found, respond "i dont know".
+          templates: =templates.Option_Notes
+
+  templates:      
 
     Arrangement_Start_Date:
       reduction:
@@ -801,7 +1503,7 @@ namespaces:
       reduction:
         $const:
         - role: system
-          content: =templates.generic-template-content
+          content: =global-prompts/self.generic-template-content
 
         - role: system
           content: |
@@ -1097,6 +1799,926 @@ namespaces:
 
         - role: user
           content: "{prompt}"
+
+    Ref_property_space_quality_type_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+        - role: system
+          content: |
+            ## ROLE
+            You are an expert commercial real estate lease analyst.
+            Your task is to identify the explicit property space quality classification stated in the lease.
+            ## ALLOWED OUTPUT VALUES
+            - Class A
+            - Class B
+            - Class C
+            - i dont know
+            ## EXTRACTION RULES
+            1. Extract a property classification only when explicitly stated.
+            2. Accept classifications such as:
+              - Class A
+              - Class B
+              - Class C
+              - A-Class
+              - B-Class
+              - C-Class
+              - A Class
+              - B Class
+              - C Class
+            3. Normalize all acceptable variations to:
+              - Class A
+              - Class B
+              - Class C
+            4. DO NOT infer building classification from:
+              - premium office space
+              - trophy building
+              - first-class building
+              - luxury building
+              - institutional quality
+              - high-end finishes
+              - modern amenities
+              - rental rates
+              - market descriptions
+              - building age
+              - construction quality
+            5. If multiple classifications appear, return the classification explicitly associated with the leased premises.
+            6. If the classification cannot be determined with certainty, return:
+              i dont know
+
+            ## OUTPUT FORMAT
+            Return exactly one of:
+            - Class A
+            - Class B
+            - Class C
+            - i dont know
+        - role: system
+          content: |
+            #### EXAMPLES ####
+            Example 1:
+            Input:
+            "The Premises are located within a Class A Office Building."
+            Response:
+            Class A
+
+            Example 2:
+            Input:
+            "Tenant shall lease space in a Class-B commercial office property."
+            Response:
+            Class B
+
+            Example 3:
+            Input:
+            "The leased premises are located within a Class C industrial building."
+            Response:
+            Class C
+
+            Example 4:
+            Input:
+            "The Building is considered a premier office tower with modern amenities."
+            Response:
+            i dont know
+
+            Example 5:
+            Input:
+            "The Project consists of newly constructed luxury office space."
+            Response:
+            i dont know
+
+            Example 6:
+            Input:
+            "Building Classification: A-Class"
+            Response:
+            Class A
+            
+        - role: user
+          content: "{prompt}"
+                
+    Arrangement_Signed_Date:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+
+            You are an expert commercial real estate lease analyst.
+
+            Your task is to identify the Arrangement Signed Date.
+
+            ## DEFINITION
+            Arrangement Signed Date means the date on which the lease,
+            sublease, amendment, addendum, extension, or agreement
+            was signed or executed by the parties.
+            The signed date must be explicitly stated in the document.
+
+            ## EXTRACTION RULES
+            1. Extract a date only when it is clearly identified as:
+
+              - Signed Date
+              - Signature Date
+              - Date Signed
+              - Execution Date
+              - Executed On
+              - Lease Execution Date
+              - Agreement Execution Date
+              - Fully Executed Date
+            2. If an amendment is being analyzed and contains its own
+              signature date, use the amendment's signature date.
+            3. If multiple execution dates appear,
+              return the latest fully executed date.
+            4. Do NOT extract:
+              - Commencement Date
+              - Lease Start Date
+              - Occupancy Date
+              - Possession Date
+              - Rent Commencement Date
+              - Effective Date
+              - Expiration Date
+              - Renewal Date
+              - Notice Date
+              - Recording Date
+              - Notarization Date
+
+            5. Do not calculate or infer dates.
+
+            6. If the document only contains signature blocks without
+              completed dates, return:
+
+              i dont know
+
+            ## OUTPUT FORMAT
+
+            Return only the date in MM/DD/YYYY format.
+
+            If no valid signed date exists, return:
+
+            i dont know
+
+        - role: system
+          content: |
+            #### EXAMPLES ####
+
+            Example 1
+
+            Input:
+            "Executed on May 15, 2023"
+
+            Response:
+            05/15/2023
+
+            Example 2
+
+            Input:
+            "Lease Execution Date: January 1, 2024"
+
+            Response:
+            01/01/2024
+
+            Example 3
+
+            Input:
+            "Signed this 20th day of June, 2022"
+
+            Response:
+            06/20/2022
+
+            Example 4
+
+            Input:
+            "Lease Commencement Date: March 1, 2023"
+
+            Response:
+            i dont know
+
+            Example 5
+
+            Input:
+            "Effective Date: July 1, 2024"
+
+            Response:
+            i dont know
+
+            Example 6
+
+            Input:
+            "Tenant Signature: __________
+            Date: __________"
+
+            Response:
+            i dont know
+
+            Example 7
+
+            Input:
+            "Landlord executed this Amendment on August 1, 2025.
+            Tenant executed this Amendment on August 5, 2025."
+
+            Response:
+            08/05/2025
+
+            #### END EXAMPLES ####
+
+        - role: user
+          content: "{prompt}"
+
+    Asking_Rent_Monthly:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+            Monthly Base Rent is basically the monthly rent paid by the tenant every month for that year.
+            You can extract this generally under the Base Rent field or Fixed Monthly Rent.If you do not find the value give the output as "".
+
+        - role: system
+          content: |
+            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+
+            Here is a Example
+            "Months |Monthly Base Rent |Monthly Base Rent/sf
+              1-12  |$75,077.10        |$2.55" 
+            Here Monthly Base Rent means monthly 75077 should be picked.
+
+            Here is another example
+            " Period              |Monthly Base Rent |Monthly Base Rent Per Rentable Square Foot
+              12/1/22 – 11/30/23  |$6,922.40         |$3.40"
+              Here also 6922.40 would be the output as it is under monthly base rent.
+
+        - role: user
+          content: "{prompt}"
+
+    Ref_asking_rent_monthly_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the monthly asking rent.
+
+            ALLOWED OUTPUT VALUES:
+            - Per Month
+            - Per Square Foot Per Month
+            - i don't know
+
+            EXTRACTION & NORMALIZATION RULES:
+            1. Look for explicit statements describing the monthly asking rent UOM.
+            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
+                - If the monthly asking rent is expressed as a total dollar amount per month (e.g., "$6,922.40 per month"), output "Per Month".
+                - If the monthly asking rent is expressed as a dollar amount per square foot per month (e.g., "$3.40 per rentable square foot per month"), output "Per Square Foot Per Month".
+            3. If the UOM cannot be clearly determined, output "i don't know".
+
+        - role: user
+          content: "{prompt}"
+
+    Asking_Rent_Yearly:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+    
+            Give the output only if it is explicitly mentioned in the given text.
+
+            Strictly do not calculate, derive, annualize, multiply, convert, or infer any rent values.
+
+            Extract only the value that is explicitly identified as:
+
+            - Annual Rent
+            - Annual Base Rent
+            - Annual Rental Amount
+            - Yearly Rent
+            - Annual Fixed Rent
+            - Annual Minimum Rent
+
+            Do NOT extract:
+
+            - Monthly Rent
+            - Effective Rent
+            - Rent Per Square Foot
+            - Service Charges
+            - CAM Charges
+            - Operating Expenses
+            - Parking Charges
+
+            Return only the numeric annual rent amount.
+
+            If no explicit annual rent amount is provided, return:
+            "i dont know"
+
+            Here is an example:
+
+            "Period During Lease Term     | Annual Base Rent | Monthly Installment of Base Rent | Annual Base Rental Rate Per Rentable Square Foot
+            Lease Year 1 – Lease Year 5   | $301,380.00      | $25,115.00                       | $60.00"
+
+            Expected Output:
+            301380
+
+            Reason:
+            The value is explicitly listed under "Annual Base Rent".
+
+            Here is another example:
+
+            | Time Period  | PSF Annually | Annual        | Monthly     |
+            |--------------|--------------|---------------|-------------|
+            | Months 1-12  | $0           | $0            | $0          |
+            | Months 13-24 | $7.92        | $1,707,496.56 | $142,291.38 |
+            | Months 25-26 | $8.16        | $1,750,721.46 | $146,560.12 |
+
+            Expected Output:
+            1707496.56
+
+            Reason:
+            The value is explicitly listed under the "Annual" column.
+
+            Here is another example:
+
+            "Base Rent shall be $25,000 per month."
+
+            Expected Output:
+            i dont know
+
+            Reason:
+            Only a monthly rent amount is provided. Do not annualize or calculate.
+
+        - role: user
+          content: "{prompt}"
+
+    Ref_asking_rent_yearly_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the annual asking rent.
+
+            ALLOWED OUTPUT VALUES:
+            - Per Year
+            - Per Square Foot Per Year
+            - i don't know
+
+            EXTRACTION & NORMALIZATION RULES:
+            1. Look for explicit statements describing the annual asking rent UOM.
+            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
+                - If the annual asking rent is expressed as a total dollar amount per year (e.g., "$301,380.00 per year"), output "Per Year".
+                - If the annual asking rent is expressed as a dollar amount per square foot per year (e.g., "$60.00 per rentable square foot per year"), output "Per Square Foot Per Year".
+            3. If the UOM cannot be clearly determined, output "i don't know".
+
+        - role: user
+          content: "{prompt}"
+
+    Effective_Rent_Monthly:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+            Monthly Effective Rent is basically the monthly rent paid by the tenant every month for that year after considering all concessions, abatements, and free rent periods.
+            You can extract this generally under the Effective Rent field or Effective Monthly Rent.If you do not find the value give the output as "".
+
+        - role: system
+          content: |
+            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+
+            Here is a Example
+            "Months |Monthly Effective Rent |Monthly Effective Rent/sf
+              1-12  |$75,077.10             |$2.55" 
+            Here Monthly Effective Rent means monthly 75077 should be picked.
+
+            Here is another example
+            " Period              |Monthly Effective Rent |Monthly Effective Rent Per Rentable Square Foot
+              12/1/22 – 11/30/23  |$6,922.40              |$3.40"
+              Here also 6922.40 would be the output as it is under monthly effective rent.
+
+        - role: user
+          content: "{prompt}"
+    
+    Ref_effective_rent_monthly_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the monthly effective rent.
+
+            ALLOWED OUTPUT VALUES:
+            - Per Month
+            - Per Square Foot Per Month
+            - i don't know
+
+            EXTRACTION & NORMALIZATION RULES:
+            1. Look for explicit statements describing the monthly effective rent UOM.
+            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
+                - If the monthly effective rent is expressed as a total dollar amount per month (e.g., "$6,922.40 per month"), output "Per Month".
+                - If the monthly effective rent is expressed as a dollar amount per square foot per month (e.g., "$3.40 per rentable square foot per month"), output "Per Square Foot Per Month".
+            3. If the UOM cannot be clearly determined, output "i don't know".
+
+        - role: user
+          content: "{prompt}"
+
+    Effective_Rent_Yearly:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+            Yearly Effective Rent is basically the yearly rent paid by the tenant every year for that year after considering all concessions, abatements, and free rent periods.
+            You can extract this generally under the Effective Rent field or Effective Yearly Rent.If you do not find the value give the output as "".
+
+        - role: system
+          content: |
+            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+
+            Here is a Example
+            "Months |Yearly Effective Rent |Yearly Effective Rent/sf
+              1-12  |$75,077.10             |$2.55" 
+            Here Yearly Effective Rent means yearly 75077 should be picked.
+
+            Here is another example
+            " Period              |Yearly Effective Rent |Yearly Effective Rent Per Rentable Square Foot
+              12/1/22 – 11/30/23  |$6,922.40              |$3.40"
+              Here also 6922.40 would be the output as it is under yearly effective rent.
+
+        - role: user
+          content: "{prompt}"
+
+    Ref_effective_rent_yearly_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the annual effective rent.
+
+            ALLOWED OUTPUT VALUES:
+            - Per Year
+            - Per Square Foot Per Year
+            - i don't know
+
+            EXTRACTION & NORMALIZATION RULES:
+            1. Look for explicit statements describing the annual effective rent UOM.
+            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
+                - If the annual effective rent is expressed as a total dollar amount per year (e.g., "$301,380.00 per year"), output "Per Year".
+                - If the annual effective rent is expressed as a dollar amount per square foot per year (e.g., "$60.00 per rentable square foot per year"), output "Per Square Foot Per Year".
+            3. If the UOM cannot be clearly determined, output "i don't know".
+
+        - role: user
+          content: "{prompt}"
+
+    Service_Charge_Per_Area_Value:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+            You are a commercial real estate lease analyst. Your task is to identify the service charge rate per unit area.
+
+            ## PRIMARY GOAL
+            Return only the numeric amount charged per unit area (typically per square foot).
+            Do not return aggregate totals, do not return the entire service charge amount, and do not return rates that include other charges.
+
+            ## STRICT OUTPUT CONTRACT
+            Output must be one of the following only:
+            - a clean numeric value such as 5.00, 12.50, 25.75
+            - or exactly: i don't know
+
+            Rules:
+            - Remove currency symbols, units, and measurement descriptors from the final answer.
+            - Output only the raw numeric value.
+            - If the service charge is stated as a per-unit rate, extract that rate.
+            - If the service charge varies over time, use the initial or first lease-year rate.
+            - If the lease provides only an aggregate service charge without a per-unit breakdown, output i don't know
+
+            ## WHAT TO EXTRACT
+            Extract the per-unit service charge rate, such as:
+            - "$5.00 per square foot per year"
+            - "$2.50 per rentable square foot per month"
+            - "$12.75 per square foot annually"
+
+            ## WHAT NOT TO EXTRACT
+            Exclude:
+            - aggregate annual service charges
+            - total service charge amounts
+            - operating expense caps or limits
+            - service charge percentages or formulas
+
+            ## DECISION RULES
+            1. If a clear numeric dollar amount per unit area is stated, output that numeric value only.
+            2. If the text includes different amounts over time, use the first lease-year amount.
+            3. If no explicit numeric per-unit service charge is stated, output i don't know
+
+            ## EXAMPLES
+            Example 1:
+            Input context: "Annual service charge: $5.00 per rentable square foot per year."
+            Response: 5.00
+
+            Example 2:
+            Input context: "Service Charge shall be $2.50 per square foot per month."
+            Response: 2.50
+
+            Example 3:
+            Input context: "Tenant shall pay annual service charges of $12.75 per rentable square foot."
+            Response: 12.75
+
+            Example 4:
+            Input context: "Total Annual Service Charge: $125,000.00"
+            Response: i don't know
+
+        - role: user
+          content: "{prompt}"
+
+    Ref_service_charge_per_area_value_price_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+            You are a precise commercial real estate lease analyst. Your task is to identify the frequency or billing unit associated with the service charge per area rate.
+
+            ## PRIMARY GOAL
+            Return only the normalized billing unit description for the service charge per area value.
+
+            ## ALLOWED OUTPUT VALUES
+            - Per Square Foot Per Month
+            - Per Month
+            - Per Square Foot Per Year
+            - Per Year
+            - One Time
+            - i don't know
+
+            ## STRICT OUTPUT CONTRACT
+            - Return exactly one of the allowed values above.
+            - Do not include currency, numbers, explanation, or any extra text.
+            - Output must be normalized to one of the exact labels above.
+
+            ## BILLING UNIT NORMALIZATION RULES
+            1. Identify the billing frequency and unit associated with the per-area service charge.
+            2. Normalize to the exact labels:
+               - If billed monthly per square foot, output Per Square Foot Per Month.
+               - If billed as a flat monthly amount, output Per Month.
+               - If billed annually per square foot, output Per Square Foot Per Year.
+               - If billed as a flat annual amount, output Per Year.
+               - If it is a one-time charge, output One Time.
+            3. If there is no explicit billing frequency or unit, output i don't know.
+
+            ## KEY LANGUAGE TO LOOK FOR
+            - "per square foot per month"
+            - "per month per rentable square foot"
+            - "per square foot per year"
+            - "annually per rentable square foot"
+            - "per month flat service charge"
+            - "annual service charge"
+
+            ## DECISION RULES
+            1. If the lease states a per-square-foot monthly rate, output Per Square Foot Per Month.
+            2. If it states a flat monthly service charge, output Per Month.
+            3. If it states an annual per-square-foot rate, output Per Square Foot Per Year.
+            4. If it states a flat annual charge, output Per Year.
+            5. If it is a one-time charge, output One Time.
+            6. If no explicit billing frequency is stated, output i don't know.
+
+            ## EXAMPLES
+            Example 1:
+            Input context: "Annual service charge: $5.00 per rentable square foot per year."
+            Response: Per Square Foot Per Year
+
+            Example 2:
+            Input context: "Service Charge shall be $2.50 per square foot per month."
+            Response: Per Square Foot Per Month
+
+            Example 3:
+            Input context: "Tenant shall pay monthly service charges of $5,000.00."
+            Response: Per Month
+
+            Example 4:
+            Input context: "Annual Operating Expense charge at prevailing market rates."
+            Response: i don't know
+
+        - role: user
+          content: "{prompt}"
+
+    Number_Of_Month_Free_Rent:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+            You are a commercial real estate lease analyst. Your task is to identify the total number of months of free rent provided as a concession.
+
+            ## PRIMARY GOAL
+            Return only the count of months during which the tenant pays zero rent.
+            Do not return partial months, abatement percentages, rent reduction periods, or amounts.
+
+            ## STRICT OUTPUT CONTRACT
+            Output must be one of the following only:
+            - a clean integer such as 0, 1, 3, 6, 12
+            - or exactly: i don't know
+
+            Rules:
+            - Output only the integer representing full months of free rent.
+            - If there are multiple free rent periods, sum the total months.
+            - Do not include partial months; round down to the nearest full month if needed.
+            - If the lease provides a free rent allowance expressed as a dollar amount rather than months, output i don't know
+            - If rent is abated or reduced but not free, output i don't know
+
+            ## WHAT COUNTS AS FREE RENT
+            Count months only when the lease explicitly grants the tenant a period of zero rental obligation, such as:
+            - "3 months free rent"
+            - "rent abatement for 6 months"
+            - "first 2 months rent-free"
+            - "2 months free occupancy"
+            - "Tenant shall pay no rent for months 1-3"
+
+            ## WHAT DOES NOT COUNT
+            Exclude:
+            - rent abatement at a percentage or reduced rate
+            - rent holidays or concessions expressed as dollar amounts
+            - rental credits or allowances
+            - tenant improvement allowances applied to rent
+            - partial month concessions
+
+            ## DECISION RULES
+            1. If the lease explicitly grants full months of free rent, count those months.
+            2. If multiple free rent periods are stated, sum the total full months.
+            3. If free rent is conditional on an event, count it only if the event is confirmed or assured.
+            4. If no free rent is granted, output 0.
+            5. If no explicit free rent months are stated, output i don't know
+
+            ## EXAMPLES
+            Example 1:
+            Input context: "Tenant shall have the first three (3) months of the Initial Term free of rent."
+            Response: 3
+
+            Example 2:
+            Input context: "Lease includes 2 months rent abatement at commencement and 1 month at lease renewal."
+            Response: 3
+
+            Example 3:
+            Input context: "Rent shall be abated at 50% for the first 12 months."
+            Response: i don't know
+
+            Example 4:
+            Input context: "Tenant shall receive a $150,000 free rent allowance."
+            Response: i don't know
+
+            Example 5:
+            Input context: "No rent concessions are provided."
+            Response: 0
+
+        - role: user
+          content: "{prompt}"
+
+    Tenant_Improvement_Allowance:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+            You are a commercial real estate lease analyst. Your task is to identify the tenant improvement allowance or tenant improvement cap (TI allowance).
+
+            ## PRIMARY GOAL
+            Return only the total numeric dollar amount (without currency symbol) that the landlord provides as a tenant improvement allowance or TI cap.
+
+            ## STRICT OUTPUT CONTRACT
+            Output must be one of the following only:
+            - a clean numeric value such as 50000, 125000.00, 0
+            - or exactly: i don't know
+
+            Rules:
+            - Remove currency symbols and any text descriptors from the final answer.
+            - Output only the raw numeric value.
+            - If multiple TI allowance amounts are stated, sum them only if each is clearly a separate component of the total allowance.
+            - If the lease provides only a per-unit rate (e.g., "$10 per square foot"), do not calculate; output i don't know
+            - If the allowance is expressed as a percentage of rent or other formula without a fixed dollar cap, output i don't know
+            - If no TI allowance is provided, output 0.
+
+            ## WHAT TO EXTRACT
+            Extract the tenant improvement allowance when explicitly stated as:
+            - "Landlord shall provide a TI allowance of $X"
+            - "Tenant improvement allowance cap: $X"
+            - "Landlord shall contribute $X toward tenant improvements"
+            - "Free rent allowance applied to improvements: $X"
+            - "Leasehold improvement allowance: $X"
+
+            ## WHAT NOT TO EXTRACT
+            Exclude:
+            - per-square-foot rates without a total cap
+            - percentage-based formulas
+            - operating expense caps or concessions
+            - free rent allowances (unless explicitly tied to improvements)
+            - work letter provisions without a monetary cap
+
+            ## DECISION RULES
+            1. If a clear total dollar TI allowance is stated, output that amount.
+            2. If multiple TI allowance components are listed separately, sum them only if each is clearly a component of a single allowance.
+            3. If the allowance is conditional, include it only if the condition is met or assured.
+            4. If the TI allowance is stated on a per-unit basis without a total cap, output i don't know
+            5. If no TI allowance is provided, output 0.
+            6. If no explicit TI allowance is stated, output i don't know
+
+            ## EXAMPLES
+            Example 1:
+            Input context: "Landlord shall provide a Tenant Improvement Allowance of $250,000.00."
+            Response: 250000
+
+            Example 2:
+            Input context: "Tenant improvement cap: $150,000 for initial space plus $50,000 for any expansion."
+            Response: 200000
+
+            Example 3:
+            Input context: "TI allowance of $20.00 per rentable square foot."
+            Response: i don't know
+
+            Example 4:
+            Input context: "Landlord shall contribute up to $100,000 for tenant improvements, with Tenant responsible for any excess costs."
+            Response: 100000
+
+            Example 5:
+            Input context: "No tenant improvement allowance is provided."
+            Response: 0
+
+        - role: user
+          content: "{prompt}"
+
+    Ref_tenant_improvement_allowance_uom_desc:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+            You are a precise commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) or express nature of the tenant improvement allowance.
+
+            ## PRIMARY GOAL
+            Return only the normalized UOM description for the tenant improvement allowance.
+
+            ## ALLOWED OUTPUT VALUES
+            - Per Square Foot
+            - Per Year
+            - One Time
+            - i don't know
+
+            ## STRICT OUTPUT CONTRACT
+            - Return exactly one of the allowed values above.
+            - Do not include currency, numbers, explanation, or any extra text.
+            - Output must be normalized to one of the exact labels above.
+
+            ## UOM NORMALIZATION RULES
+            1. Identify how the tenant improvement allowance is expressed or distributed:
+               - If stated as a dollar amount per rentable square foot, output Per Square Foot.
+               - If stated as an annual allowance or distributed over lease years, output Per Year.
+               - If stated as a lump-sum allowance at the beginning of the lease, output One Time.
+            2. If the allowance is expressed as a fixed total amount without a per-unit or annual breakdown, output One Time.
+            3. If the UOM or nature of the allowance cannot be clearly determined, output i don't know.
+
+            ## KEY LANGUAGE TO LOOK FOR
+            - "per rentable square foot"
+            - "per square foot"
+            - "per annum" or "per year"
+            - "annually"
+            - "lump sum"
+            - "fixed amount"
+            - "upfront"
+            - "one-time allowance"
+
+            ## DECISION RULES
+            1. If the allowance is stated on a per-square-foot basis, output Per Square Foot.
+            2. If the allowance is distributed annually or expressed per lease year, output Per Year.
+            3. If the allowance is a single lump-sum or fixed total amount, output One Time.
+            4. If the nature or distribution of the allowance is not explicit, output i don't know.
+
+            ## EXAMPLES
+            Example 1:
+            Input context: "Landlord shall provide a Tenant Improvement Allowance of $20.00 per rentable square foot."
+            Response: Per Square Foot
+
+            Example 2:
+            Input context: "Landlord shall contribute $250,000 as a one-time tenant improvement allowance."
+            Response: One Time
+
+            Example 3:
+            Input context: "TI allowance shall be $50,000 per lease year."
+            Response: Per Year
+
+            Example 4:
+            Input context: "Tenant improvement cap: $150,000"
+            Response: One Time
+
+            Example 5:
+            Input context: "Landlord shall provide a tenant improvement allowance at prevailing market rates."
+            Response: i don't know
+
+        - role: user
+          content: "{prompt}"
+
+    Option_Notes:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            ## ROLE
+            You are a commercial real estate lease analyst. Your task is to identify and extract notes or key details related to lease renewal options, extension options, or other optional provisions.
+
+            ## PRIMARY GOAL
+            Return a concise summary of any renewal, extension, expansion, or other optional provisions stated in the lease.
+
+            ## OUTPUT FORMAT
+            - If option notes exist, return a brief, factual summary of the key option details.
+            - If no options are stated, return "i dont know".
+            - Do not return markdown or special formatting.
+            - Keep response under 200 characters.
+
+            ## WHAT TO EXTRACT
+            Extract notes about:
+            - Renewal or extension options (e.g., "Tenant may renew for 2 additional 5-year terms at 95% of FMV rent")
+            - Expansion or contraction rights
+            - Rights of first offer, refusal, or negotiation
+            - Option periods and conditions
+            - Rent adjustment mechanisms for options
+
+            ## WHAT NOT TO EXTRACT
+            Exclude:
+            - General lease term language
+            - Commencement or expiration dates
+            - Standard rent payment obligations
+            - Operating expense or service charge provisions
+            - Maintenance or repair obligations
+
+            ## DECISION RULES
+            1. If the lease contains explicit option provisions, summarize them concisely.
+            2. If the lease is silent on options, return "i dont know".
+            3. If option language is vague or conditional without clear terms, include what is stated.
+
+            ## EXAMPLES
+            Example 1:
+            Input context: "Tenant shall have the option to renew this Lease for two (2) additional terms of five (5) years each, at ninety-five percent (95%) of Fair Market Value rent."
+            Response: Tenant may renew for 2 additional 5-year terms at 95% FMV rent
+
+            Example 2:
+            Input context: "Tenant shall have a right of first offer to lease additional contiguous space if it becomes available."
+            Response: Tenant has right of first offer for contiguous space
+
+            Example 3:
+            Input context: "Tenant shall have the right to extend the lease for one additional 3-year term on the same terms and conditions, with rent to be adjusted to market rate."
+            Response: Tenant may extend for 1 additional 3-year term at market rate
+
+            Example 4:
+            Input context: "The lease shall automatically renew for successive one-year periods unless either party provides 60 days' notice of non-renewal."
+            Response: Auto-renews for successive 1-year terms with 60-day non-renewal notice
+
+            Example 5:
+            Input context: "No renewal, extension, or expansion options are granted under this Lease."
+            Response: i dont know
+
+        - role: user
+          content: "{prompt}"
+
+    
+
+
+
+
+
+
 
 
 

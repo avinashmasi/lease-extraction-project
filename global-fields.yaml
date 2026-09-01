@@ -94,6 +94,118 @@ namespaces:
           default: =en-nl-completions-terms/self.Ref_cost_per_reserved_parking_space_uom_desc
           en-nl: =en-nl-completions-terms/self.Ref_cost_per_reserved_parking_space_uom_desc
 
+    Ref_property_space_quality_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_property_space_quality_type_desc
+          en-nl: =en-nl-completions-terms/self.Ref_property_space_quality_type_desc
+
+    Arrangement_Signed_Date:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Arrangement_Signed_Date
+          en-nl: =en-nl-completions-terms/self.Arrangement_Signed_Date
+
+    Asking_Rent_Monthly:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Asking_Rent_Monthly
+          en-nl: =en-nl-completions-terms/self.Asking_Rent_Monthly
+
+    Ref_asking_rent_monthly_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_asking_rent_monthly_uom_desc
+          en-nl: =en-nl-completions-terms/self.Ref_asking_rent_monthly_uom_desc
+
+    Asking_Rent_Yearly:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Asking_Rent_Yearly
+          en-nl: =en-nl-completions-terms/self.Asking_Rent_Yearly
+
+    Ref_asking_rent_yearly_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_asking_rent_yearly_uom_desc
+          en-nl: =en-nl-completions-terms/self.Ref_asking_rent_yearly_uom_desc
+
+    Effective_Rent_Monthly:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Effective_Rent_Monthly
+          en-nl: =en-nl-completions-terms/self.Effective_Rent_Monthly
+
+    Ref_effective_rent_monthly_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_effective_rent_monthly_uom_desc
+          en-nl: =en-nl-completions-terms/self.Ref_effective_rent_monthly_uom_desc
+
+    Effective_Rent_Yearly:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Effective_Rent_Yearly
+          en-nl: =en-nl-completions-terms/self.Effective_Rent_Yearly
+
+    Ref_effective_rent_yearly_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_effective_rent_yearly_uom_desc
+          en-nl: =en-nl-completions-terms/self.Ref_effective_rent_yearly_uom_desc
+
+    Service_Charge_Per_Area_Value:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Service_Charge_Per_Area_Value
+          en-nl: =en-nl-completions-terms/self.Service_Charge_Per_Area_Value
+
+    Ref_service_charge_per_area_value_price_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_service_charge_per_area_value_price_uom_desc
+          en-nl: =en-nl-completions-terms/self.Ref_service_charge_per_area_value_price_uom_desc
+
+    Number_Of_Month_Free_Rent:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Number_Of_Month_Free_Rent
+          en-nl: =en-nl-completions-terms/self.Number_Of_Month_Free_Rent
+
+    Tenant_Improvement_Allowance:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Tenant_Improvement_Allowance
+          en-nl: =en-nl-completions-terms/self.Tenant_Improvement_Allowance
+
+    Ref_tenant_improvement_allowance_uom_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Ref_tenant_improvement_allowance_uom_desc
+          en-nl: =en-nl-completions-terms/self.Ref_tenant_improvement_allowance_uom_desc
+
+    Option_Notes:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-terms/self.Option_Notes
+          en-nl: =en-nl-completions-terms/self.Option_Notes
+
     
     # Contacts
 
