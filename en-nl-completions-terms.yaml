@@ -474,7 +474,7 @@ namespaces:
       confidence: 0.85
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -482,7 +482,7 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the reserved parking space cost? If not found, respond "i dont know".
+            What is the currency of the reserved parking space cost (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_cost_per_reserved_parking_space_uom_desc
 
     Ref_property_space_quality_type_desc:
@@ -532,7 +532,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -540,7 +540,7 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the asking rent monthly value? If not found, respond "i dont know".
+            What is the currency of the asking rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_asking_rent_monthly_uom_desc
 
     Asking_Rent_Yearly:
@@ -561,7 +561,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -569,7 +569,7 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the asking rent yearly value? If not found, respond "i dont know".
+            What is the currency of the asking rent yearly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_asking_rent_yearly_uom_desc
     
     Effective_Rent_Monthly:
@@ -590,7 +590,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -598,7 +598,7 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the effective rent monthly value? If not found, respond "i dont know".
+            What is the currency of the effective rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_effective_rent_monthly_uom_desc
 
     Effective_Rent_Yearly:  
@@ -619,7 +619,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -627,7 +627,7 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the effective rent yearly value? If not found, respond "i dont know".
+            What is the currency of the effective rent yearly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_effective_rent_yearly_uom_desc
 
     Service_Charge_Per_Area_Value:
@@ -648,7 +648,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -656,7 +656,7 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the service charge per area value? If not found, respond "i dont know".
+            What is the currency of the service charge per area value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_service_charge_per_area_value_price_uom_desc
         
     Number_Of_Month_Free_Rent:
@@ -691,7 +691,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["Per Square Foot", "Per Square Meter", "One Time"]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -824,7 +824,7 @@ namespaces:
       confidence: 0.80
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -832,7 +832,7 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the reserved parking space cost? If not found, respond "i dont know".
+            What is the currency of the reserved parking space cost (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_cost_per_reserved_parking_space_uom_desc
 
     Ref_property_space_quality_type_desc:
@@ -882,7 +882,7 @@ namespaces:
       confidence: 0.75
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -890,7 +890,7 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the asking rent monthly value? If not found, respond "i dont know".
+            What is the currency of the asking rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_asking_rent_monthly_uom_desc
 
     Asking_Rent_Yearly:
@@ -911,7 +911,7 @@ namespaces:
       confidence: 0.75
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -919,7 +919,7 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the asking rent yearly value? If not found, respond "i dont know".
+            What is the currency of the asking rent yearly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_asking_rent_yearly_uom_desc
 
     Effective_Rent_Monthly:
@@ -940,7 +940,7 @@ namespaces:
       confidence: 0.75
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -948,7 +948,7 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the effective rent monthly value? If not found, respond "i dont know".
+            What is the currency of the effective rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_effective_rent_monthly_uom_desc
 
     Effective_Rent_Yearly:  
@@ -969,7 +969,7 @@ namespaces:
       confidence: 0.75
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -977,7 +977,7 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the effective rent yearly value? If not found, respond "i dont know".
+            What is the currency of the effective rent yearly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_effective_rent_yearly_uom_desc
 
     Service_Charge_Per_Area_Value:
@@ -998,7 +998,7 @@ namespaces:
       confidence: 0.75
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["EUR", "USD", ""]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
@@ -1006,7 +1006,7 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            What is the unit of measure description for the service charge per area value? If not found, respond "i dont know".
+            What is the currency of the service charge per area value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_service_charge_per_area_value_price_uom_desc
       
     Number_Of_Month_Free_Rent:
@@ -1041,7 +1041,7 @@ namespaces:
       confidence: 0.75  
       kind:
         Instance:
-          Enum: ["Per Month", "Per Space Per Month", "Per Year", "Per Space Per Year", "One Time"]
+          Enum: ["Per Square Foot", "Per Square Meter", "One Time"]
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:  
@@ -1470,6 +1470,8 @@ namespaces:
             3. DO NOT output the numeric value itself—output ONLY the unit of measure.
             4. Focus on the primary/initial Lease Term duration. Do not use UOMs from renewal options, free rent/abatement periods, or notice periods unless they define the primary term itself.
             5. If the lease duration is defined purely by fixed dates (e.g., "Commencing Jan 1, 2024 and Expirating Dec 31, 2029") without stating explicit months, years, or days in the term clause, OR if the UOM cannot be clearly determined, output "i don't know".
+            6. If the lease term is expressed using both years and months (for example "3 years and 8 months"), return "Months" because the Lease_Term field is normalized and stored in months.
+            7. When the lease term is converted into total months, always return "Months".
 
         - role: system
           content: |
@@ -1493,6 +1495,10 @@ namespaces:
 
             Example 5:
             Input context: "Tenant shall have the option to extend the lease for an additional 5 years following the initial 36 month term."
+            Response: "Months"
+
+            Example 6:
+            Input context: "Lease Term: 3 years and 8 months."
             Response: "Months"
             #### END EXAMPLES ####
 
@@ -1527,6 +1533,7 @@ namespaces:
 
             ## WHAT COUNTS AS RESERVED PARKING
             Count parking spaces only when the lease clearly gives the tenant a specific reserved/assigned/exclusive right.
+            Count parking spaces that are explicitly included as part of the leased premises and granted for the tenant's use, even if the words "reserved", "assigned", or "exclusive" are not used.
             Count these examples:
             - "Tenant shall have 5 reserved parking spaces"
             - "2 designated spaces for Tenant"
@@ -1631,6 +1638,10 @@ namespaces:
             Input: "No reserved or assigned parking spaces are provided to Tenant under this Lease."
             Output: 0
 
+            Example 11:
+            Input: "The leased premises include 5 parking spaces."
+            Output: 5
+
         - role: user
           content: "{prompt}"
 
@@ -1730,72 +1741,59 @@ namespaces:
         - role: system
           content: |
             ## ROLE
-            You are a precise lease billing analyst. Your task is to determine the frequency or billing unit associated with the reserved parking space charge.
+            You are a precise lease billing analyst. Your task is to determine the currency associated with the reserved parking space charge.
 
             ## PRIMARY GOAL
-            Return only the normalized billing unit description for the reserved parking space cost.
+            Return only the currency of the reserved parking space cost.
 
             ## ALLOWED OUTPUT VALUES
-            - Per Space Per Month
-            - Per Month
-            - Per Space Per Year
-            - Per Year
-            - One Time
-            - i don't know
+            - EUR
+            - USD
+            - "" (empty string)
 
             ## STRICT OUTPUT CONTRACT
             - Return exactly one of the allowed values above.
-            - Do not include currency, numbers, explanation, or any extra text.
+            - Do not include amounts, billing frequency, explanation, or any extra text.
             - Output must be normalized to one of the exact labels above.
 
-            ## BILLING UNIT NORMALIZATION RULES
-            1. Identify the charge frequency tied to the reserved parking space fee, not the general parking fee.
+            ## CURRENCY NORMALIZATION RULES
+            1. Identify the currency tied to the reserved parking space fee, not an unrelated charge elsewhere in the lease.
             2. Normalize to the exact labels:
-               - If it is billed monthly per space or per stall, output Per Space Per Month.
-               - If it is a flat monthly total for reserved parking access, output Per Month.
-               - If it is billed annually per space or per stall, output Per Space Per Year.
-               - If it is a flat annual fee overall, output Per Year.
-               - If it is a one-time upfront charge, output One Time.
-            3. If reserved parking is free, or there is no explicit billing cadence, output i don't know.
-            4. Ignore unreserved, general, visitor, market-rate, or undefined parking charges unless they are expressly the reserved parking charge.
+               - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
+               - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
+            3. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            4. If reserved parking is free, or no currency can be determined, return "" (empty string).
+            5. Ignore unreserved, general, visitor, market-rate, or undefined parking charges unless they are expressly the reserved parking charge.
 
             ## KEY LANGUAGE TO LOOK FOR
             - "$100 per space per month"
-            - "$250 per month for reserved parking"
+            - "€250 per month for reserved parking"
             - "$1,200 annually per stall"
-            - "one-time fee for reserved parking"
-            - "reserved parking is free of charge"
-            - "per space per year"
-            - "monthly parking fee for reserved spaces"
+            - "USD 175.00 per space per month"
 
             ## DECISION RULES
-            1. If the lease states a per-space monthly rate, output Per Space Per Month.
-            2. If it states a flat monthly fee for reserved parking, output Per Month.
-            3. If it states an annual per-space fee, output Per Space Per Year.
-            4. If it states a flat annual fee, output Per Year.
-            5. If it is a one-time upfront fee, output One Time.
-            6. If no explicit billing frequency is stated, or reserved parking is free, output i don't know.
+            1. If the reserved parking cost is stated in euros, output EUR.
+            2. If the reserved parking cost is stated in a clearly established US Dollar amount, output USD.
+            3. If the currency symbol is ambiguous or not established, output "".
+            4. If reserved parking is free, or no cost/currency is stated, output "".
 
             ## EXAMPLES
             Example 1:
-            Input context: "Tenant shall rent 3 reserved parking spaces at an initial rate of $100 per space per month."
-            Response: Per Space Per Month
+            Input context: "Tenant shall rent 3 reserved parking spaces at an initial rate of $100 per space per month, payable in US Dollars."
+            Response: USD
 
             Example 2:
-            Input context: "Tenant shall pay a flat monthly fee of $250 for access to the designated reserved parking area."
-            Response: Per Month
+            Input context: "Reserved parking spaces shall be billed at €1,200 annually for each stall allocated."
+            Response: EUR
 
             Example 3:
-            Input context: "Reserved parking spaces shall be billed at $1,200 annually for each stall allocated."
-            Response: Per Space Per Year
+            Input context: "Landlord shall provide 5 reserved parking spaces at no charge to Tenant during the Initial Term."
+            Response: ""
 
             Example 4:
-            Input context: "Landlord shall provide 5 reserved parking spaces at no charge to Tenant during the Initial Term."
-            Response: i don't know
-
-            Example 5:
-            Input context: "Tenant shall pay monthly parking fees for reserved spaces at the prevailing market rate."
-            Response: Per Month
+            Input context: "Tenant shall pay $150 per reserved space per month."
+            Response: ""
+            Reason: The dollar currency is not established elsewhere in the document.
 
         - role: user
           content: "{prompt}"
@@ -2033,23 +2031,99 @@ namespaces:
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
-            Monthly Base Rent is basically the monthly rent paid by the tenant every month for that year.
-            You can extract this generally under the Base Rent field or Fixed Monthly Rent.If you do not find the value give the output as "".
+            FIELD DEFINITION
+
+            Asking Rent Monthly is the rent quoted on a monthly basis.
+
+            This is the headline monthly rent marketed by the landlord and should be extracted exactly as stated.
+
+            EXTRACTION RULES
+
+            - Extract only explicitly stated monthly rent values.
+            - Prefer the Year 1 monthly rent when multiple lease years are present.
+            - Extract values appearing under:
+              * Monthly Base Rent
+              * Monthly Rent
+              * Fixed Monthly Rent
+              * Monthly Asking Rent
+              * Monthly Rental Amount
+              * Base Monthly Rent
+
+            PRIORITY
+
+            1. Year 1 Monthly Base Rent
+            2. Year 1 Monthly Rent
+            3. Year 1 Fixed Monthly Rent
+            4. Explicit Monthly Asking Rent
+
+            DO NOT EXTRACT
+
+            - Effective Rent
+            - Net Effective Rent
+            - Annual Rent
+            - Annual Base Rent
+            - Rental Rate Per Square Foot
+            - Rental Rate Per Square Meter
+            - Service Charges
+            - CAM Charges
+            - Operating Expenses
+            - Parking Charges
+            - Tenant Improvement Allowances
+            - Free Rent Values
+            - Abatement Values
+
+            IMPORTANT
+
+            - Extract only values explicitly stated in the document.
+            - Do not calculate monthly rent from annual rent.
+            - Do not derive values using yearly rent divided by 12.
+            - Do not use effective rent.
+            - If multiple monthly rent amounts exist, return the first lease year monthly rent.
+            - Return only the numeric amount.
+            - If not found return:
+              i dont know
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+            Example 1
 
-            Here is a Example
-            "Months |Monthly Base Rent |Monthly Base Rent/sf
-              1-12  |$75,077.10        |$2.55" 
-            Here Monthly Base Rent means monthly 75077 should be picked.
+            Period During Lease Term | Annual Base Rent | Monthly Installment of Base Rent
+            Lease Year 1             | $301,380.00      | $25,115.00
 
-            Here is another example
-            " Period              |Monthly Base Rent |Monthly Base Rent Per Rentable Square Foot
-              12/1/22 – 11/30/23  |$6,922.40         |$3.40"
-              Here also 6922.40 would be the output as it is under monthly base rent.
+            Response:
+            25115.00
+
+            Example 2
+
+            Months | Monthly Base Rent | Monthly Base Rent/sf
+            1-12   | $75,077.10        | $2.55
+
+            Response:
+            75077.10
+
+            Example 3
+
+            Period | Monthly Base Rent
+            12/1/22 – 11/30/23 | $6,922.40
+
+            Response:
+            6922.40
+
+            Example 4
+
+            Lease Year 1 | Effective Monthly Rent $5,000
+            Lease Year 1 | Monthly Base Rent $6,000
+
+            Response:
+            6000
+
+            Example 5
+
+            Annual Base Rent: $120,000
+
+            Response:
+            i dont know
+
 
         - role: user
           content: "{prompt}"
@@ -2062,19 +2136,42 @@ namespaces:
 
         - role: system
           content: |
-            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the monthly asking rent.
+            You are a commercial real estate lease analyst. Your task is to identify the currency of the monthly asking rent.
 
             ALLOWED OUTPUT VALUES:
-            - Per Month
-            - Per Square Foot Per Month
-            - i don't know
+            - EUR
+            - USD
+            - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for explicit statements describing the monthly asking rent UOM.
-            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
-                - If the monthly asking rent is expressed as a total dollar amount per month (e.g., "$6,922.40 per month"), output "Per Month".
-                - If the monthly asking rent is expressed as a dollar amount per square foot per month (e.g., "$3.40 per rentable square foot per month"), output "Per Square Foot Per Month".
-            3. If the UOM cannot be clearly determined, output "i don't know".
+            1. Look for the currency explicitly associated with the monthly asking rent value.
+            2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
+                - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
+                - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
+            3. Use the Year 1 rent period when multiple lease years are present.
+            4. Do not infer or calculate the currency.
+            5. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            6. Only return a currency if an explicit Asking Rent Monthly value exists.
+            7. If there is no explicit Monthly Asking Rent, Monthly Base Rent, Fixed Monthly Rent, Monthly Rental Amount, or Monthly Rent value, return "" (empty string).
+            8. Do not infer the currency from annual rents, quarterly payments, payment schedules, rent obligations, service charges, operating expenses, or calculated monthly amounts.
+
+        - role: system
+          content: |
+            Example 1:
+            Input context: "Monthly Base Rent: €25,115.00"
+            Response: "EUR"
+
+            Example 2:
+            Input context: "Monthly Rent: $6,922.40"
+            Response: "USD"
+
+            Example 3:
+            Input context: "Annual Rent: €1,320,823.06"
+            Response: ""
+
+            Example 4:
+            Input context: "Per payment period of 3 calendar months the rent is €330,205.77"
+            Response: ""
 
         - role: user
           content: "{prompt}"
@@ -2162,19 +2259,30 @@ namespaces:
 
         - role: system
           content: |
-            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the annual asking rent.
+            You are a commercial real estate lease analyst. Your task is to identify the currency of the annual asking rent.
 
             ALLOWED OUTPUT VALUES:
-            - Per Year
-            - Per Square Foot Per Year
-            - i don't know
+            - EUR
+            - USD
+            - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for explicit statements describing the annual asking rent UOM.
-            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
-                - If the annual asking rent is expressed as a total dollar amount per year (e.g., "$301,380.00 per year"), output "Per Year".
-                - If the annual asking rent is expressed as a dollar amount per square foot per year (e.g., "$60.00 per rentable square foot per year"), output "Per Square Foot Per Year".
-            3. If the UOM cannot be clearly determined, output "i don't know".
+            1. Look for the currency explicitly associated with the annual asking rent value.
+            2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
+                - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
+                - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
+            3. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            4. If the currency cannot be clearly determined, output "" (empty string).
+
+        - role: system
+          content: |
+            Example 1:
+            Input context: "Annual Base Rent: €301,380.00"
+            Response: "EUR"
+
+            Example 2:
+            Input context: "Annual Rent: $301,380.00"
+            Response: "USD"
 
         - role: user
           content: "{prompt}"
@@ -2187,23 +2295,62 @@ namespaces:
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
-            Monthly Effective Rent is basically the monthly rent paid by the tenant every month for that year after considering all concessions, abatements, and free rent periods.
-            You can extract this generally under the Effective Rent field or Effective Monthly Rent.If you do not find the value give the output as "".
+            Give the output only if it is explicitly mentioned in the given text.
+
+            Strictly do not calculate, derive, estimate, annualize, convert, or infer any values.
+
+            Monthly Effective Rent is the net rent actually payable per month after considering incentives, concessions, free rent periods, tenant improvement contributions, abatements, and step rents.
+
+            Extract only values explicitly identified as:
+
+            - Monthly Effective Rent
+            - Effective Monthly Rent
+            - Effective Rent
+            - Net Effective Rent
+            - Net Monthly Rent
+
+            When multiple lease years are present, extract the Year 1 effective rent value.
+
+            Do NOT extract:
+
+            - Monthly Base Rent
+            - Fixed Monthly Rent
+            - Asking Rent
+            - Annual Effective Rent
+            - Service Charges
+            - CAM Charges
+            - Operating Expenses
+            - Parking Charges
+
+            Return only the numeric value.
+
+            If no explicit monthly effective rent amount is provided, return:
+            i dont know
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+            Example
 
-            Here is a Example
-            "Months |Monthly Effective Rent |Monthly Effective Rent/sf
-              1-12  |$75,077.10             |$2.55" 
-            Here Monthly Effective Rent means monthly 75077 should be picked.
+            Months | Monthly Effective Rent | Monthly Effective Rent/sf
+            1-12   | $75,077.10            | $2.55
 
-            Here is another example
-            " Period              |Monthly Effective Rent |Monthly Effective Rent Per Rentable Square Foot
-              12/1/22 – 11/30/23  |$6,922.40              |$3.40"
-              Here also 6922.40 would be the output as it is under monthly effective rent.
+            Response:
+            75077.10
+
+            Example
+
+            Period | Monthly Effective Rent | Monthly Effective Rent Per Rentable Square Foot
+            12/1/22 – 11/30/23 | $6,922.40 | $3.40
+
+            Response:
+            6922.40
+
+            Example
+
+            Lease Year 1 | Monthly Base Rent | $25,115.00
+
+            Response:
+            i dont know
 
         - role: user
           content: "{prompt}"
@@ -2216,19 +2363,33 @@ namespaces:
 
         - role: system
           content: |
-            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the monthly effective rent.
+            You are a commercial real estate lease analyst. Your task is to identify the currency of the monthly effective rent.
 
             ALLOWED OUTPUT VALUES:
-            - Per Month
-            - Per Square Foot Per Month
-            - i don't know
+            - EUR
+            - USD
+            - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for explicit statements describing the monthly effective rent UOM.
-            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
-                - If the monthly effective rent is expressed as a total dollar amount per month (e.g., "$6,922.40 per month"), output "Per Month".
-                - If the monthly effective rent is expressed as a dollar amount per square foot per month (e.g., "$3.40 per rentable square foot per month"), output "Per Square Foot Per Month".
-            3. If the UOM cannot be clearly determined, output "i don't know".
+            1. Look for the currency explicitly associated with the monthly effective rent value.
+            2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
+                - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
+                - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
+            3. Use the Year 1 effective rent period when multiple lease years are present.
+            4. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            5. Before extracting the currency, verify that an explicit Monthly Effective Rent value exists.
+            6. If Monthly Effective Rent, Effective Monthly Rent, Effective Rent, or Net Effective Rent is not explicitly stated, return "" (empty string).
+            7. Do not infer the currency from asking rent, base rent, payment obligations, rent schedules, annual rents, or quarterly payment periods.
+
+        - role: system
+          content: |
+            Example 1:
+            Input context: "Monthly Effective Rent: €6,922.40"
+            Response: "EUR"
+
+            Example 2:
+            Input context: "Monthly Base Rent: $25,115.00"
+            Response: ""
 
         - role: user
           content: "{prompt}"
@@ -2241,23 +2402,73 @@ namespaces:
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
-            Yearly Effective Rent is basically the yearly rent paid by the tenant every year for that year after considering all concessions, abatements, and free rent periods.
-            You can extract this generally under the Effective Rent field or Effective Yearly Rent.If you do not find the value give the output as "".
+            Give the output only if it is explicitly mentioned in the given text.
+
+            Strictly do not calculate, derive, annualize, convert, estimate, or infer any rent values.
+
+            Extract only the value that is explicitly identified as:
+
+            - Annual Effective Rent
+            - Yearly Effective Rent
+            - Effective Annual Rent
+            - Annual Net Effective Rent
+            - Net Effective Rent
+
+            Effective Rent Yearly is the annualized net rent payable by the tenant after accounting for incentives, rent-free periods, tenant improvement contributions, concessions, and step rents.
+
+            When multiple lease years are present, extract the Year 1 effective rent value.
+
+            Do NOT extract:
+
+            - Annual Base Rent
+            - Annual Asking Rent
+            - Monthly Effective Rent
+            - Monthly Base Rent
+            - Service Charges
+            - CAM Charges
+            - Operating Expenses
+            - Parking Charges
+
+            Return only the numeric annual effective rent amount.
+
+            If no explicit annual effective rent amount is provided, return:
+            i dont know
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text ,Strictly Do not calculate the values accordingly.
+            Here is an example:
 
-            Here is a Example
-            "Months |Yearly Effective Rent |Yearly Effective Rent/sf
-              1-12  |$75,077.10             |$2.55" 
-            Here Yearly Effective Rent means yearly 75077 should be picked.
+            "Period During Lease Term | Annual Effective Rent | Monthly Effective Rent
+            Lease Year 1            | $301,380.00          | $25,115.00"
 
-            Here is another example
-            " Period              |Yearly Effective Rent |Yearly Effective Rent Per Rentable Square Foot
-              12/1/22 – 11/30/23  |$6,922.40              |$3.40"
-              Here also 6922.40 would be the output as it is under yearly effective rent.
+            Expected Output:
+            301380
+
+            Reason:
+            The value is explicitly listed under "Annual Effective Rent".
+
+            Here is another example:
+
+            "| Time Period  | Effective Annual Rent | Effective Monthly Rent |
+            |--------------|----------------------|-----------------------|
+            | Months 1-12  | $1,707,496.56        | $142,291.38           |
+            | Months 13-24 | $1,750,721.46        | $146,560.12           |"
+
+            Expected Output:
+            1707496.56
+
+            Reason:
+            The first lease year effective rent should be used.
+
+            Here is another example:
+
+            "Annual Base Rent: $301,380.00"
+
+            Expected Output:
+            i dont know
+
+            Reason:
+            Annual Base Rent is not Effective Rent.
 
         - role: user
           content: "{prompt}"
@@ -2270,19 +2481,37 @@ namespaces:
 
         - role: system
           content: |
-            You are a commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) for the annual effective rent.
+            You are a commercial real estate lease analyst. Your task is to identify the currency of the annual effective rent.
 
             ALLOWED OUTPUT VALUES:
-            - Per Year
-            - Per Square Foot Per Year
-            - i don't know
+            - EUR
+            - USD
+            - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for explicit statements describing the annual effective rent UOM.
-            2. Normalize the extracted UOM to one of the exact ALLOWED OUTPUT VALUES:
-                - If the annual effective rent is expressed as a total dollar amount per year (e.g., "$301,380.00 per year"), output "Per Year".
-                - If the annual effective rent is expressed as a dollar amount per square foot per year (e.g., "$60.00 per rentable square foot per year"), output "Per Square Foot Per Year".
-            3. If the UOM cannot be clearly determined, output "i don't know".
+            1. Look for the currency explicitly associated with the annual effective rent value.
+            2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
+                - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
+                - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
+            3. Use the Year 1 effective rent period when multiple lease years are present.
+            4. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            5. Before extracting the currency, verify that an explicit Annual Effective Rent value exists.
+
+            6. If Annual Effective Rent, Effective Annual Rent, Yearly Effective Rent, or Annual Net Effective Rent is not explicitly stated, return "" (empty string).
+
+            7. Do not infer annual effective rent currency from annual asking rent, annual base rent, rent schedules, or payment obligations.
+
+        - role: system
+          content: |  
+            Example 1:
+
+            Input context: "Annual Effective Rent: €301,380.00"
+            Response: "EUR"
+
+            Example 2:
+
+            Input context: "Annual Base Rent: $301,380.00"
+            Response: ""
 
         - role: user
           content: "{prompt}"
@@ -2361,66 +2590,74 @@ namespaces:
         - role: system
           content: |
             ## ROLE
-            You are a precise commercial real estate lease analyst. Your task is to identify the frequency or billing unit associated with the service charge per area rate.
+            You are a precise commercial real estate lease analyst. Your task is to identify the currency associated with the service charge per area rate.
 
             ## PRIMARY GOAL
-            Return only the normalized billing unit description for the service charge per area value.
+            Return only the currency of the service charge per area value.
 
             ## ALLOWED OUTPUT VALUES
-            - Per Square Foot Per Month
-            - Per Month
-            - Per Square Foot Per Year
-            - Per Year
-            - One Time
-            - i don't know
+            - EUR
+            - USD
+            - "" (empty string)
 
             ## STRICT OUTPUT CONTRACT
             - Return exactly one of the allowed values above.
-            - Do not include currency, numbers, explanation, or any extra text.
+            - Do not include amounts, billing frequency, explanation, or any extra text.
             - Output must be normalized to one of the exact labels above.
 
-            ## BILLING UNIT NORMALIZATION RULES
-            1. Identify the billing frequency and unit associated with the per-area service charge.
+            ## CURRENCY NORMALIZATION RULES
+            1. Identify the currency associated with the per-area service charge.
             2. Normalize to the exact labels:
-               - If billed monthly per square foot, output Per Square Foot Per Month.
-               - If billed as a flat monthly amount, output Per Month.
-               - If billed annually per square foot, output Per Square Foot Per Year.
-               - If billed as a flat annual amount, output Per Year.
-               - If it is a one-time charge, output One Time.
-            3. If there is no explicit billing frequency or unit, output i don't know.
+               - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
+               - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
+            3. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            4. If there is no explicit currency for the per-area service charge, output "" (empty string).
 
             ## KEY LANGUAGE TO LOOK FOR
-            - "per square foot per month"
-            - "per month per rentable square foot"
-            - "per square foot per year"
-            - "annually per rentable square foot"
-            - "per month flat service charge"
-            - "annual service charge"
+            - "€5.00 per square foot per month"
+            - "$2.50 per rentable square foot per month"
+            - "€12.75 per square foot per year"
 
             ## DECISION RULES
-            1. If the lease states a per-square-foot monthly rate, output Per Square Foot Per Month.
-            2. If it states a flat monthly service charge, output Per Month.
-            3. If it states an annual per-square-foot rate, output Per Square Foot Per Year.
-            4. If it states a flat annual charge, output Per Year.
-            5. If it is a one-time charge, output One Time.
-            6. If no explicit billing frequency is stated, output i don't know.
+            1. If the per-area service charge is stated in euros, output EUR.
+            2. If the per-area service charge is stated in a clearly established US Dollar amount, output USD.
+            3. If the currency symbol is ambiguous or not established, output "".
+            4. Only return a currency when the service charge is explicitly expressed per unit area.
+            5. If the document only provides:
+              - total service charge
+              - service charge advance payment
+              - operating expense amount
+              - annual service charge total
+              - quarterly service charge payment
+
+              return "".
+
+            6. Do not infer a currency from aggregate service charge amounts without an explicit per-area rate.
 
             ## EXAMPLES
             Example 1:
-            Input context: "Annual service charge: $5.00 per rentable square foot per year."
-            Response: Per Square Foot Per Year
+            Input context: "Annual service charge: €5.00 per rentable square foot per year."
+            Response: EUR
 
             Example 2:
             Input context: "Service Charge shall be $2.50 per square foot per month."
-            Response: Per Square Foot Per Month
+            Response: USD
 
             Example 3:
             Input context: "Tenant shall pay monthly service charges of $5,000.00."
-            Response: Per Month
+            Response: ""
 
             Example 4:
             Input context: "Annual Operating Expense charge at prevailing market rates."
-            Response: i don't know
+            Response: ""
+
+            Example 5:
+            Input context: "Advance payment for service charges €52,760.50"
+            Response: ""
+
+            Example 6:
+            Input context: "Total Annual Service Charge €125,000"
+            Response: ""
 
         - role: user
           content: "{prompt}"
@@ -2524,7 +2761,8 @@ namespaces:
             - If multiple TI allowance amounts are stated, sum them only if each is clearly a separate component of the total allowance.
             - If the lease provides only a per-unit rate (e.g., "$10 per square foot"), do not calculate; output i don't know
             - If the allowance is expressed as a percentage of rent or other formula without a fixed dollar cap, output i don't know
-            - If no TI allowance is provided, output 0.
+            - If no explicit Tenant Improvement Allowance, TI Allowance, Improvement Allowance, Landlord Contribution, Fit-Out Allowance, Build-Out Allowance, Construction Allowance, Work Allowance, or Leasehold Improvement Allowance is identified, return:
+            i don't know
 
             ## WHAT TO EXTRACT
             Extract the tenant improvement allowance when explicitly stated as:
@@ -2568,8 +2806,8 @@ namespaces:
             Response: 100000
 
             Example 5:
-            Input context: "No tenant improvement allowance is provided."
-            Response: 0
+            Input context: "No tenant improvement allowance is mentioned in this lease."
+            Response: i don't know
 
         - role: user
           content: "{prompt}"
@@ -2582,67 +2820,97 @@ namespaces:
 
         - role: system
           content: |
-            ## ROLE
-            You are a precise commercial real estate lease analyst. Your task is to identify the unit of measure (UOM) or express nature of the tenant improvement allowance.
+            You are a commercial real estate lease analyst.
 
-            ## PRIMARY GOAL
-            Return only the normalized UOM description for the tenant improvement allowance.
+            Your task is to identify the unit of measure (UOM) for the Tenant Improvement Allowance.
 
-            ## ALLOWED OUTPUT VALUES
+            Tenant Improvement Allowance represents the landlord contribution towards fit-out, build-out, refurbishment, alteration, construction, or improvement of the leased premises.
+
+            ALLOWED OUTPUT VALUES:
+
             - Per Square Foot
-            - Per Year
+            - Per Square Meter
             - One Time
             - i don't know
 
-            ## STRICT OUTPUT CONTRACT
-            - Return exactly one of the allowed values above.
-            - Do not include currency, numbers, explanation, or any extra text.
-            - Output must be normalized to one of the exact labels above.
+            EXTRACTION & NORMALIZATION RULES:
 
-            ## UOM NORMALIZATION RULES
-            1. Identify how the tenant improvement allowance is expressed or distributed:
-               - If stated as a dollar amount per rentable square foot, output Per Square Foot.
-               - If stated as an annual allowance or distributed over lease years, output Per Year.
-               - If stated as a lump-sum allowance at the beginning of the lease, output One Time.
-            2. If the allowance is expressed as a fixed total amount without a per-unit or annual breakdown, output One Time.
-            3. If the UOM or nature of the allowance cannot be clearly determined, output i don't know.
+            1. If the allowance is expressed per square foot, rentable square foot, usable square foot, RSF, USF, or SF, output:
+              Per Square Foot
 
-            ## KEY LANGUAGE TO LOOK FOR
-            - "per rentable square foot"
-            - "per square foot"
-            - "per annum" or "per year"
-            - "annually"
-            - "lump sum"
-            - "fixed amount"
-            - "upfront"
-            - "one-time allowance"
+            2. If the allowance is expressed per square meter, m², sqm, square metre, or square meter, output:
+              Per Square Meter
 
-            ## DECISION RULES
-            1. If the allowance is stated on a per-square-foot basis, output Per Square Foot.
-            2. If the allowance is distributed annually or expressed per lease year, output Per Year.
-            3. If the allowance is a single lump-sum or fixed total amount, output One Time.
-            4. If the nature or distribution of the allowance is not explicit, output i don't know.
+            3. If the allowance is expressed as a total amount, lump sum, fixed contribution, fixed allowance, build-out fund, landlord contribution, construction allowance, fit-out contribution, or total reimbursement amount, output:
+              One Time
 
-            ## EXAMPLES
+            4. Do not calculate or infer the UOM.
+
+            5. If the UOM cannot be explicitly determined, output:
+              i don't know
+
+            KEY TERMS TO LOOK FOR:
+
+            - Tenant Improvement Allowance
+            - TI Allowance
+            - TIA
+            - Improvement Allowance
+            - Landlord Contribution
+            - Fit-Out Allowance
+            - Build-Out Allowance
+            - Construction Allowance
+            - Work Allowance
+
+        - role: system
+          content: |
             Example 1:
-            Input context: "Landlord shall provide a Tenant Improvement Allowance of $20.00 per rentable square foot."
-            Response: Per Square Foot
+
+            Tenant Improvement Allowance: $25.00 per rentable square foot
+
+            Response:
+            Per Square Foot
 
             Example 2:
-            Input context: "Landlord shall contribute $250,000 as a one-time tenant improvement allowance."
-            Response: One Time
+
+            TI Allowance: $30 per RSF
+
+            Response:
+            Per Square Foot
 
             Example 3:
-            Input context: "TI allowance shall be $50,000 per lease year."
-            Response: Per Year
+
+            Landlord Contribution: €150/m²
+
+            Response:
+            Per Square Meter
 
             Example 4:
-            Input context: "Tenant improvement cap: $150,000"
-            Response: One Time
+
+            Tenant Improvement Allowance: €200 per square meter
+
+            Response:
+            Per Square Meter
 
             Example 5:
-            Input context: "Landlord shall provide a tenant improvement allowance at prevailing market rates."
-            Response: i don't know
+
+            Landlord shall provide a Tenant Improvement Allowance of $250,000.
+
+            Response:
+            One Time
+
+            Example 6:
+
+            Construction Allowance: $100,000 lump sum
+
+            Response:
+            One Time
+
+            Example 7:
+
+            Tenant improvement allowance at a mutually agreed amount.
+
+            Response:
+            i don't know
 
         - role: user
           content: "{prompt}"

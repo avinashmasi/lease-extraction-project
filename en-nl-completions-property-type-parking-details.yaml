@@ -1,130 +1,817 @@
-# yaml-language-server: $schema=../schemas/ontology.schema.json
-# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
 kind: Ontology/v2
-name: en-nl-completions-property-type-parking-details
+name: en-nl-completions-parking
 
 namespaces:
   self:
-    parking_cost_monthly:
+    parking_type_desc:
+      kind: Text
       reduction:
-        $match:
-          key: =global-fields/self.validation
-          default: =fuzzy.parking_cost_monthly
-          primary: =primary.parking_cost_monthly
-          secondary: =secondary.parking_cost_monthly
+        $get:
+          expand:
+            table: 1
+            column: 0
+          path: parking_type_desc
+          source: =self.Parking-Table
 
-  fuzzy:
-    parking_cost_monthly:
+    parking_sub_type_desc:
+      kind: Text
       reduction:
-        $fuzzy:
-          $parallel:
-          - =primary.parking_cost_monthly
-          - =secondary.parking_cost_monthly
+        $get:
+          expand:
+            table: 1
+            column: 1
+          path: parking_sub_type_desc
+          source: =self.Parking-Table
 
-  primary:
+    number_parking_space:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 2
+          path: number_parking_space
+          source: =self.Parking-Table
+
     parking_cost_monthly:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 3
+          path: parking_cost_monthly
+          source: =self.Parking-Table
+
+    parking_cost_monthly_uom:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 4
+          path: parking_cost_monthly_uom
+          source: =self.Parking-Table
+
+    parking_comments:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 5
+          path: parking_comments
+          source: =self.Parking-Table
+
+    parking_cost_yearly:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 6
+          path: parking_cost_yearly
+          source: =self.Parking-Table
+
+    parking_cost_yearly_uom:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 7
+          path: parking_cost_yearly_uom
+          source: =self.Parking-Table
+
+    Parking-Table:
+      kind: Object
+      reduction:
+        $get:
+          path: Parking-Table
+          source: =self.Parking-Agent
+
+    Parking-Agent:
       confidence: 0.95
       kind:
-        Instance: 
-          Text: =global-fields/self.response_encoding
+        Instance: Object
       reduction:
         $completion:
           mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Parking-Context
-          prompt: |
-            What is the monthly parking cost specified in the lease agreement?
-          templates: =templates.parking_cost_monthly
-
-  secondary:
-    parking_cost_monthly:
-      confidence: 0.91
-      kind:
-        Instance: 
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/secondary.model
-          citations: =en-nl-searches/self.Parking-Context
-          prompt: |
-            What is the monthly parking cost specified in the lease agreement?
-          templates: =templates.parking_cost_monthly
+          templates: =templates.Parking-Agent
 
   templates:
-    parking_cost_monthly:
+    Parking-Agent:
       reduction:
         $const:
-        - role: system
-          content: =global-prompts/self.generic-template-content
+          - role: system
+            content: =global-prompts/self.generic-agent-template-content
 
-        - role: system
-          content: |
-            Parking Cost Monthly refers to the monthly fee charged for a parking
-            space under the lease agreement.
+          - role: system
+            raw: true
+            content: |
+              You are a commercial real estate lease analyst.
 
-            Extract the monthly parking cost amount associated with parking spaces
-            allocated or available to the tenant.
+              Extract every parking arrangement expressly granted, leased,
+              licensed, allocated, or made available to the applicable tenant.
 
-            Rules:
-            - Extract only the monthly parking rate.
-            - Return only the numeric amount.
-            - Do not include currency symbols, commas, units, or explanatory text.
-            - If multiple parking rates exist, prioritize reserved parking rates
-              over unreserved parking rates.
-            - If both current and future/escalated rates are present, return the
-              current initial monthly parking rate.
-            - Do not calculate totals unless the monthly parking cost is explicitly stated.
-            - Ignore annual, daily, weekly, validation, or reimbursement amounts.
-            - If parking is provided at no charge, or no monthly parking cost is
-              specified, respond with "i dont know".
+              Review executed amendments, lease clauses, summaries, parking
+              schedules, rent schedules, exhibits, appendices, drawings, and
+              lease-specific parking provisions.
 
-        - role: system
-          content: |
-            ####
+              Return valid JSON only. Do not return markdown, explanations,
+              citations, analysis, confidence scores, or additional keys.
 
-            Examples:
+              Never return "i dont know".
 
-            1. Given:
-              "Tenant shall rent a total of 3 parking spaces at an initial parking
-              rate of $100 per space per month."
+              If no supported tenant parking arrangement is found, return the
+              required Parking-Table object with all eight arrays empty.
 
-              Response:
-              "100"
+              ================================================================
+              CONTROLLING PARKING ARRANGEMENT
+              ================================================================
 
-            2. Given:
-              "One reserved parking space shall be provided at $85.00 per month."
+              Use only parking arrangements expressly tied to the applicable
+              tenant.
 
-              Response:
-              "85"
+              Apply this source priority:
 
-            3. Given:
-              "The current parking rates are $125.00 per month per unreserved
-              parking space."
+              1. Latest executed amendment changing parking
+              2. Executed parking or premises clause
+              3. Lease summary consistent with the executed lease
+              4. Parking rent or payment schedule
+              5. Lease-specific exhibit, appendix, or drawing
 
-              Response:
-              "125"
+              A later executed amendment overrides only the parking terms it
+              expressly changes.
 
-            4. Given:
-              "Parking fee shall be $150 per parking space monthly beginning on the
-              Commencement Date."
+              Prefer tenant-specific provisions over general building parking,
+              visitor parking, public parking, parking for other tenants, and
+              unallocated building capacity.
 
-              Response:
-              "150"
+              Deduplicate the same arrangement when repeated.
 
-            5. Given:
-              "Tenant shall be entitled to four complimentary parking spaces."
+              Keep arrangements separate when they differ by parking type,
+              subtype, quantity, cost, location, designation, or terms.
 
-              Response:
-              "i dont know"
+              If an aggregate quantity is followed by a supported detailed split,
+              return only the detailed records and not the aggregate record.
 
-            6. Given:
-              "Parking charge: $175.00 per month for each reserved parking stall."
+              ================================================================
+              REQUIRED OUTPUT
+              ================================================================
 
-              Response:
-              "175"
+              Return exactly:
 
-            ####
+              {
+                "Parking-Table": {
+                  "parking_type_desc": [string],
+                  "parking_sub_type_desc": [string],
+                  "number_parking_space": [string],
+                  "parking_cost_monthly": [string],
+                  "parking_cost_monthly_uom": [string],
+                  "parking_comments": [string],
+                  "parking_cost_yearly": [string],
+                  "parking_cost_yearly_uom": [string]
+                }
+              }
 
-        - role: user
-          content: "{prompt}"
+              Every field must be an array.
+
+              Values at the same array index form one coherent parking record.
+
+              All eight arrays must have exactly the same number of elements.
+
+              Use "" when a field is unavailable or unsupported.
+
+              Do not create an empty placeholder record.
+
+              ================================================================
+              parking_type_desc
+              ================================================================
+
+              parking_type_desc is a controlled dropdown field.
+
+              Return only one of these exact values:
+
+              - "Car Parking 1":
+                The primary, first, or general category of parking intended for
+                passenger cars. Use for ordinary passenger-car parking when no
+                second or third category is identified.
+
+              - "Car Parking 2":
+                The second distinct category of passenger-car parking. Use only
+                when the document supports a second category.
+
+              - "Car Parking 3":
+                The third distinct category of passenger-car parking. Use only
+                when the document supports a third category.
+
+              - "Truck Parking":
+                Parking for trucks, lorries, heavy goods vehicles, or similar
+                large commercial goods vehicles.
+
+              - "Two-wheelers":
+                Parking for motorcycles, motorbikes, scooters, bicycles, cycles,
+                or other two-wheeled vehicles.
+
+              - "Van Parking":
+                Parking for vans or similar light commercial vehicles.
+
+              Do not return any other non-empty value.
+
+              Do not use location, designation, cost, quantity, or an
+              indoor-outdoor characteristic as the parking type.
+
+              Do not assign "Car Parking 2" or "Car Parking 3" merely because
+              several car parking arrangements exist. Use those values only when
+              the corresponding category is supported by the document.
+
+              If ordinary car parking is granted without a numbered category,
+              use "Car Parking 1".
+
+              If no permitted value fits the arrangement, return "".
+
+              ================================================================
+              parking_sub_type_desc
+              ================================================================
+
+              parking_sub_type_desc is a controlled dropdown field.
+
+              Return only one of these exact values:
+
+              - "Indoor":
+                Parking inside a building, covered parking facility, enclosed
+                parking structure, basement, underground parking facility, or
+                parking garage.
+
+              - "Outdoor":
+                Parking outside in an uncovered, open-air, external, or surface
+                parking area.
+
+              Do not return any other non-empty value.
+
+              Do not return combined values such as:
+
+              - "Reserved, Indoor"
+              - "Covered, Underground"
+              - "Uncovered, Outdoor"
+              - "Non-designated, Outdoor"
+              - "Covered, Flexible"
+
+              Put characteristics such as reserved, unreserved, designated,
+              non-designated, flexible, fixed, tandem, accessible, visitor,
+              non-electric, electric, or EV charging in parking_comments.
+
+              If the document does not support either Indoor or Outdoor, return "".
+
+              Do not infer the subtype solely from the building or property type.
+
+              ================================================================
+              number_parking_space
+              ================================================================
+
+              Return only the expressly stated number of spaces for the
+              corresponding arrangement.
+
+              Remove wording such as:
+
+              - spaces
+              - parking spaces
+              - bays
+              - parking bays
+              - places
+              - car spaces
+
+              Examples:
+
+              - "1"
+              - "10"
+              - "25"
+              - "37"
+
+              Do not calculate a quantity from parking ratios, area, building
+              capacity, rent, or parking cost.
+
+              Do not assign an aggregate quantity to multiple detailed records.
+
+              ================================================================
+              PARKING COSTS
+              ================================================================
+
+              parking_cost_monthly is the monetary cost per parking space per month.
+
+              parking_cost_yearly is the monetary cost per parking space per year.
+
+              First identify whether the stated amount is:
+
+              - per parking space; and
+              - per month or per year.
+
+              Do not treat a total charge for multiple spaces as a per-space rate
+              unless the document expressly identifies it as a per-space amount.
+
+              For extracted and calculated costs:
+
+              - remove currency symbols and currency codes;
+              - remove thousands separators;
+              - normalize decimal separators;
+              - remove "per month", "per year", "monthly", "annually",
+                "per annum", "per space", "per bay", and VAT wording;
+              - return a plain numeric string;
+              - preserve an expressly stated amount's decimal precision where
+                practical; and
+              - return calculated values with exactly two decimal places.
+
+              Examples:
+
+              - "€150.00 per space per month" becomes "150.00"
+              - "EUR 112,50 monthly" becomes "112.50"
+              - "€1.250,00 per year" becomes "1250.00"
+
+              ================================================================
+              MONTHLY AND YEARLY COST CALCULATION
+              ================================================================
+
+              If both monthly and yearly per-space costs are expressly stated,
+              retain both stated values. Do not replace either one with a
+              calculated value.
+
+              If only a monthly per-space cost is expressly stated:
+
+              - parking_cost_monthly = stated monthly amount
+              - parking_cost_yearly = monthly amount multiplied by 12
+              - parking_cost_yearly_uom = same currency as monthly cost
+              - round the calculated yearly amount to two decimal places
+
+              Formula:
+
+              parking_cost_yearly = parking_cost_monthly * 12
+
+              If only a yearly per-space cost is expressly stated:
+
+              - parking_cost_yearly = stated yearly amount
+              - parking_cost_monthly = yearly amount divided by 12
+              - parking_cost_monthly_uom = same currency as yearly cost
+              - round the calculated monthly amount to two decimal places
+
+              Formula:
+
+              parking_cost_monthly = parking_cost_yearly / 12
+
+              Use standard arithmetic rounding to two decimal places.
+
+              Examples:
+
+              - Monthly cost "175.00" produces yearly cost "2100.00"
+              - Yearly cost "1350" produces monthly cost "112.50"
+              - Yearly cost "650" produces monthly cost "54.17"
+
+              Calculate the missing period only when the source amount is clearly
+              a per-space monthly or per-space yearly cost.
+
+              Do not perform this calculation when the source contains only:
+
+              - a quarterly cost;
+              - a weekly cost;
+              - a daily cost;
+              - an hourly cost;
+              - a total charge for multiple spaces;
+              - a combined premises and parking rent;
+              - a total premises rent;
+              - a service charge;
+              - a parking deposit;
+              - a parking penalty; or
+              - an amount whose applicable period is unclear.
+
+              Do not convert a quarterly amount into monthly or yearly costs.
+
+              Do not calculate a per-space rate by dividing an aggregate charge
+              by the number of spaces.
+
+              Do not calculate total parking cost by multiplying the number of
+              spaces by a monthly or yearly rate.
+
+              When either monthly or yearly cost is calculated, add a concise note
+              to parking_comments only if useful:
+
+              - "Yearly cost calculated from stated monthly rate"
+              - "Monthly cost calculated from stated yearly rate"
+
+              If parking_comments already contains information, append the
+              calculation note using a semicolon.
+
+              ================================================================
+              COST CURRENCY UOM
+              ================================================================
+
+              parking_cost_monthly_uom and parking_cost_yearly_uom must contain
+              the applicable uppercase ISO-style currency code.
+
+              Examples:
+
+              - "EUR"
+              - "USD"
+              - "GBP"
+              - "CAD"
+              - "AUD"
+
+              Use:
+
+              - "EUR" for €
+              - "GBP" for £
+              - the document-supported dollar currency for $
+
+              If "$" is ambiguous and the document does not establish the relevant
+              dollar currency, return "".
+
+              A calculated monthly or yearly cost must use the same currency as
+              its source cost.
+
+              If both cost fields are empty, both currency fields must be empty.
+
+              If a cost field is non-empty, its corresponding currency field must
+              contain the supported currency when available.
+
+              ================================================================
+              parking_comments
+              ================================================================
+
+              Return a concise factual note only when it adds relevant parking
+              information not captured by the other fields.
+
+              Appropriate comments include:
+
+              - "Located in the underground parking garage"
+              - "Located in the outdoor car park"
+              - "Reserved parking"
+              - "Non-designated parking"
+              - "Non-electric parking"
+              - "Includes EV charging facilities"
+              - "Subject to a six-month mutual notice period"
+              - "Cost excludes VAT"
+              - "Cost includes VAT"
+              - "Yearly cost calculated from stated monthly rate"
+              - "Monthly cost calculated from stated yearly rate"
+
+              Do not include reasoning, citations, confidence scores, unsupported
+              conclusions, unrelated lease terms, or calculations other than the
+              permitted monthly-yearly calculation note.
+
+              ================================================================
+              FIELD ASSOCIATION
+              ================================================================
+
+              Associate a type, subtype, quantity, cost, currency, and comment only
+              when connected through the same sentence, bullet, table row, schedule
+              row, heading, or another unambiguous structure.
+
+              Do not associate values merely because they appear on the same page.
+
+              When indoor and outdoor spaces have different quantities, rates,
+              locations, or terms, create separate records.
+
+              When different parking types have different quantities, rates,
+              locations, or terms, create separate records.
+
+              If the lease states a quantity but no cost, return empty cost and
+              currency fields.
+
+              If the lease states a cost but no quantity, a record may still be
+              created when the cost clearly applies to the tenant's parking right.
+
+              ================================================================
+              EXCLUSIONS
+              ================================================================
+
+              Do not create records from:
+
+              - public parking not granted to the tenant;
+              - generic statements that parking may be available;
+              - visitor parking not allocated to the tenant;
+              - parking for another tenant;
+              - zoning or building parking requirements;
+              - parking ratios without an allocated quantity;
+              - loading docks or loading bays;
+              - delivery, access, driveway, or turning areas;
+              - landlord or property-manager parking;
+              - blank templates or unselected alternatives;
+              - future possible parking not granted to the tenant;
+              - generic parking-control or security clauses; or
+              - EV electricity costs unless included in the parking-space cost.
+
+              ================================================================
+              VALIDATION
+              ================================================================
+
+              Before returning, verify:
+
+              - all eight arrays have exactly the same length;
+              - each index represents one coherent tenant parking record;
+              - every value is supported by the lease or permitted calculation;
+              - duplicate records are removed;
+              - detailed records do not duplicate an aggregate record;
+              - distinct arrangements remain separate;
+              - quantities are not calculated;
+              - only monthly and yearly per-space costs are converted;
+              - quarterly, weekly, daily, aggregate, and unclear costs are not
+                converted;
+              - calculated values are rounded to two decimal places;
+              - calculated cost currencies match their source currencies;
+              - every non-empty parking_type_desc is exactly one of:
+                "Car Parking 1", "Car Parking 2", "Car Parking 3",
+                "Truck Parking", "Two-wheelers", or "Van Parking";
+              - every non-empty parking_sub_type_desc is exactly "Indoor" or
+                "Outdoor"; and
+              - the output is valid JSON.
+
+              If no supported parking arrangement exists, return:
+
+              {
+                "Parking-Table": {
+                  "parking_type_desc": [],
+                  "parking_sub_type_desc": [],
+                  "number_parking_space": [],
+                  "parking_cost_monthly": [],
+                  "parking_cost_monthly_uom": [],
+                  "parking_comments": [],
+                  "parking_cost_yearly": [],
+                  "parking_cost_yearly_uom": []
+                }
+              }
+
+          - role: system
+            raw: true
+            content: |
+              These examples demonstrate the required dropdown and cost-calculation
+              behavior. Do not reuse example values unless they appear in the
+              supplied lease context.
+
+              ================================================================
+              EXAMPLE 1: YEARLY COST STATED
+              ================================================================
+
+              Context:
+
+              "The tenant leases 37 passenger-car spaces in the covered underground
+               garage at €1,350 per space per year and 38 passenger-car spaces in
+               the uncovered outdoor car park at €650 per space per year."
+
+              Result:
+
+              {
+                "Parking-Table": {
+                  "parking_type_desc": [
+                    "Car Parking 1",
+                    "Car Parking 1"
+                  ],
+                  "parking_sub_type_desc": [
+                    "Indoor",
+                    "Outdoor"
+                  ],
+                  "number_parking_space": [
+                    "37",
+                    "38"
+                  ],
+                  "parking_cost_monthly": [
+                    "112.50",
+                    "54.17"
+                  ],
+                  "parking_cost_monthly_uom": [
+                    "EUR",
+                    "EUR"
+                  ],
+                  "parking_comments": [
+                    "Located in the underground parking garage; monthly cost calculated from stated yearly rate",
+                    "Located in the outdoor car park; monthly cost calculated from stated yearly rate"
+                  ],
+                  "parking_cost_yearly": [
+                    "1350",
+                    "650"
+                  ],
+                  "parking_cost_yearly_uom": [
+                    "EUR",
+                    "EUR"
+                  ]
+                }
+              }
+
+              ================================================================
+              EXAMPLE 2: MONTHLY COST STATED
+              ================================================================
+
+              Context:
+
+              "The tenant is allocated 12 reserved passenger-car parking spaces
+               inside a covered parking facility at USD 175.00 per space per month,
+               excluding applicable taxes."
+
+              Result:
+
+              {
+                "Parking-Table": {
+                  "parking_type_desc": [
+                    "Car Parking 1"
+                  ],
+                  "parking_sub_type_desc": [
+                    "Indoor"
+                  ],
+                  "number_parking_space": [
+                    "12"
+                  ],
+                  "parking_cost_monthly": [
+                    "175.00"
+                  ],
+                  "parking_cost_monthly_uom": [
+                    "USD"
+                  ],
+                  "parking_comments": [
+                    "Reserved parking; cost excludes applicable taxes; yearly cost calculated from stated monthly rate"
+                  ],
+                  "parking_cost_yearly": [
+                    "2100.00"
+                  ],
+                  "parking_cost_yearly_uom": [
+                    "USD"
+                  ]
+                }
+              }
+
+              ================================================================
+              EXAMPLE 3: DROPDOWN PARKING TYPES
+              ================================================================
+
+              Context:
+
+              "The tenant receives 10 spaces in the primary passenger-car parking
+               category, 5 spaces in the second passenger-car parking category,
+               3 spaces in the third passenger-car parking category, 4 heavy goods
+               vehicle spaces, 12 motorcycle spaces, and 2 van spaces. All spaces
+               are located in the outdoor parking area."
+
+              Result:
+
+              {
+                "Parking-Table": {
+                  "parking_type_desc": [
+                    "Car Parking 1",
+                    "Car Parking 2",
+                    "Car Parking 3",
+                    "Truck Parking",
+                    "Two-wheelers",
+                    "Van Parking"
+                  ],
+                  "parking_sub_type_desc": [
+                    "Outdoor",
+                    "Outdoor",
+                    "Outdoor",
+                    "Outdoor",
+                    "Outdoor",
+                    "Outdoor"
+                  ],
+                  "number_parking_space": [
+                    "10",
+                    "5",
+                    "3",
+                    "4",
+                    "12",
+                    "2"
+                  ],
+                  "parking_cost_monthly": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                  ],
+                  "parking_cost_monthly_uom": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                  ],
+                  "parking_comments": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                  ],
+                  "parking_cost_yearly": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                  ],
+                  "parking_cost_yearly_uom": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                  ]
+                }
+              }
+
+              ================================================================
+              EXAMPLE 4: QUARTERLY COST IS NOT CONVERTED
+              ================================================================
+
+              Context:
+
+              "The tenant leases one non-electric reserved passenger-car parking
+               space located in the parking garage below the building. Parking rent
+               is stated only as €687.50 per quarter."
+
+              Result:
+
+              {
+                "Parking-Table": {
+                  "parking_type_desc": [
+                    "Car Parking 1"
+                  ],
+                  "parking_sub_type_desc": [
+                    "Indoor"
+                  ],
+                  "number_parking_space": [
+                    "1"
+                  ],
+                  "parking_cost_monthly": [
+                    ""
+                  ],
+                  "parking_cost_monthly_uom": [
+                    ""
+                  ],
+                  "parking_comments": [
+                    "Reserved, non-electric parking located in the parking garage below the building"
+                  ],
+                  "parking_cost_yearly": [
+                    ""
+                  ],
+                  "parking_cost_yearly_uom": [
+                    ""
+                  ]
+                }
+              }
+
+              Do not convert quarterly costs into monthly or yearly costs.
+
+          - role: user
+            content: =global-context/self.ascii-formatted-clustered
+
+          - role: user
+            raw: true
+            content: |
+              Extract every supported parking arrangement for the applicable
+              tenant from the complete lease context.
+
+              Identify the controlling parking provisions first and deduplicate
+              repeated arrangements.
+
+              For parking_type_desc, return only:
+
+              - "Car Parking 1"
+              - "Car Parking 2"
+              - "Car Parking 3"
+              - "Truck Parking"
+              - "Two-wheelers"
+              - "Van Parking"
+
+              For parking_sub_type_desc, return only:
+
+              - "Indoor"
+              - "Outdoor"
+
+              Put reserved, unreserved, designated, non-designated, flexible,
+              non-electric, accessible, visitor, and EV-charging details in
+              parking_comments.
+
+              If only a monthly per-space parking cost is stated, calculate the
+              yearly cost by multiplying the monthly cost by 12.
+
+              If only a yearly per-space parking cost is stated, calculate the
+              monthly cost by dividing the yearly cost by 12.
+
+              Retain both values when both are expressly stated. Round calculated
+              values to two decimal places and use the same currency as the source
+              cost.
+
+              Do not convert quarterly, weekly, daily, aggregate, combined-rent,
+              or unclear costs.
+
+              Keep distinct parking types, subtypes, quantities, costs, locations,
+              and terms as separate records.
+
+              Prefer supported detailed parking splits over a duplicated aggregate
+              record.
+
+              Return only the required JSON object. Ensure all eight arrays have
+              exactly the same length.

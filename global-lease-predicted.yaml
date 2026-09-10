@@ -110,16 +110,7 @@ namespaces:
           - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
           - =global-fields/self.Option_Notes
 
-
-    Contacts:
-      reduction:
-        $collate:
-          - =global-fields/self.contact_display_name
-          - =global-fields/self.first_name
-          - =global-fields/self.last_name
-          - =global-fields/self.email
-          - =global-fields/self.full_phone_number
-
+    #############################################################################################################
     Lease_Comp_Details:
       reduction:
         $collate:
@@ -127,8 +118,55 @@ namespaces:
           - =global-fields/self.ref_total_leased_space_uom_desc
           - =global-fields/self.ref_lease_activity_type_desc
           - =global-fields/self.ref_lease_arrangement_type_desc
+          - =global-fields/self.total_leased_space_estimated_f
+          - =global-fields/self.sublease_f
+          - =global-fields/self.lease_arrangement_reason_type_desc
+          - =global-fields/self.tenant_status_type_desc
+          - =global-fields/self.act_1954_f
+          - =global-fields/self.space_condition_type_desc
+          - =global-fields/self.arrangement_end_future_action_type_desc
+          - =global-fields/self.arrangement_end_action_status_type_desc
+          - =global-fields/self.arrangement_end_future_action_date
+          - =global-fields/self.arrangement_end_action_status_reason_type_desc
 
-    Parking_Details:
-      reduction:
-        $collate:
-          - =global-fields/self.parking_cost_monthly
+    #############################################################################################################
+    # floor_suite:
+    #   reduction:
+    #     $join:
+    #       floor_number:
+    #         - =global-fields/self.Floor-Suite-Floor
+    #       suite_number:
+    #         - =global-fields/self.Floor-Suite-Suite
+    #       arrangement_space_area:
+    #         - =global-fields/self.Floor-Suite-Space-Size
+    #       ref_arrangement_space_area_uom_desc:
+    #         - =global-fields/self.Floor-Suite-Space-Size-UOM
+    #       full_floor_f:
+    #         - =global-fields/self.Floor-Suite-Whole-Floor
+    #       tenancy_status_desc:
+    #         - =global-fields/self.Floor-Suite-Floor-Status
+    #       tenancy_status_reason_desc:
+    #         - =global-fields/self.Floor-Suite-Reason
+    #       tenancy_status_reason_notes:
+    #         - =global-fields/self.Floor-Suite-Reason-Notes
+
+  
+    # parking:
+    #   reduction:
+    #     $join:
+    #       parking_type_desc:
+    #         - =global-fields/self.parking_type_desc
+    #       parking_sub_type_desc:
+    #         - =global-fields/self.parking_sub_type_desc
+    #       number_parking_space:
+    #         - =global-fields/self.number_parking_space
+    #       parking_cost_monthly:
+    #         - =global-fields/self.parking_cost_monthly
+    #       parking_cost_monthly_uom:
+    #         - =global-fields/self.parking_cost_monthly_uom
+    #       parking_comments:
+    #         - =global-fields/self.parking_comments
+    #       parking_cost_yearly:
+    #         - =global-fields/self.parking_cost_yearly
+    #       parking_cost_yearly_uom:
+    #         - =global-fields/self.parking_cost_yearly_uom

@@ -389,9 +389,18 @@ namespaces:
       reduction:
         $unique:
         - =self.Total-Leased-Space-Search
-        - =self.Ref-Total-Leased-Space-UOM-Search
         - =self.Ref-Lease-Activity-Type-Search
         - =self.Ref-Lease-Arrangement-Type-Search
+        - =self.Total-Leased-Space-Estimated-F-Search
+        - =self.Sublease-Search
+        - =self.Lease-Arrangement-Reason-Type-Search
+        - =self.Tenant-Status-Type-Search
+        - =self.ACT-1954-Search
+        - =self.Space-Condition-Type-Search
+        - =self.Arrangement-End-Future-Action-Type-Search
+        - =self.Arrangement-End-Action-Status-Type-Search
+        - =self.Arrangement-End-Future-Action-Date-Search
+        - =self.Arrangement-End-Action-Status-Reason-Type-Search
 
     Total-Leased-Space-Search:
       kind:
@@ -403,17 +412,6 @@ namespaces:
           top_k: 12
           prompt: |
             Find every explicit rentable area leased to the tenant in the original lease premises, including suite, floor, premises area statements, and explicit leased-area totals. Exclude building-wide area, other tenants' areas, amendments, expansion or option space, ROFO or ROFR space, temporary space, and areas not explicitly identified as the tenant's leased premises.
-
-    Ref-Total-Leased-Space-UOM-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $search:
-          mode: loader
-          max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
-          prompt: |
-            Find the unit of measurement used for the tenant's total leased space, including square meters, square metres, sqm, sq. m., or m². Exclude numeric area amounts and unrelated building measurements.
 
     Ref-Lease-Activity-Type-Search:
       kind:
@@ -437,112 +435,153 @@ namespaces:
           prompt: |
             Find lease language identifying the arrangement type, including assignment, direct landlord-to-tenant leasing, flex or shared workspace, or sublease. Include assignor, assignee, sublessor, subtenant, subleased premises, coworking, managed office, and flexible workspace terms.
 
+    Total-Leased-Space-Estimated-F-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language describing whether the tenant's leased space is actual, measured, verified, assumed, estimated, approximate, or otherwise not definitively measured.
+
+    Sublease-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language indicating whether the agreement is a sublease, including sublease agreement, subleased premises, subtenant, sublessor, or a tenant subleasing all or part of the premises. Exclude ordinary direct landlord-to-tenant lease language.
+
+    Lease-Arrangement-Reason-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language describing the business reason for the lease arrangement, including business continuity, business growth, downsizing, new establishment, relocation, or statements showing the reason is unknown.
+
+    Tenant-Status-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language describing the tenant's status, including expired, future occupancy, gone, moving, no longer a tenant, currently occupying, or other status indicators.
+
+    ACT-1954-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language stating whether the tenancy is protected by or contracted out of the Landlord and Tenant Act 1954, including security of tenure, exclusion of sections 24-28, statutory declaration, or no security of tenure.
+
+    Space-Condition-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language describing the condition in which the premises are delivered, including core and shell, shell, unfinished, fitted out, built out, turnkey, ready for occupancy, or condition and improvements to be agreed.
+
+    Arrangement-End-Future-Action-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language describing a future action relating to the arrangement end, including decisions ongoing with landlord or occupier, an incorrect end date, a new break date, a new date given by the client, a new rent review date, or a matter to be revisited.
+
+    Arrangement-End-Action-Status-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language describing the status of action relating to the arrangement end, including actioned, future action, not actioned, or an arrangement that is due to expire.
+
+    Arrangement-End-Future-Action-Date-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find the specific date associated with an anticipated future arrangement-end action, such as a follow-up, review, landlord or occupier decision, break action, or rent review. Exclude commencement, execution, start, and ordinary lease expiry dates unless explicitly tied to the future action.
+
+    Arrangement-End-Action-Status-Reason-Type-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find language explaining the reason for the arrangement-end action status, including competitor commitment, redevelopment, conflict, contract terms, declined by CBRE or client, competitor demand, direct deal, duplicate or error, existing agent, late pursuit, no decision, no landlord opportunity, transaction elsewhere, renewal or regearing, occupier no longer existing, space too small, unreachable, wrong property options, or wrong team resources.
+
+  ##  Floor-Suite
+    Floor-Suite-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 25
+          prompt: |
+            tenant leased premises floor suite unit space size area,
+            demised premises, premises schedule, floor schedule, suite schedule,
+            unit schedule, floor-by-floor premises allocation, leased floor,
+            rented floor, whole floor, partial floor, full floor, suite number,
+            floor number, level designation, rent area, lettable area, rentable area,
+            usable area, NEN 2580 measurement, space area, floor area,
+            premises clause, amendment, relocation, surrender, renewal,
+            expansion, contraction, premises exhibit, floor plan,
+            tenant premises table, demised area by floor, unit allocation
+
+  ##parking 
     Parking-Context:
       kind:
         Text: =global-fields/self.response_encoding
       reduction:
-        $unique:
-        - =self.Parking-Cost-Monthly-Search
-
-    Parking-Cost-Monthly-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 25
           prompt: |
-            Find the explicit monthly fee or rate charged for parking spaces assigned, reserved, or available to the tenant. Include the amount and billing period. Exclude annual, daily, weekly, reimbursement, validation, aggregate, visitor, and unrelated parking charges.
-
-
-    Contacts-Context:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $unique:
-        - =self.Contact-Display-Name-Search
-        - =self.First-Name-Search
-        - =self.Last-Name-Search
-        - =self.Email-Search
-        - =self.Full-Phone-Number-Search
-
-    Contact-Display-Name-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $search:
-          mode: loader
-          max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
-          prompt: |
-            Contact person, contact name, primary contact, authorized representative,
-            representative, attention, attn, signatory, broker contact,
-            property manager contact, notice contact, correspondence contact,
-            company contact information
-
-    First-Name-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $search:
-          mode: loader
-          max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
-          prompt: |
-            First name of contact person, representative name,
-            authorized representative, primary contact,
-            individual associated with company,
-            execution page signatory
-
-    Last-Name-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $search:
-          mode: loader
-          max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
-          prompt: |
-            Last name of contact person, surname,
-            representative name,
-            authorized representative,
-            company contact,
-            execution page signatory
-
-    Email-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $search:
-          mode: loader
-          max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
-          prompt: |
-            Email address of contact person,
-            company contact email,
-            representative email,
-            broker email,
-            property manager email,
-            notice contact email,
-            contact information
-
-    Full-Phone-Number-Search:
-      kind:
-        Text: =global-fields/self.response_encoding
-      reduction:
-        $search:
-          mode: loader
-          max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
-          prompt: |
-            Phone number of contact person,
-            contact telephone number,
-            mobile number,
-            representative phone number,
-            broker phone number,
-            property manager phone number,
-            notice contact phone number,
-            contact information
-
+            tenant parking rights, parking allocation, parking schedule,
+            car parking, van parking, truck parking, motorcycle parking,
+            bicycle parking, EV parking, accessible parking, visitor parking,
+            reserved parking, unreserved parking, tandem parking, designated parking,
+            non-designated parking, covered parking, uncovered parking, indoor parking,
+            outdoor parking, parking bay, parking space, parking fee, parking rent,
+            parking charge, parking rate, monthly parking cost, annual parking cost,
+            per space per month, per space per year, parking exhibit, parking appendix,
+            amendment to parking, parking clause, tenant parking arrangement, parking rights schedule
 

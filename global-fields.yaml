@@ -207,79 +207,237 @@ namespaces:
           en-nl: =en-nl-completions-terms/self.Option_Notes
 
     
-    # Contacts
-
-    contact_display_name:
-      reduction:
-        $match:
-          key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.contact_display_name
-          en-nl: =en-nl-completions-contacts/self.contact_display_name
-
-    first_name:
-      reduction:
-        $match:
-          key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.first_name
-          en-nl: =en-nl-completions-contacts/self.first_name
-
-    last_name:
-      reduction:
-        $match:
-          key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.last_name
-          en-nl: =en-nl-completions-contacts/self.last_name
-
-    email:
-      reduction:
-        $match:
-          key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.email
-          en-nl: =en-nl-completions-contacts/self.email
-
-    full_phone_number:
-      reduction:
-        $match:
-          key: =self.jurisdiction
-          default: =en-nl-completions-contacts/self.full_phone_number
-          en-nl: =en-nl-completions-contacts/self.full_phone_number
 
     # Lease comp details
-
+     
     total_leased_space:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-lease-comp-details/self.total_leased_space
-          en-nl: =en-nl-completions-lease-comp-details/self.total_leased_space
+          default: =en-nl-completions-lease-comp-details/self.Total_Leased_Space
+          en-nl: =en-nl-completions-lease-comp-details/self.Total_Leased_Space
 
     ref_total_leased_space_uom_desc:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-lease-comp-details/self.ref_total_leased_space_uom_desc
-          en-nl: =en-nl-completions-lease-comp-details/self.ref_total_leased_space_uom_desc
+          default: =en-nl-completions-lease-comp-details/self.Ref_Total_Leased_Space_UOM_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Ref_Total_Leased_Space_UOM_Desc
 
     ref_lease_activity_type_desc:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-lease-comp-details/self.ref_lease_activity_type_desc
-          en-nl: =en-nl-completions-lease-comp-details/self.ref_lease_activity_type_desc
+          default: =en-nl-completions-lease-comp-details/self.Ref_Lease_Activity_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Ref_Lease_Activity_Type_Desc
 
     ref_lease_arrangement_type_desc:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-lease-comp-details/self.ref_lease_arrangement_type_desc
-          en-nl: =en-nl-completions-lease-comp-details/self.ref_lease_arrangement_type_desc
+          default: =en-nl-completions-lease-comp-details/self.Ref_Lease_Arrangement_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Ref_Lease_Arrangement_Type_Desc
 
-    # Property type parking details
-
-    parking_cost_monthly:
+    total_leased_space_estimated_f:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
-          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
+          default: =en-nl-completions-lease-comp-details/self.Total_Leased_Space_Estimated_F
+          en-nl: =en-nl-completions-lease-comp-details/self.Total_Leased_Space_Estimated_F
+
+    sublease_f:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Sublease_F
+          en-nl: =en-nl-completions-lease-comp-details/self.Sublease_F
+
+    lease_arrangement_reason_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Lease_Arrangement_Reason_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Lease_Arrangement_Reason_Type_Desc
+
+    tenant_status_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Tenant_Status_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Tenant_Status_Type_Desc
+
+    act_1954_f:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.ACT_1954_F
+          en-nl: =en-nl-completions-lease-comp-details/self.ACT_1954_F
+
+    space_condition_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Space_Condition_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Space_Condition_Type_Desc
+
+    arrangement_end_future_action_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Arrangement_End_Future_Action_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Arrangement_End_Future_Action_Type_Desc
+
+    arrangement_end_action_status_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Type_Desc
+
+    arrangement_end_future_action_date:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Arrangement_End_Future_Action_Date
+          en-nl: =en-nl-completions-lease-comp-details/self.Arrangement_End_Future_Action_Date
+
+    arrangement_end_action_status_reason_type_desc:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Reason_Type_Desc
+          en-nl: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Reason_Type_Desc
+
+    
+    # Property type parking details
+
+    parking_type_desc:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_type_desc
+          en-nl: =en-nl-completions-parking/self.parking_type_desc
+
+    parking_sub_type_desc:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_sub_type_desc
+          en-nl: =en-nl-completions-parking/self.parking_sub_type_desc
+
+    number_parking_space:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.number_parking_space
+          en-nl: =en-nl-completions-parking/self.number_parking_space
+
+    parking_cost_monthly:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_cost_monthly
+          en-nl: =en-nl-completions-parking/self.parking_cost_monthly
+
+    parking_cost_monthly_uom:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_cost_monthly_uom
+          en-nl: =en-nl-completions-parking/self.parking_cost_monthly_uom
+
+    parking_comments:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_comments
+          en-nl: =en-nl-completions-parking/self.parking_comments
+
+    parking_cost_yearly:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_cost_yearly
+          en-nl: =en-nl-completions-parking/self.parking_cost_yearly
+
+    parking_cost_yearly_uom:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-parking/self.parking_cost_yearly_uom
+          en-nl: =en-nl-completions-parking/self.parking_cost_yearly_uom
+
+     # Floor/Suite
+
+    Floor-Suite-Floor:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Floor
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Floor
+
+    Floor-Suite-Suite:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Suite
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Suite
+
+    Floor-Suite-Space-Size:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size
+
+    Floor-Suite-Space-Size-UOM:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size-UOM
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size-UOM
+
+    Floor-Suite-Whole-Floor:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Whole-Floor
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Whole-Floor
+
+    Floor-Suite-Floor-Status:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Floor-Status
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Floor-Status
+
+    Floor-Suite-Reason:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Reason
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Reason
+
+    Floor-Suite-Reason-Notes:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Reason-Notes
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Reason-Notes
 
