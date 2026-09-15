@@ -441,3 +441,53 @@ namespaces:
           default: =en-nl-completions-floor-suite/self.Floor-Suite-Reason-Notes
           en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Reason-Notes
 
+  # Measurements
+
+    Property_Element_Type_Desc:
+      type: Measurements
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-measurements/self.Property_Element_Type_Desc
+          en-nl: =en-nl-completions-measurements/self.Property_Element_Type_Desc
+
+    Property_Measurement_Size:
+      type: Measurements
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-measurements/self.Property_Measurement_Size
+          en-nl: =en-nl-completions-measurements/self.Property_Measurement_Size
+
+    Property_Measurement_Size_UOM:
+      type: Measurements
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-measurements/self.Property_Measurement_Size_UOM
+          en-nl: =en-nl-completions-measurements/self.Property_Measurement_Size_UOM
+
+    Measurement_Asking_Rent_Yearly:
+      type: Measurements
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-measurements/self.Measurement_Asking_Rent_Yearly
+          en-nl: =en-nl-completions-measurements/self.Measurement_Asking_Rent_Yearly
+
+    Measurement_Asking_Rent_Yearly_UOM:
+      type: Measurements
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-measurements/self.Measurement_Asking_Rent_Yearly_UOM
+          en-nl: =en-nl-completions-measurements/self.Measurement_Asking_Rent_Yearly_UOM
+
+    Property_Measurement_Notes:
+      type: Measurements
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-measurements/self.Property_Measurement_Notes
+          en-nl: =en-nl-completions-measurements/self.Property_Measurement_Notes
+

@@ -453,7 +453,9 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the total count of reserved parking spaces allocated. If not found, respond "i dont know".
+            Extract the tenant-specific reserved parking space count from the PDF.
+            Follow the Reserved_Parking_Spaces template rules exactly.
+            Return only an integer or "i dont know".
           templates: =templates.Reserved_Parking_Spaces
 
     Cost_per_Reserved_Parking_Space:
@@ -467,7 +469,9 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the fee or rate charged per reserved parking space. If not found, respond "i dont know".
+            Extract the explicit numeric cost per tenant-reserved parking space from the PDF.
+            Follow the Cost_per_Reserved_Parking_Space template rules exactly.
+            Return only the numeric value, 0, or "i dont know".
           templates: =templates.Cost_per_Reserved_Parking_Space
 
     Ref_cost_per_reserved_parking_space_uom_desc:
@@ -583,7 +587,13 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Effective Rent Monthly value. If not found, respond "i dont know".
+            Extract the explicitly stated total Monthly Effective Rent from the lease PDF.
+            Carefully align PDF table values with the correct row and column headers.
+            Use the first chronological initial lease period or Lease Year 1.
+            Do not use Monthly Base Rent, Annual Effective Rent, per-area rates,
+            service charges, or other neighboring values.
+            Do not calculate or convert values.
+            Return only the numeric value. If not explicitly found, return "i dont know".
           templates: =templates.Effective_Rent_Monthly
 
     Ref_effective_rent_monthly_uom_desc:
@@ -612,7 +622,13 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Effective Rent Yearly value. If not found, respond "i dont know".
+            Extract the explicitly stated total Annual Effective Rent from the lease PDF.
+            Carefully align PDF table values with the correct row and column headers.
+            Use the first chronological initial lease period or Lease Year 1.
+            Do not use Annual Base Rent, Monthly Effective Rent, per-area rates,
+            service charges, or other neighboring values.
+            Do not calculate, annualize, multiply, or convert values.
+            Return only the numeric value. If not explicitly found, return "i dont know".
           templates: =templates.Effective_Rent_Yearly
 
     Ref_effective_rent_yearly_uom_desc:
@@ -803,7 +819,9 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the total count of reserved parking spaces allocated. If not found, respond "i dont know".
+            Extract the tenant-specific reserved parking space count from the PDF.
+            Follow the Reserved_Parking_Spaces template rules exactly.
+            Return only an integer or "i dont know".
           templates: =templates.Reserved_Parking_Spaces
 
     Cost_per_Reserved_Parking_Space:
@@ -817,7 +835,9 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the fee or rate charged per reserved parking space. If not found, respond "i dont know".
+            Extract the explicit numeric cost per tenant-reserved parking space from the PDF.
+            Follow the Cost_per_Reserved_Parking_Space template rules exactly.
+            Return only the numeric value, 0, or "i dont know".
           templates: =templates.Cost_per_Reserved_Parking_Space
 
     Ref_cost_per_reserved_parking_space_uom_desc:
@@ -933,7 +953,13 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Effective Rent Monthly value. If not found, respond "i dont know".
+            Extract the explicitly stated total Monthly Effective Rent from the lease PDF.
+            Carefully align PDF table values with the correct row and column headers.
+            Use the first chronological initial lease period or Lease Year 1.
+            Do not use Monthly Base Rent, Annual Effective Rent, per-area rates,
+            service charges, or other neighboring values.
+            Do not calculate or convert values.
+            Return only the numeric value. If not explicitly found, return "i dont know".
           templates: =templates.Effective_Rent_Monthly
 
     Ref_effective_rent_monthly_uom_desc:
@@ -962,7 +988,13 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Effective Rent Yearly value. If not found, respond "i dont know".
+            Extract the explicitly stated total Annual Effective Rent from the lease PDF.
+            Carefully align PDF table values with the correct row and column headers.
+            Use the first chronological initial lease period or Lease Year 1.
+            Do not use Annual Base Rent, Monthly Effective Rent, per-area rates,
+            service charges, or other neighboring values.
+            Do not calculate, annualize, multiply, or convert values.
+            Return only the numeric value. If not explicitly found, return "i dont know".
           templates: =templates.Effective_Rent_Yearly
 
     Ref_effective_rent_yearly_uom_desc:
@@ -1513,134 +1545,71 @@ namespaces:
 
         - role: system
           content: |
-            ## ROLE
-            You are a commercial real estate lease extraction specialist. Your task is to identify the specific number of parking spaces that are expressly reserved, assigned, designated, exclusive, or allocated to the tenant.
+            Extract the tenant-specific reserved parking count from the lease PDF.
 
-            ## PRIMARY GOAL
-            Return only the total count of tenant-specific reserved parking spaces as a single integer.
-            If no valid reserved parking count is explicitly stated, return exactly: i don't know
+            The value must be an explicit integer associated with reserved, assigned,
+            designated, exclusive, or tenant-allocated parking spaces.
 
-            ## STRICT OUTPUT CONTRACT
-            Output must be one of the following only:
-            - a single integer such as 0, 2, 5, 12
-            - or exactly: i don't know
+            PDF TABLE EXTRACTION:
+            1. Inspect the complete PDF context, including parking schedules, exhibits,
+               riders, amendments, and tables.
+            2. Reconstruct tables from their period labels, tenant labels, parking-type
+               labels, and column headers.
+            3. Select only the value aligned with the tenant's reserved parking allocation.
+            4. Prefer the first chronological initial lease period.
+            5. Count repeated references to the same allocation only once.
 
-            Rules:
-            - Do not include words, labels, units, punctuation, commas, decimals, or extra whitespace.
-            - Do not include explanations, reasoning, or surrounding text.
-            - Do not return ranges, formulas, or estimated values.
-            - If multiple tenant-reserved counts are stated, sum them only if each component is clearly reserved to the tenant and explicitly quantified.
+            COUNT:
+            - Reserved parking spaces
+            - Assigned parking spaces
+            - Designated parking spaces
+            - Exclusive parking spaces
+            - Spaces explicitly allocated to the tenant
+            - Spaces clearly included with the premises for the tenant's exclusive use
 
-            ## WHAT COUNTS AS RESERVED PARKING
-            Count parking spaces only when the lease clearly gives the tenant a specific reserved/assigned/exclusive right.
-            Count parking spaces that are explicitly included as part of the leased premises and granted for the tenant's use, even if the words "reserved", "assigned", or "exclusive" are not used.
-            Count these examples:
-            - "Tenant shall have 5 reserved parking spaces"
-            - "2 designated spaces for Tenant"
-            - "Tenant is allocated 4 exclusive parking stalls"
-            - "Tenant shall receive 3 assigned spaces"
-            - "for Tenant's use only"
-            - "reserved for Tenant"
-            - "private reserved stalls"
-            - "exclusive parking for the Tenant"
+            DO NOT COUNT:
+            - General, common, visitor, or first-come parking
+            - Building or garage capacity
+            - Parking ratios or formulas
+            - Spaces assigned to other parties
+            - Parking spaces available only upon request
+            - Unspecified parking rights
+            - Counts inferred from square footage
+            - Numbers from unrelated parking periods
 
-            ## WHAT DOES NOT COUNT
-            Exclude these unless the lease clearly ties them to the tenant with a specific numeric count:
-            - general/common/open parking
-            - visitor parking
-            - shared parking without a tenant-specific allocation
-            - first-come, first-served parking
-            - valet or self-park rights
-            - parking ratios or formulas such as 3 spaces per 1,000 RSF
-            - parking capacity language without an explicit reserved count
-            - spaces reserved for landlord, owner, management, other tenants, or building executives unless specifically assigned to the tenant
+            If multiple separate tenant-specific counts are explicitly stated, sum them.
+            Do not sum duplicate references to the same spaces.
 
-            ## DECISION RULES IN ORDER
-            1. Explicit none:
-               If the lease expressly says the tenant receives no reserved/assigned/designated/exclusive parking, output 0.
+            If the document explicitly says the tenant receives no reserved parking,
+            return 0.
 
-            2. Explicit numeric count:
-               If the lease states a specific number of reserved spaces for the tenant, output that number.
-               If multiple clauses state separate tenant-reserved amounts, sum only the amounts that are clearly reserved to the tenant and explicitly quantified.
+            Return only a single integer. If no explicit tenant-specific count is found,
+            return:
+            i dont know
 
-            3. Range or maximum language:
-               - If the lease states "up to X reserved spaces", output X.
-               - If it states "not more than X", output X.
-               - If it states "at least X" or "not less than X", output X.
-               - If it states a range such as "between 3 and 5", output the maximum value unless the text clearly fixes the number at the lower end.
+        - role: system
+          content: |
+            Examples:
 
-            4. Shared reserved pool:
-               If parking is in a shared pool but not specifically assigned or allocated to the tenant with a number, do not count it.
-               If the lease specifically allocates a certain number to the tenant within a shared reserved area, count that allocated number.
+            "Tenant shall have 5 reserved parking spaces."
+            Response:
+            5
 
-            5. No formulas or ratios:
-               Do not calculate parking counts from ratios, square footage, acreage, capacity formulas, or general parking standards.
-               If the only information is a ratio or formula and no direct reserved count is stated, output i don't know
+            "Tenant is allocated 2 reserved stalls and 3 assigned spaces."
+            Response:
+            5
 
-            6. No guessing:
-               Do not infer reserved parking from phrases like "parking available", "adequate parking", "garage access", "parking rights", or general lease context.
-               If the number is not clearly stated for the tenant, output i don't know
+            "The garage contains 500 spaces and parking is available to tenants."
+            Response:
+            i dont know
 
-            7. Exclude non-tenant allocations:
-               If spaces are reserved for executives, management, owners, or other entities but not clearly granted to the tenant, exclude them.
+            "Parking ratio: 4 spaces per 1,000 RSF."
+            Response:
+            i dont know
 
-            ## SEARCH TARGETS
-            Look for language in the lease, exhibits, parking schedules, rider clauses, and amendments such as:
-            - reserved parking
-            - designated parking
-            - assigned parking
-            - exclusive parking
-            - allocated parking
-            - parking spaces for Tenant
-            - Tenant shall have X spaces
-            - reserved stalls
-            - parking permit rights
-            - for Tenant's use only
-
-            ## FEW-SHOT EXAMPLES
-            Example 1:
-            Input: "Tenant shall have 6 reserved parking spaces. Tenant and its invitees may also use unreserved parking in the common lot."
-            Output: 6
-
-            Example 2:
-            Input: "Landlord will provide up to five (5) reserved stalls for Tenant in the garage, subject to availability."
-            Output: 5
-
-            Example 3:
-            Input: "Tenant will be provided not less than 3 reserved spaces in the covered area."
-            Output: 3
-
-            Example 4:
-            Input: "The garage contains reserved spaces for various tenants; Tenant may use reserved spaces as available."
-            Output: i don't know
-
-            Example 5:
-            Input: "Within the building's reserved section, Tenant is allocated 4 reserved spaces; all other parking is unreserved."
-            Output: 4
-
-            Example 6:
-            Input: "Tenant shall receive 2 reserved executive spaces and 3 additional reserved spaces."
-            Output: 5
-
-            Example 7:
-            Input: "Two spaces are reserved for Building executives. Tenant may use general parking."
-            Output: i don't know
-
-            Example 8:
-            Input: "Parking ratio: 3.5 spaces per 1,000 RSF of the Premises."
-            Output: i don't know
-
-            Example 9:
-            Input: "Parking provided at 4/1,000 RSF. In addition, Tenant shall have 3 reserved spaces near the entrance."
-            Output: 3
-
-            Example 10:
-            Input: "No reserved or assigned parking spaces are provided to Tenant under this Lease."
-            Output: 0
-
-            Example 11:
-            Input: "The leased premises include 5 parking spaces."
-            Output: 5
+            "No reserved or assigned parking spaces are provided to Tenant."
+            Response:
+            0
 
         - role: user
           content: "{prompt}"
@@ -1650,84 +1619,75 @@ namespaces:
         $const:
         - role: system
           content: =global-prompts/self.generic-template-content
+
         - role: system
           content: |
-            ## ROLE
-            You are a lease-payment extraction specialist. Your task is to identify the monetary rate charged per reserved parking space for the tenant.
+            Extract the explicit numeric fee per reserved parking space from the lease PDF.
 
-            ## PRIMARY GOAL
-            Return only the numeric amount charged per reserved parking space.
-            Do not return a total fee, do not return a monthly total for all spaces, and do not return rates for general or unreserved parking.
+            PDF TABLE EXTRACTION:
+            1. Inspect parking schedules, exhibits, riders, amendments, and fee tables.
+            2. Reconstruct rows and columns using parking type, tenant allocation,
+               lease period, and fee headers.
+            3. Select only the amount aligned with reserved or assigned parking for the tenant.
+            4. Prefer the first chronological initial lease period.
+            5. Do not select a total fee for multiple spaces.
+            6. Do not divide or calculate a per-space amount.
 
-            ## STRICT OUTPUT CONTRACT
-            Output must be one of the following only:
-            - a clean numeric value such as 100, 85.50, 0
-            - or exactly: i don't know
+            ACCEPT ONLY:
+            - Fee per reserved parking space
+            - Fee per reserved stall
+            - Fee per assigned space
+            - Fee per designated or exclusive space
+            - Fee per parking space explicitly allocated to the tenant
 
-            Rules:
-            - Remove currency symbols, units, and billing descriptors from the final answer.
-            - Output only the raw numeric value.
-            - If the clause says the reserved parking is free, output 0.
-            - If the fee is stated as a rate per space, extract the per-space rate; do not multiply by number of spaces.
-            - If the fee varies over time, use the initial or first lease-year rate.
-            - If the lease provides only a prevailing market rate, standard rate, or general parking fee without a clear numeric per-space amount, output i don't know
+            EXCLUDE:
+            - General, visitor, public, or unreserved parking fees
+            - Total parking charges
+            - Parking ratios
+            - Permit fees
+            - Deposits
+            - Taxes
+            - Service charges
+            - Unrelated nearby amounts
+            - Amounts calculated from another value
 
-            ## WHAT TO EXTRACT
-            Extract the rate for parking that is explicitly reserved, designated, assigned, exclusive, or allocated to the tenant, such as:
-            - "$100 per space per month"
-            - "$85.50 per reserved stall per month"
-            - "$1,200 annually for each space"
-            - "at the rate of $150 per reserved parking space per month"
+            If the document explicitly states that reserved parking is free or provided
+            at no charge, return 0.
 
-            ## WHAT NOT TO EXTRACT
-            Exclude:
-            - unreserved, common, visitor, or general parking fees
-            - total monthly charges for multiple spaces
-            - aggregate parking charges for all spaces combined
-            - parking ratios or formulas without explicit dollar amounts
-            - market-rate language without an explicit numeric dollar figure
+            NUMBER NORMALIZATION:
+            - Remove currency symbols and thousands separators.
+            - Use a period as the decimal separator.
+            - "$1,500.00" becomes "1500.00".
+            - "€ 1.500,00" becomes "1500.00".
+            - Do not convert monthly amounts to annual amounts or annual amounts to monthly amounts.
 
-            ## DECISION RULES
-            1. If the lease expressly states the reserved spaces are free, output 0.
-            2. If a clear numeric dollar amount is stated for each reserved space, output that numeric value only.
-            3. If the clause states an aggregate amount for multiple spaces, do not multiply it; extract the per-space rate only if explicitly stated.
-            4. If the text includes different amounts over time, use the first lease-year amount.
-            5. If no explicit numeric per-space reserved parking fee is stated, output i don't know
+            Return only the numeric amount. If no explicit numeric per-space reserved
+            parking fee is found, return:
+            i dont know
 
-            ## KEY SEARCH TERMS
-            Look for phrases such as:
-            - per reserved space
-            - per reserved stall
-            - per parking space per month
-            - per stall per month
-            - annual fee per reserved space
-            - reserved parking rate
-            - Tenant shall pay $X per parking space
+        - role: system
+          content: |
+            Examples:
 
-            ## EXAMPLES
-            Example 1:
-            Input context: "Tenant shall rent a total of 3 reserved parking spaces at an initial rate of $100.00 per space per month."
-            Response: 100
+            "Tenant shall pay $125 per reserved parking space per month."
+            Response:
+            125
 
-            Example 2:
-            Input context: "Tenant shall have the right to license (2) reserved parking stalls at $85.50 per reserved stall per month."
-            Response: 85.50
+            "Reserved stalls cost €1.200,00 per stall per year."
+            Response:
+            1200.00
 
-            Example 3:
-            Input context: "Landlord agrees to provide Tenant with 5 reserved parking spaces in the building garage free of charge throughout the Initial Term."
-            Response: 0
+            "Tenant has 4 reserved spaces for a total charge of $400 per month."
+            Response:
+            i dont know
 
-            Example 4:
-            Input context: "Tenant shall pay for reserved parking spaces at Landlord's prevailing standard rate, currently set at $150 per reserved space per month."
-            Response: 150
+            "Reserved parking is provided at no additional charge."
+            Response:
+            0
 
-            Example 5:
-            Input context: "Tenant shall pay monthly parking fees for reserved spaces at the prevailing market rate as updated from time to time by Landlord."
-            Response: i don't know
-
-            Example 6:
-            Input context: "Unreserved parking stalls shall cost $75.00 per space per month. Reserved parking spaces shall be allocated pursuant to Exhibit E."
-            Response: i don't know
+            "Unreserved parking costs $75 per space per month."
+            Response:
+            i dont know
 
         - role: user
           content: "{prompt}"
@@ -2048,6 +2008,14 @@ namespaces:
               * Monthly Asking Rent
               * Monthly Rental Amount
               * Base Monthly Rent
+              * Kale huur per maand (Dutch: base rent per month)
+              * Huurprijs per maand (Dutch: rental price per month)
+              * Aanvangshuur per maand (Dutch: initial rent per month)
+
+            ## NUMBER FORMAT NORMALIZATION (EN/NL)
+            Lease documents may use US/UK number formatting (e.g., "$25,115.00") or European/Dutch number formatting (e.g., "€ 25.115,00" or "€ 25 115,00", where the comma is the decimal separator).
+            - Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators.
+            - Do not confuse a Dutch decimal comma with a thousands separator.
 
             PRIORITY
 
@@ -2197,6 +2165,9 @@ namespaces:
             - Yearly Rent
             - Annual Fixed Rent
             - Annual Minimum Rent
+            - Kale jaarhuur (Dutch: base annual rent)
+            - Huurprijs per jaar (Dutch: rental price per year)
+            - Jaarhuur (Dutch: yearly rent)
 
             Do NOT extract:
 
@@ -2207,6 +2178,10 @@ namespaces:
             - CAM Charges
             - Operating Expenses
             - Parking Charges
+
+            ## NUMBER FORMAT NORMALIZATION (EN/NL)
+            Lease documents may use US/UK number formatting (e.g., "$301,380.00") or European/Dutch number formatting (e.g., "€ 301.380,00", where the comma is the decimal separator).
+            Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators. Do not confuse a Dutch decimal comma with a thousands separator.
 
             Return only the numeric annual rent amount.
 
@@ -2295,65 +2270,96 @@ namespaces:
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text.
+            Extract the explicitly stated total monthly effective rent from the lease PDF.
 
-            Strictly do not calculate, derive, estimate, annualize, convert, or infer any values.
+            FIELD DEFINITION:
+            Monthly effective rent is the total rent amount explicitly identified as effective,
+            net effective, or equivalent for one month after concessions, abatements, free rent,
+            incentives, or other rent adjustments.
 
-            Monthly Effective Rent is the net rent actually payable per month after considering incentives, concessions, free rent periods, tenant improvement contributions, abatements, and step rents.
+            EXTRACTION RULES:
+            1. Extract only values explicitly associated with:
+               - Monthly Effective Rent
+               - Effective Monthly Rent
+               - Net Effective Rent per Month
+               - Monthly Net Effective Rent
+               - Effective Rent per Month
+               - Effective Monthly Rental Amount
+               - Effectieve huur per maand
+               - Netto effectieve huur per maand
+               - Effectieve maandhuur
 
-            Extract only values explicitly identified as:
+            2. When extracting from a PDF table:
+               - Reconstruct the table using the row period and column headers.
+               - Match the value to the exact effective-rent column.
+               - Do not select a neighboring Base Rent, Annual Rent, Effective Rent/SF,
+                 service charge, operating expense, or parking column.
+               - If multiple periods exist, select the first chronological initial lease period
+                 or Lease Year 1.
 
-            - Monthly Effective Rent
-            - Effective Monthly Rent
-            - Effective Rent
-            - Net Effective Rent
-            - Net Monthly Rent
+            3. The value must be a total monthly amount.
+               Do not extract a per-square-foot, per-square-meter, or area-based rate.
 
-            When multiple lease years are present, extract the Year 1 effective rent value.
+            4. Do not calculate, annualize, divide, multiply, average, estimate, or infer.
+               Do not calculate monthly effective rent from annual effective rent.
 
-            Do NOT extract:
+            5. Do not extract:
+               - Monthly Base Rent
+               - Fixed Monthly Rent
+               - Asking Rent
+               - Annual Base Rent
+               - Annual Effective Rent
+               - Effective Rent/SF
+               - Effective Rent/SQM
+               - Service Charges
+               - CAM or operating expenses
+               - Parking charges
+               - Free-rent amounts
+               - Tenant-improvement allowances
 
-            - Monthly Base Rent
-            - Fixed Monthly Rent
-            - Asking Rent
-            - Annual Effective Rent
-            - Service Charges
-            - CAM Charges
-            - Operating Expenses
-            - Parking Charges
+            NUMBER NORMALIZATION:
+            - Remove currency symbols and thousands separators.
+            - Use a period as the decimal separator.
+            - "$75,077.10" becomes "75077.10".
+            - "€ 75.077,10" becomes "75077.10".
+            - Return only the numeric value.
 
-            Return only the numeric value.
-
-            If no explicit monthly effective rent amount is provided, return:
+            OUTPUT:
+            Return only the numeric monthly effective rent.
+            If no explicit total monthly effective rent is found, return:
             i dont know
 
         - role: system
           content: |
-            Example
+            Examples:
 
-            Months | Monthly Effective Rent | Monthly Effective Rent/sf
-            1-12   | $75,077.10            | $2.55
-
-            Response:
-            75077.10
-
-            Example
-
-            Period | Monthly Effective Rent | Monthly Effective Rent Per Rentable Square Foot
-            12/1/22 – 11/30/23 | $6,922.40 | $3.40
+            Period | Monthly Base Rent | Monthly Effective Rent
+            Months 1-12 | $25,000.00 | $20,000.00
 
             Response:
-            6922.40
+            20000.00
 
-            Example
+            Period | Annual Effective Rent | Monthly Effective Rent
+            Lease Year 1 | $240,000.00 | $20,000.00
 
-            Lease Year 1 | Monthly Base Rent | $25,115.00
+            Response:
+            20000.00
+
+            Period | Monthly Base Rent | Effective Rent/SF
+            Year 1 | $25,000.00 | $2.50
+
+            Response:
+            i dont know
+
+            Monthly Base Rent: $25,000.00
+            Annual Effective Rent: $240,000.00
 
             Response:
             i dont know
 
         - role: user
           content: "{prompt}"
+
     
     Ref_effective_rent_monthly_uom_desc:
       reduction:
@@ -2402,73 +2408,99 @@ namespaces:
 
         - role: system
           content: |
-            Give the output only if it is explicitly mentioned in the given text.
+            Extract the explicitly stated total annual effective rent from the lease PDF.
 
-            Strictly do not calculate, derive, annualize, convert, estimate, or infer any rent values.
+            FIELD DEFINITION:
+            Annual effective rent is the total annual rent amount explicitly identified as
+            effective, net effective, or equivalent after concessions, abatements, free rent,
+            incentives, or other rent adjustments.
 
-            Extract only the value that is explicitly identified as:
+            EXTRACTION RULES:
+            1. Extract only values explicitly associated with:
+               - Annual Effective Rent
+               - Effective Annual Rent
+               - Yearly Effective Rent
+               - Annual Net Effective Rent
+               - Net Effective Annual Rent
+               - Effective Rent per Year
+               - Effective Annual Rental Amount
+               - Effectieve jaarhuur
+               - Netto effectieve jaarhuur
+               - Effectieve huur per jaar
+               - Netto jaarhuur
 
-            - Annual Effective Rent
-            - Yearly Effective Rent
-            - Effective Annual Rent
-            - Annual Net Effective Rent
-            - Net Effective Rent
+            2. When extracting from a PDF table:
+               - Reconstruct the table using the row period and column headers.
+               - Match the value to the exact annual effective-rent column.
+               - Do not select a neighboring Annual Base Rent, Monthly Rent,
+                 Monthly Effective Rent, Effective Rent/SF, service charge,
+                 operating expense, or parking column.
+               - If multiple periods exist, select the first chronological initial lease period
+                 or Lease Year 1.
 
-            Effective Rent Yearly is the annualized net rent payable by the tenant after accounting for incentives, rent-free periods, tenant improvement contributions, concessions, and step rents.
+            3. The value must be a total annual amount.
+               Do not extract a per-square-foot, per-square-meter, or area-based rate.
 
-            When multiple lease years are present, extract the Year 1 effective rent value.
+            4. Do not calculate, annualize, divide, multiply, average, estimate, or infer.
+               Do not calculate annual effective rent by multiplying monthly rent by 12.
 
-            Do NOT extract:
+            5. Do not extract:
+               - Annual Base Rent
+               - Annual Asking Rent
+               - Monthly Effective Rent
+               - Monthly Base Rent
+               - Effective Rent/SF
+               - Effective Rent/SQM
+               - Service Charges
+               - CAM or operating expenses
+               - Parking charges
+               - Free-rent amounts
+               - Tenant-improvement allowances
 
-            - Annual Base Rent
-            - Annual Asking Rent
-            - Monthly Effective Rent
-            - Monthly Base Rent
-            - Service Charges
-            - CAM Charges
-            - Operating Expenses
-            - Parking Charges
+            NUMBER NORMALIZATION:
+            - Remove currency symbols and thousands separators.
+            - Use a period as the decimal separator.
+            - "$301,380.00" becomes "301380.00".
+            - "€ 301.380,00" becomes "301380.00".
+            - Return only the numeric value.
 
-            Return only the numeric annual effective rent amount.
-
-            If no explicit annual effective rent amount is provided, return:
+            OUTPUT:
+            Return only the numeric annual effective rent.
+            If no explicit total annual effective rent is found, return:
             i dont know
 
         - role: system
           content: |
-            Here is an example:
+            Examples:
 
-            "Period During Lease Term | Annual Effective Rent | Monthly Effective Rent
-            Lease Year 1            | $301,380.00          | $25,115.00"
+            Period | Annual Base Rent | Annual Effective Rent | Monthly Effective Rent
+            Lease Year 1 | $300,000.00 | $240,000.00 | $20,000.00
 
-            Expected Output:
-            301380
+            Response:
+            240000.00
 
-            Reason:
-            The value is explicitly listed under "Annual Effective Rent".
+            Period | Effective Annual Rent | Effective Monthly Rent
+            Months 1-12 | €240.000,00 | €20.000,00
 
-            Here is another example:
+            Response:
+            240000.00
 
-            "| Time Period  | Effective Annual Rent | Effective Monthly Rent |
-            |--------------|----------------------|-----------------------|
-            | Months 1-12  | $1,707,496.56        | $142,291.38           |
-            | Months 13-24 | $1,750,721.46        | $146,560.12           |"
+            Period | Annual Base Rent | Monthly Base Rent | Effective Rent/SF
+            Year 1 | $300,000.00 | $25,000.00 | $2.50
 
-            Expected Output:
-            1707496.56
-
-            Reason:
-            The first lease year effective rent should be used.
-
-            Here is another example:
-
-            "Annual Base Rent: $301,380.00"
-
-            Expected Output:
+            Response:
             i dont know
 
-            Reason:
-            Annual Base Rent is not Effective Rent.
+            Monthly Effective Rent: $20,000.00
+
+            Response:
+            i dont know
+
+            Annual Base Rent: $300,000.00
+            Annual Effective Rent: $240,000.00
+
+            Response:
+            240000.00
 
         - role: user
           content: "{prompt}"
@@ -2543,11 +2575,17 @@ namespaces:
             - If the service charge varies over time, use the initial or first lease-year rate.
             - If the lease provides only an aggregate service charge without a per-unit breakdown, output i don't know
 
+            ## NUMBER FORMAT NORMALIZATION (EN/NL)
+            Lease documents may use US/UK number formatting (e.g., "$5.00") or European/Dutch number formatting (e.g., "€ 5,00" or "€ 1.250,50", where the comma is the decimal separator).
+            Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators. Do not confuse a Dutch decimal comma with a thousands separator.
+
             ## WHAT TO EXTRACT
             Extract the per-unit service charge rate, such as:
             - "$5.00 per square foot per year"
             - "$2.50 per rentable square foot per month"
             - "$12.75 per square foot annually"
+            - "€ 5,00 per vierkante meter per jaar" (Dutch: per square meter per year)
+            - "voorschot servicekosten € 2,50 per m² per maand" (Dutch: service charge advance per m² per month)
 
             ## WHAT NOT TO EXTRACT
             Exclude:
@@ -2696,6 +2734,9 @@ namespaces:
             - "first 2 months rent-free"
             - "2 months free occupancy"
             - "Tenant shall pay no rent for months 1-3"
+            - "3 maanden huurvrije periode" (Dutch: 3 months rent-free period)
+            - "huurkorting van 2 maanden" (Dutch: rent discount of 2 months)
+            - "de eerste 2 maanden is geen huur verschuldigd" (Dutch: no rent due for the first 2 months)
 
             ## WHAT DOES NOT COUNT
             Exclude:
@@ -2764,6 +2805,10 @@ namespaces:
             - If no explicit Tenant Improvement Allowance, TI Allowance, Improvement Allowance, Landlord Contribution, Fit-Out Allowance, Build-Out Allowance, Construction Allowance, Work Allowance, or Leasehold Improvement Allowance is identified, return:
             i don't know
 
+            ## NUMBER FORMAT NORMALIZATION (EN/NL)
+            Lease documents may use US/UK number formatting (e.g., "$250,000.00") or European/Dutch number formatting (e.g., "€ 250.000,00", where the comma is the decimal separator).
+            Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators. Do not confuse a Dutch decimal comma with a thousands separator.
+
             ## WHAT TO EXTRACT
             Extract the tenant improvement allowance when explicitly stated as:
             - "Landlord shall provide a TI allowance of $X"
@@ -2771,6 +2816,8 @@ namespaces:
             - "Landlord shall contribute $X toward tenant improvements"
             - "Free rent allowance applied to improvements: $X"
             - "Leasehold improvement allowance: $X"
+            - "inrichtingsbijdrage van € X" (Dutch: fit-out contribution of € X)
+            - "verbouwingsbijdrage door Verhuurder van € X" (Dutch: renovation contribution by Landlord of € X)
 
             ## WHAT NOT TO EXTRACT
             Exclude:
@@ -2860,6 +2907,9 @@ namespaces:
             - Build-Out Allowance
             - Construction Allowance
             - Work Allowance
+            - Inrichtingsbijdrage (Dutch: fit-out contribution)
+            - Verbouwingsbijdrage (Dutch: renovation contribution)
+            - Bijdrage Verhuurder (Dutch: Landlord contribution)
 
         - role: system
           content: |
@@ -2942,6 +2992,8 @@ namespaces:
             - Rights of first offer, refusal, or negotiation
             - Option periods and conditions
             - Rent adjustment mechanisms for options
+            - Verlengingsopties (Dutch: renewal/extension options, e.g., "Huurder heeft het recht de huurovereenkomst te verlengen met 2 maal 5 jaar")
+            - Optierecht or recht van eerste weigering/onderhandeling (Dutch: option right / right of first refusal or negotiation)
 
             ## WHAT NOT TO EXTRACT
             Exclude:

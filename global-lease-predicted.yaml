@@ -82,52 +82,52 @@ namespaces:
     # (i.e., labels with the first letter capitalized run concurrently)
     # however, the collate and join parameters run sequentially
 
-    Terms:
-      reduction:
-        $collate:
-          - =global-fields/self.Arrangement_Start_Date
-          - =global-fields/self.Arrangement_End_Date
-          - =global-fields/self.Occupancy_Date
-          - =global-fields/self.Lease_Term
-          - =global-fields/self.Ref_lease_term_uom_desc
-          - =global-fields/self.Reserved_Parking_Spaces
-          - =global-fields/self.Cost_per_Reserved_Parking_Space
-          - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
-          - =global-fields/self.Ref_property_space_quality_type_desc
-          - =global-fields/self.Arrangement_Signed_Date
-          - =global-fields/self.Asking_Rent_Monthly
-          - =global-fields/self.Ref_asking_rent_monthly_uom_desc
-          - =global-fields/self.Asking_Rent_Yearly
-          - =global-fields/self.Ref_asking_rent_yearly_uom_desc
-          - =global-fields/self.Effective_Rent_Monthly
-          - =global-fields/self.Ref_effective_rent_monthly_uom_desc
-          - =global-fields/self.Effective_Rent_Yearly
-          - =global-fields/self.Ref_effective_rent_yearly_uom_desc
-          - =global-fields/self.Service_Charge_Per_Area_Value
-          - =global-fields/self.Ref_service_charge_per_area_value_price_uom_desc
-          - =global-fields/self.Number_Of_Month_Free_Rent
-          - =global-fields/self.Tenant_Improvement_Allowance
-          - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
-          - =global-fields/self.Option_Notes
+    # Terms:
+    #   reduction:
+    #     $collate:
+    #       - =global-fields/self.Arrangement_Start_Date
+    #       - =global-fields/self.Arrangement_End_Date
+    #       - =global-fields/self.Occupancy_Date
+    #       - =global-fields/self.Lease_Term
+    #       - =global-fields/self.Ref_lease_term_uom_desc
+    #       - =global-fields/self.Reserved_Parking_Spaces
+    #       - =global-fields/self.Cost_per_Reserved_Parking_Space
+    #       - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
+    #       - =global-fields/self.Ref_property_space_quality_type_desc
+    #       - =global-fields/self.Arrangement_Signed_Date
+    #       - =global-fields/self.Asking_Rent_Monthly
+    #       - =global-fields/self.Ref_asking_rent_monthly_uom_desc
+    #       - =global-fields/self.Asking_Rent_Yearly
+    #       - =global-fields/self.Ref_asking_rent_yearly_uom_desc
+    #       - =global-fields/self.Effective_Rent_Monthly
+    #       - =global-fields/self.Ref_effective_rent_monthly_uom_desc
+    #       - =global-fields/self.Effective_Rent_Yearly
+    #       - =global-fields/self.Ref_effective_rent_yearly_uom_desc
+    #       - =global-fields/self.Service_Charge_Per_Area_Value
+    #       - =global-fields/self.Ref_service_charge_per_area_value_price_uom_desc
+    #       - =global-fields/self.Number_Of_Month_Free_Rent
+    #       - =global-fields/self.Tenant_Improvement_Allowance
+    #       - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
+    #       - =global-fields/self.Option_Notes
 
-    #############################################################################################################
-    Lease_Comp_Details:
-      reduction:
-        $collate:
-          - =global-fields/self.total_leased_space
-          - =global-fields/self.ref_total_leased_space_uom_desc
-          - =global-fields/self.ref_lease_activity_type_desc
-          - =global-fields/self.ref_lease_arrangement_type_desc
-          - =global-fields/self.total_leased_space_estimated_f
-          - =global-fields/self.sublease_f
-          - =global-fields/self.lease_arrangement_reason_type_desc
-          - =global-fields/self.tenant_status_type_desc
-          - =global-fields/self.act_1954_f
-          - =global-fields/self.space_condition_type_desc
-          - =global-fields/self.arrangement_end_future_action_type_desc
-          - =global-fields/self.arrangement_end_action_status_type_desc
-          - =global-fields/self.arrangement_end_future_action_date
-          - =global-fields/self.arrangement_end_action_status_reason_type_desc
+    # #############################################################################################################
+    # Lease_Comp_Details:
+    #   reduction:
+    #     $collate:
+    #       - =global-fields/self.total_leased_space
+    #       - =global-fields/self.ref_total_leased_space_uom_desc
+    #       - =global-fields/self.ref_lease_activity_type_desc
+    #       - =global-fields/self.ref_lease_arrangement_type_desc
+    #       - =global-fields/self.total_leased_space_estimated_f
+    #       - =global-fields/self.sublease_f
+    #       - =global-fields/self.lease_arrangement_reason_type_desc
+    #       - =global-fields/self.tenant_status_type_desc
+    #       - =global-fields/self.act_1954_f
+    #       - =global-fields/self.space_condition_type_desc
+    #       - =global-fields/self.arrangement_end_future_action_type_desc
+    #       - =global-fields/self.arrangement_end_action_status_type_desc
+    #       - =global-fields/self.arrangement_end_future_action_date
+    #       - =global-fields/self.arrangement_end_action_status_reason_type_desc
 
     #############################################################################################################
     # floor_suite:
@@ -150,7 +150,7 @@ namespaces:
     #       tenancy_status_reason_notes:
     #         - =global-fields/self.Floor-Suite-Reason-Notes
 
-  
+  #############################################################################################################
     # parking:
     #   reduction:
     #     $join:
@@ -170,3 +170,29 @@ namespaces:
     #         - =global-fields/self.parking_cost_yearly
     #       parking_cost_yearly_uom:
     #         - =global-fields/self.parking_cost_yearly_uom
+
+  #############################################################################################################
+
+    measurements:
+      reduction:
+        $join:
+          debug:
+            - =en-nl-completions-measurements/self.Measurements-Table
+
+          property_element_type_desc:
+            - =global-fields/self.Property_Element_Type_Desc
+
+          property_measurement_size:
+            - =global-fields/self.Property_Measurement_Size
+
+          property_measurement_size_uom:
+            - =global-fields/self.Property_Measurement_Size_UOM
+
+          asking_rent_yearly:
+            - =global-fields/self.Measurement_Asking_Rent_Yearly
+
+          asking_rent_yearly_uom:
+            - =global-fields/self.Measurement_Asking_Rent_Yearly_UOM
+
+          property_measurement_notes:
+            - =global-fields/self.Property_Measurement_Notes

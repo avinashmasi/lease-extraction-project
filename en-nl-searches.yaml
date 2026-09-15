@@ -585,3 +585,47 @@ namespaces:
             per space per month, per space per year, parking exhibit, parking appendix,
             amendment to parking, parking clause, tenant parking arrangement, parking rights schedule
 
+  ##measurements
+    Measurements-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 50
+          prompt: |
+            tenant leased area, leased premises area, rentable area,
+            usable area, floor area, NEN 2580 measurement,
+            office area, warehouse area, mezzanine area,
+            retail area, storage area, archive area,
+            canopy area, facade size, hotel area,
+            secondary area, residential area,
+            area schedule, premises schedule,
+            area allocation, tenant area allocation,
+            measurement report, leased space breakdown,
+            floor plan area, rentable square meters,
+            rentable square feet, warehouse measurements,
+            office measurements, mezzanine measurements,
+            annual rent by area type,
+            warehouse rent, office rent, mezzanine rent,
+            retail rent, storage rent,
+            rent schedule by space type,
+            rent allocation, annual asking rent,
+            annual base rent, yearly rent, annual rental, premises-wide annual rent,
+            rent payment clause, annual amount payable monthly or quarterly,
+            huurprijs, jaarhuur, aanvangshuurprijs, huurprijs per jaar,
+            op jaarbasis, per annum, huurbetaling, betalingsverplichting,
+            rent per square meter,
+            rent per square foot,
+            leased premises component schedule,
+            tenant measurement table,
+            premises clause area breakdown,
+            leased premises description, total tenant premises area,
+            tenant outdoor area, paved yard, covered outdoor area, loading area,
+            allocated parking spaces, tenant parking count, parking area,
+            leased floor suite unit area schedule, annex, exhibit, executed amendment,
+            gehuurde, oppervlakte, metrage, bedrijfsruimte, kantoorruimte,
+            magazijn, opslagruimte, entresol, buitenterrein, parkeerplaatsen,
+            meetrapport, verhuurbaar vloeroppervlak, VVO, LFA
+

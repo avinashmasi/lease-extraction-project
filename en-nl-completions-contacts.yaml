@@ -1,571 +1,1972 @@
+# file name: global-lease-predicted.yaml
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+#   "DM Change Details - 240916" (Lisa, Chris)
+#   "Data Management Fields" (Marlis, Sachin)
 kind: Ontology/v2
-name: en-nl-completions-contacts
+
+# name - used by external ontologies to reference
+#        back to the current instance.
+#        this should always be the same as the file base-name
+name: en-nl-lease
+
+# minimum version
+version: v2.2.126
+
+# entrypoint
+entrypoint: abstract
+
+# defaults
+defaults:
+
+  # embed metadata in all searches
+  search_adorn: false
+
+  # override completion instance confidence with token logits
+  completion_logprobs: true
+
+  # default date input style and output format
+  kind_date_input_format: 'MDY'
+  kind_date_output_format: '%m/%d/%y'
+
+  # turn off highlighted for testing
+  abstract_highlight: false
+  abstract_highlight_search_length: 128
+
+# namespaces
 namespaces:
-  self:
 
-    contact_display_name:
+  # #################################
+  # abstract
+  # #################################
+
+  abstract:
+
+    # used to specialize prompts and logic for
+    # certain locales (a.k.a., jurisdictions), notice
+    # it will keep the value if preset, otherwise set to
+    # the default, e.g., en-us
+    # { "kind": "object" ... "jurisdiction": "en-us" }
+    jurisdiction:
       reduction:
-        $match:
-          key: =global-fields/self.validation
-          default: =fuzzy.contact_display_name
-          primary: =primary.contact_display_name
-          secondary: =secondary.contact_display_name
+        $precedence:
+        - $get: jurisdiction
+        - $set: en-nl
 
-    first_name:
+    validation:
       reduction:
-        $match:
-          key: =global-fields/self.validation
-          default: =fuzzy.first_name
-          primary: =primary.first_name
-          secondary: =secondary.first_name
+        $precedence:
+        - $get: validation
+        - $set: fuzzy   # fuzzy, primary, secondary
 
-    last_name:
+    $classifications:
       reduction:
-        $match:
-          key: =global-fields/self.validation
-          default: =fuzzy.last_name
-          primary: =primary.last_name
-          secondary: =secondary.last_name
+        $set:
+        - name: Lease
+          confidence: 1.0
 
-    email:
+    response_language:
       reduction:
-        $match:
-          key: =global-fields/self.validation
-          default: =fuzzy.email
-          primary: =primary.email
-          secondary: =secondary.email
+        $precedence:
+          - $get: $response_language
+          - $set: en  # en - english, es - spanish, jp - japanese, de - german, etc.
 
-    full_phone_number:
+    response_encoding:
       reduction:
-        $match:
-          key: =global-fields/self.validation
-          default: =fuzzy.full_phone_number
-          primary: =primary.full_phone_number
-          secondary: =secondary.full_phone_number
+        $precedence:
+          - $get: $response_encoding
+          - $eval:
+              lang: =abstract.response_language
+              expression: "'ascii' if lang == 'en' else 'utf-8'"
+          - $set: 'ascii'
 
-  fuzzy:
+    # the following semantics will all run in parallel
+    # (i.e., labels with the first letter capitalized run concurrently)
+    # however, the collate and join parameters run sequentially
 
-    contact_display_name:
+    # Terms:
+    #   reduction:
+    #     $collate:
+    #       - =global-fields/self.Arrangement_Start_Date
+    #       - =global-fields/self.Arrangement_End_Date
+    #       - =global-fields/self.Occupancy_Date
+    #       - =global-fields/self.Occupancy-Date-Explicit
+    #       - =global-fields/self.Lease_Term
+    #       - =global-fields/self.Ref_lease_term_uom_desc
+    #       - =global-fields/self.Reserved_Parking_Spaces
+    #       - =global-fields/self.Cost_per_Reserved_Parking_Space
+    #       - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
+
+    
+    # Contacts:
+    #   reduction:
+    #     $join:
+    #       display_contact_name:
+    #         - =global-fields/self.3PL-Provider-Display-Contact-Name
+    #         - =global-fields/self.3PL-Recipient-Display-Contact-Name
+    #         - =global-fields/self.Landlord-Rep-Display-Contact-Name
+    #         - =global-fields/self.Landlord-Rep-Passive-Display-Contact-Name
+    #         - =global-fields/self.Legal-Owner-Display-Contact-Name
+    #         - =global-fields/self.Tenant-Display-Contact-Name
+    #         - =global-fields/self.Tenant-Rep-Display-Contact-Name
+
+    #       first_name:
+    #         - =global-fields/self.3PL-Provider-First-Name
+    #         - =global-fields/self.3PL-Recipient-First-Name
+    #         - =global-fields/self.Landlord-Rep-First-Name
+    #         - =global-fields/self.Landlord-Rep-Passive-First-Name
+    #         - =global-fields/self.Legal-Owner-First-Name
+    #         - =global-fields/self.Tenant-First-Name
+    #         - =global-fields/self.Tenant-Rep-First-Name
+
+    #       last_name:
+    #         - =global-fields/self.3PL-Provider-Last-Name
+    #         - =global-fields/self.3PL-Recipient-Last-Name
+    #         - =global-fields/self.Landlord-Rep-Last-Name
+    #         - =global-fields/self.Landlord-Rep-Passive-Last-Name
+    #         - =global-fields/self.Legal-Owner-Last-Name
+    #         - =global-fields/self.Tenant-Last-Name
+    #         - =global-fields/self.Tenant-Rep-Last-Name
+
+    #       email:
+    #         - =global-fields/self.3PL-Provider-Email
+    #         - =global-fields/self.3PL-Recipient-Email
+    #         - =global-fields/self.Landlord-Rep-Email
+    #         - =global-fields/self.Landlord-Rep-Passive-Email
+    #         - =global-fields/self.Legal-Owner-Email
+    #         - =global-fields/self.Tenant-Email
+    #         - =global-fields/self.Tenant-Rep-Email
+
+    #       full_phone_number:
+    #         - =global-fields/self.3PL-Provider-Full-Phone-Number
+    #         - =global-fields/self.3PL-Recipient-Full-Phone-Number
+    #         - =global-fields/self.Landlord-Rep-Full-Phone-Number
+    #         - =global-fields/self.Landlord-Rep-Passive-Full-Phone-Number
+    #         - =global-fields/self.Legal-Owner-Full-Phone-Number
+    #         - =global-fields/self.Tenant-Full-Phone-Number
+    #         - =global-fields/self.Tenant-Rep-Full-Phone-Number
+
+    floor_suite:
       reduction:
-        $fuzzy:
-          $parallel:
-          - =primary.contact_display_name
-          - =secondary.contact_display_name
+        $join:
+          debug:
+            - =en-nl-completions-floor-suite/self.Floor-Suite-Table
+          floor_number:
+            - =global-fields/self.Floor-Suite-Floor
+          suite_number:
+            - =global-fields/self.Floor-Suite-Suite
+          arrangement_space_area:
+            - =global-fields/self.Floor-Suite-Space-Size
+          ref_arrangement_space_area_uom_desc:
+            - =global-fields/self.Floor-Suite-Space-Size-UOM
+          full_floor_f:
+            - =global-fields/self.Floor-Suite-Whole-Floor
+          tenancy_status_desc:
+            - =global-fields/self.Floor-Suite-Floor-Status
+          tenancy_status_reason_desc:
+            - =global-fields/self.Floor-Suite-Reason
+          tenancy_status_reason_notes:
+            - =global-fields/self.Floor-Suite-Reason-Notes
 
-    first_name:
+    Parking:
       reduction:
-        $fuzzy:
-          $parallel:
-          - =primary.first_name
-          - =secondary.first_name
+        $join:
+          debug:
+            - =en-nl-completions-property-type-parking-details/self.Parking-Table
+          parking_type_desc:
+            - =global-fields/self.parking_type_desc
+          parking_sub_type_desc:
+            - =global-fields/self.parking_sub_type_desc
+          number_parking_space:
+            - =global-fields/self.number_parking_space
+          parking_cost_monthly:
+            - =global-fields/self.parking_cost_monthly
+          parking_cost_monthly_uom:
+            - =global-fields/self.parking_cost_monthly_uom
+          parking_comments:
+            - =global-fields/self.parking_comments
+          parking_cost_yearly:
+            - =global-fields/self.parking_cost_yearly
+          parking_cost_yearly_uom:
+            - =global-fields/self.parking_cost_yearly_uom
+---
+# file name: global-config.yaml
+kind: Ontology/v2
+name: global-config
+namespaces:
 
-    last_name:
-      reduction:
-        $fuzzy:
-          $parallel:
-          - =primary.last_name
-          - =secondary.last_name
+  # #################################
+  # configuration 
+  # #################################
 
-    email:
-      reduction:
-        $fuzzy:
-          $parallel:
-          - =primary.email
-          - =secondary.email
+  # tools url configuration
+  # configuration:
+  #   tools_url: 
+  #     reduction: http://xero-lambda-tools-service.app-portfolio.svc.cluster.local:8080
 
-    full_phone_number:
-      reduction:
-        $fuzzy:
-          $parallel:
-          - =primary.full_phone_number
-          - =secondary.full_phone_number
+  #   relativedate_endpoint: 
+  #     reduction: http://xero-lambda-abstraction-service.app-portfolio.svc.cluster.local:8080
+  configuration:
+    tools_url:
+      reduction: http://localhost:8080
 
+    relativedate_endpoint:
+      reduction: https://develop.xero.uniti.cbre.com
+
+  # search options (vector-store)
+  search:
+    chunk-max-l2-distance:
+      reduction: 2.0
+
+  # model options
   primary:
+    model:
+      reduction: gpt-5.1
 
-    contact_display_name:
-      confidence: 0.95
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/primary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            Identify the display name of the contact associated with the company.
-          templates: =templates.contact_display_name
-
-    first_name:
-      confidence: 0.95
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/primary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the first name of the contact associated with the company?
-          templates: =templates.first_name
-
-    last_name:
-      confidence: 0.95
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/primary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the last name of the contact associated with the company?
-          templates: =templates.last_name
-
-    email:
-      confidence: 0.99
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/primary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the email address associated with this contact?
-          templates: =templates.email
-
-    full_phone_number:
-      confidence: 0.95
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/primary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the phone number associated with this contact?
-          templates: =templates.full_phone_number
+    baseline:
+      reduction: 0.95
 
   secondary:
+    model:
+      reduction: gemini-2.5-flash
 
-    contact_display_name:
-      confidence: 0.911
+    baseline:
+      reduction: 0.90
+
+  agent:
+    model:
+      reduction: gpt-5.1
+    baseline:
+      reduction: 0.95
+---
+# file name: global-context.yaml
+kind: Ontology/v2
+name: global-context
+namespaces:
+
+  # #################################
+  # context 
+  # #################################
+  # used for general searches and document sections
+
+  self:
+    ascii-formatted-clustered:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: caster
+          algorithm: default
+          max_tokens: 124000
+          chunk: document
+
+    ascii-formatted-clustered-10p:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: caster
+          algorithm: default
+          max_tokens: 124000
+          chunk: document
+          pages: 1-10
+
+    ascii-formatted-aligned:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: caster
+          algorithm: default
+          max_tokens: 124000
+          chunk: document
+---
+# file name: en-nl-searches.yaml
+kind: Ontology/v2
+name: en-nl-searches
+namespaces:
+  self:
+    Floor-Suite-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 25
+          prompt: |
+            tenant leased premises floor suite unit space size area,
+            demised premises, premises schedule, floor schedule, suite schedule,
+            unit schedule, floor-by-floor premises allocation, leased floor,
+            rented floor, whole floor, partial floor, full floor, suite number,
+            floor number, level designation, rent area, lettable area, rentable area,
+            usable area, NEN 2580 measurement, space area, floor area,
+            premises clause, amendment, relocation, surrender, renewal,
+            expansion, contraction, premises exhibit, floor plan,
+            tenant premises table, demised area by floor, unit allocation
+
+    Parking-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 25
+          prompt: |
+            tenant parking rights, parking allocation, parking schedule,
+            car parking, van parking, truck parking, motorcycle parking,
+            bicycle parking, EV parking, accessible parking, visitor parking,
+            reserved parking, unreserved parking, tandem parking, designated parking,
+            non-designated parking, covered parking, uncovered parking, indoor parking,
+            outdoor parking, parking bay, parking space, parking fee, parking rent,
+            parking charge, parking rate, monthly parking cost, annual parking cost,
+            per space per month, per space per year, parking exhibit, parking appendix,
+            amendment to parking, parking clause, tenant parking arrangement, parking rights schedule
+---
+# file name: global-fields.yaml
+kind: Ontology/v2
+name: global-fields
+namespaces:
+
+  self:
+
+    # jurisdiction
+    jurisdiction:
+      reduction:
+        $precedence:
+          - $get: jurisdiction
+          - $const: en-nl
+
+    # validation
+    validation:
+      reduction:
+        $precedence:
+          - $get: validation
+          - $const: fuzzy
+
+    # response language
+    response_language:
+      reduction:
+        $precedence:
+          - $get: $response_language
+          - $set: en  # en - english, es - spanish, jp - japanese, de - german, etc.
+
+    # response encoding
+    response_encoding:
+      reduction:
+        $precedence:
+          - $get: $response_encoding
+          - $eval:
+              lang: =self.response_language
+              expression: "'ascii' if lang == 'en' else 'utf-8'"
+          - $set: 'ascii'
+
+    
+    # Floor/Suite
+
+    Floor-Suite-Floor:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Floor
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Floor
+
+    Floor-Suite-Suite:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Suite
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Suite
+
+    Floor-Suite-Space-Size:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size
+
+    Floor-Suite-Space-Size-UOM:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size-UOM
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Space-Size-UOM
+
+    Floor-Suite-Whole-Floor:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Whole-Floor
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Whole-Floor
+
+    Floor-Suite-Floor-Status:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Floor-Status
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Floor-Status
+
+    Floor-Suite-Reason:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Reason
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Reason
+
+    Floor-Suite-Reason-Notes:
+      type: Floor-Suite
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-floor-suite/self.Floor-Suite-Reason-Notes
+          en-nl: =en-nl-completions-floor-suite/self.Floor-Suite-Reason-Notes
+
+    # Parking
+    parking_type_desc:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_type_desc
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_type_desc
+
+    parking_sub_type_desc:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_sub_type_desc
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_sub_type_desc
+
+    number_parking_space:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.number_parking_space
+          en-nl: =en-nl-completions-property-type-parking-details/self.number_parking_space
+
+    parking_cost_monthly:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
+
+    parking_cost_monthly_uom:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly_uom
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly_uom
+
+    parking_comments:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_comments
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_comments
+
+    parking_cost_yearly:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly
+
+    parking_cost_yearly_uom:
+      type: property_lease_arrangement_parking
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly_uom
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly_uom
+---
+# file name: global-prompts.yaml
+kind: Ontology/v2
+name: global-prompts
+namespaces:
+  # #################################
+  # prompts
+  # #################################
+
+  self:
+    generic-agent-template-content:
+      kind: Text
+      reduction: |
+        You are an AI assitant helping to extract information from a commercial real estate
+        lease. Your task is to determine the most likely answer to the question and use the 
+        provided tools with appropriate inputs wherever necessary.
+
+        The text you see may contain OCR errors, such the word "All" appearing as 
+        "A11" or "0" (zero) appearing as "O" (the letter O) or vice versa. You must 
+        correct any such errors in the returned text, so that the text is free of any 
+        OCR errors. Only correct obvious OCR errors, do not change any other text such 
+        as proper names etc.
+
+        Do not respond with Markdown text formatting like backslash(\) or double quotes ("), 
+        just return the required answer.
+
+        If you can't determine the answer or do not know the answer, just say 
+        "i dont know", don't explain why and never make up an answer
+
+    base-lawyer-prompt:
+      reduction: |
+        You are a commercial real estate lawyer working on determining the most likely 
+        answer to a given question using the context provided.
+
+    base-reflection-prompt:
+      reduction: |
+        You must reflect on the information given before you answer and answer 
+        the question as concisely as possible. Provide only the most reasonable value,
+        and do not explain the reason for your answer or why you can't answer.
+
+    base-english-translation-prompt:
+      reduction: |
+        Always translate your answer to English. That is, your output must consist 
+        exclusively of characters from the standard English Roman alphabet 
+        (a-z, A-Z), Arabic numerals (0-9), and basic English punctuation. 
+        Any translation or transliteration must adhere to this rule. Do not 
+        include any characters from other scripts, symbols, or special formatting
+        such as diacritics or accents.
+
+    base-language-translation-prompt:
+      reduction:
+        $eval:
+          response_language: =global-fields/self.response_language
+          template: |
+            VERY IMPORTANT: YOU MUST ALWAYS TRANSLATE YOUR ANSWER TO {response_language}. Use the 
+            following two-letter language mapping: 'en': 'English', 'es': 'Spanish', 
+            'fr': 'French', 'de': 'German', 'ja': 'Japanese', 'cn': 'Chinese', 'ru': 'Russian'
+            ...and so on for other languages.
+
+            YOUR OUTPUT MUST CONSIST EXCLUSIVELY OF UTF-8 CHARACTERS FROM THE SPECIFIED LANGUAGE 
+            including numerics and basic {response_language} punctuation, if applicable.
+            Any translation or transliteration must adhere to this rule. As an example, 
+            for the language 'ja' (Japanese), you would translate "the lessee shall" as "借主は〜するものとする"
+          expression: template.replace("{response_language}", response_language)
+
+    base-ocr-prompt:
+      reduction: |
+        The text you see may contain OCR errors, such the word "All" appearing as 
+        "A11" or "0" (zero) appearing as "O" (the letter O) or vice versa. You must 
+        correct any such errors in the returned text, so that the text is free of any 
+        OCR errors. Only correct obvious OCR errors, do not change any other text such 
+        as proper names etc.
+
+    base-unknown-prompt:
+      reduction: |
+        If you can't determine the answer or do not know the answer, just say 
+        "i dont know", don't explain why and never make up an answer.
+
+    base-no-markdown-prompt:
+      reduction: |
+        Do not respond with Markdown text formatting like backslash(\) or double quotes ("),
+        just return the required answer.
+
+    base-no-markdown-prompt-clause:
+      reduction: |
+        Do not respond with Markdown text formatting, just return the text.
+
+    clause-intro-prompt:
+      reduction: |
+        You are a commercial real estate lawyer working on extracting the entire 
+        word-for-word text detailing the {clause-name} provided in the following 
+        lease or lease amendment agreement, which are legal documents. 
+
+        There are numerous Tenants' covenants which are usually subject to the approval 
+        or consent of the Landlord. If a required clause provides for approval, then such 
+        requirement must be captured. Conditions of the approvals or consents such as statement 
+        that they are not be unreasonably withheld or delayed by the Landlord need to be 
+        presented in the clause description.
+
+        A {clause-name}, also known as {clause-aka}, {clause-definition}
+
+        The entire word-for-word text of the {clause-name} must be
+        extracted and returned, i.e. paraphrase the entire text as-is and 
+        do not summarize the text and do not make up any text.
+        To make the returned text more readable, you may reformat it by removing 
+        any unnecessary space between words and provide proper indentation, etc.
+
+        Some clauses may be spread out over multiple sections of the document,
+        if that is the case, then extract all such sections as-is, word for word 
+        and return them as a single text block.
+
+        If you do not find any sections of the document that detail a {clause-name},
+        then just say "i don't know", don't explain the reason why and 
+        never make up an response.
+
+    base-professional-language-prompt:
+      reduction: |
+        Do not respond with conversational comments, such as, "Certainly,..." or 
+        "Of course I can,...", etc., use professional legal business language only.
+
+    clause-summary-intro-prompt:
+      reduction: |
+        You are a commercial real estate lawyer working on summarizing the given clause text 
+        detailing the {clause-name}, also known as {clause-aka}, provided in the following 
+        lease or lease agreement, which are legal documents.
+
+        There are numerous Tenants' covenants which are usually subject to the approval 
+        or consent of the Landlord. If a required clause provides for approval, then such 
+        requirement must be captured. Conditions of the approvals or consents such as statement 
+        that they are not be unreasonably withheld or delayed by the Landlord need to be 
+        presented in the clause summary. The summary should also include all key tenant and 
+        landlord responsibilities, obligations and timeframes if any.
+
+        Summarize the given text as concisely as possible, while making sure all the important 
+        infomation is captured in the summary. The summary must be in professional legal business 
+        contract language. At the end of the summary, if possible provide a reference to the exact source 
+        of the clause text within the document including the document type as per the following Example:
+        "(Lease, P. 3, Cl. 7.01)", where "Lease" is the document type, "3" is the page number and 
+        "7.01" is the clause number. In case the reference cannot be determined accurately, just provide 
+        the ONLY the summary text and nothing else.
+
+        Output format is mandatory:
+        1) Return only a single raw clause summary paragraph.
+        2) Do not include any lead-in, framing, or conversational text.
+        3) Do not include headings, labels, bullet points, numbering, or explanatory notes.
+        4) Do not include phrases such as "Here is", "Here's", "plain-language summary", "cleaner version", "Certainly", "Of course", or similar prefaces.
+        5) If source citation is available, append it at the end in this exact style: (Lease, P. 3, Cl. 7.01).
+        6) Do not rewrite, redraft, or restyle the clause as a new legal clause; provide a summary only.
+        7) Do not add follow-up offers or optional suggestions such as "If you would like...".
+        8) Do not use markdown symbols, block quotes, bold markers, list markers, or section headers.
+        9) Start directly with the legal content and end immediately after the summary (and citation, if available).
+        10) Output must be exactly one paragraph (no blank lines, no section breaks).
+        11) Do not begin with any introductory phrase; begin with the clause substance.
+        12) Before finalizing, self-check and remove any forbidden preface or trailing commentary.
+
+        Forbidden output patterns include:
+        "Here is", "Here's", "Below is", "Summary:", "Key points", "cleaned-up version", "more polished version",
+        "plain-language summary", "I can also", "If you'd like", "You can use", "Let me know", "I can help".
+
+    clause-summary-example:
+      reduction: |
+        For example, given the following full clause text:
+          "Tenant shall not make any alterations, additions or improvements in or to the Premises
+          without the prior written consent of Landlord, and t en only by contractors approved by Landlord
+          and pursuant to plans and specification s appro ed in writing by Landlord. f I.: andlord shall grant its
+          consent, Tenant shall provide Landlord with certificates e idencing tl-ie ihsurance coverages and
+          limits required by Exhibit "E" to this Lease prior to the commencement of any such work. Tenant
+          shall not make nor permit any defacement, injury or waste in, to or about the Premises or any part of
+          the Building. Tenant agrees that any improvements installed in the Premises anq paid for by Tenant
+          as part of Tenant's Work or any alterations, additions or improvements as may be installed within the
+          Premises by Tenant pursuant to this paragraJlh 4.Q4 shall, at the option of Landlord, remain as part of
+          the Premises at the expiration of this Leas or any extension or renewal thereof, except for Tenant's
+          trade fixtures and personal property, all of which Tenant shall remove at Lease expiration. Landlord,
+          however, shall have the right to require Tenant to remove any alterations, additions or improvements
+          so made. Tenant shall, at its expense, promptly e air or cause to be repaired any damage to the
+          Premises caused by such removal. With respect to the Tenant Work and any additional alterations,
+          additions or improvements thereafter made by or on behalf of Tenant, at the time of submitting plans
+          and specifications to Landlord for the Tenant Work or such additional items, Tenant may request
+          that Landlord advise whether any components of the Tenant Work or any of such additional items
+          will be required to be removed upon :C ease expiration and Landlord shall promptly respond to such
+          request. If Landlord fails, in response to such a request, to advise Tenant that any such components
+          of the Tenant Work or any of such additional items will be required to be so removed, Landlord shall
+          not have the right at any later time to require Tenant to remove such components or additional items."
+
+        Allowed output format example (no preface text):
+          Tenant is prohibited from making alterations, additions, or improvements to the Premises without 
+          Landlord's prior written consent, using Landlord-approved contractors, and following Landlord-approved 
+          plans. Tenant must provide insurance certificates as required by Exhibit 'E' before commencing any work. 
+          Tenant shall not damage the Premises or Building. Improvements installed by Tenant, excluding trade 
+          fixtures and personal property, remain part of the Premises at Landlord's option upon Lease expiration, 
+          although Landlord may require removal. Tenant may request Landlord to advise whether any work components 
+          must be removed at Lease expiration, and Landlord's failure to do so prevents future removal requirements. 
+          (Lease, P. 6, Cl. 4.04)
+
+    # generic chain content template
+    chain-template-content:
+      reduction:
+        $match:
+          key: =global-fields/self.response_language
+          en:
+            $eval:
+              base_lawyer_prompt: =self.base-lawyer-prompt
+              base_reflection_prompt: =self.base-reflection-prompt
+              base_english_translation_prompt: =self.base-english-translation-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_unknown_prompt: =self.base-unknown-prompt
+              base_no_markdown_prompt: =self.base-no-markdown-prompt
+              expression: |
+                "\n\n".join([base_lawyer_prompt, base_reflection_prompt, base_english_translation_prompt, base_ocr_prompt, base_unknown_prompt, base_no_markdown_prompt])
+          default:
+            $eval:
+              base_lawyer_prompt: =self.base-lawyer-prompt
+              base_reflection_prompt: =self.base-reflection-prompt
+              base_language_translation_prompt: =self.base-language-translation-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_unknown_prompt: =self.base-unknown-prompt
+              base_no_markdown_prompt: =self.base-no-markdown-prompt
+              expression: |
+                "\n\n".join([base_lawyer_prompt, base_reflection_prompt, base_language_translation_prompt, base_ocr_prompt, base_unknown_prompt, base_no_markdown_prompt])
+
+    # # generic prompt template
+    generic-template-content:
+      reduction:
+        $match:
+          key: =global-fields/self.response_language
+          en:
+            $eval:
+              base_lawyer_prompt: =self.base-lawyer-prompt
+              base_reflection_prompt: =self.base-reflection-prompt
+              base_english_translation_prompt: =self.base-english-translation-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_no_markdown_prompt: =self.base-no-markdown-prompt
+              base_unknown_prompt: =self.base-unknown-prompt
+              expression: |
+                "\n\n".join([base_lawyer_prompt, base_reflection_prompt, base_english_translation_prompt, base_ocr_prompt, base_no_markdown_prompt, base_unknown_prompt])
+          default:
+            $eval:
+              base_lawyer_prompt: =self.base-lawyer-prompt
+              base_reflection_prompt: =self.base-reflection-prompt
+              base_language_translation_prompt: =self.base-language-translation-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_no_markdown_prompt: =self.base-no-markdown-prompt
+              base_unknown_prompt: =self.base-unknown-prompt
+              expression: |
+                "\n\n".join([base_lawyer_prompt, base_reflection_prompt, base_language_translation_prompt, base_ocr_prompt, base_no_markdown_prompt, base_unknown_prompt])
+
+    # generic prompt template for extracting clause text
+    clause-template-content:
+      reduction:
+        $match:
+          key: =global-fields/self.response_language
+          en:
+            $eval:
+              clause_intro_prompt: =self.clause-intro-prompt
+              base_english_translation_prompt: =self.base-english-translation-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_no_markdown_prompt_clause: =self.base-no-markdown-prompt-clause
+              base_professional_language_prompt: =self.base-professional-language-prompt
+              expression: |
+                "\n\n".join([clause_intro_prompt, base_english_translation_prompt, base_ocr_prompt, base_no_markdown_prompt_clause, base_professional_language_prompt])
+          default:
+            $eval:
+              clause_intro_prompt: =self.clause-intro-prompt
+              base_language_translation_prompt: =self.base-language-translation-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_no_markdown_prompt_clause: =self.base-no-markdown-prompt-clause
+              base_professional_language_prompt: =self.base-professional-language-prompt
+              expression: |
+                "\n\n".join([clause_intro_prompt, base_language_translation_prompt, base_ocr_prompt, base_no_markdown_prompt_clause, base_professional_language_prompt])
+
+    clause-template-summary-content:
+      reduction:
+        $match:
+          key: =global-fields/self.response_language
+          en:
+            $eval:
+              clause_summary_intro_prompt: =self.clause-summary-intro-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_no_markdown_prompt_clause: =self.base-no-markdown-prompt-clause
+              clause_summary_example: =self.clause-summary-example
+              base_professional_language_prompt: =self.base-professional-language-prompt
+              expression: |
+                "\n\n".join([clause_summary_intro_prompt, base_ocr_prompt, base_no_markdown_prompt_clause, clause_summary_example, base_professional_language_prompt])
+          default:
+            $eval:
+              clause_summary_intro_prompt: =self.clause-summary-intro-prompt
+              base_ocr_prompt: =self.base-ocr-prompt
+              base_no_markdown_prompt_clause: =self.base-no-markdown-prompt-clause
+              clause_summary_example: =self.clause-summary-example
+              base_professional_language_prompt: =self.base-professional-language-prompt
+              base_language_translation_prompt: =self.base-language-translation-prompt
+              expression: |
+                "\n\n".join([clause_summary_intro_prompt, base_ocr_prompt, base_no_markdown_prompt_clause, clause_summary_example, base_professional_language_prompt, base_language_translation_prompt])
+---
+# file name: en-nl-completions-floor-suite.yaml
+kind: Ontology/v2
+name: en-nl-completions-floor-suite
+
+namespaces:
+  self:
+    Floor-Suite-Floor:
+      kind: 
+        Instance: Number
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 0
+          path: floor_number
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Suite:
+      kind: 
+        Instance: Number
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 1
+          path: suite_number
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Space-Size:
+      kind: 
+        Instance: Number
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 2
+          path: arrangement_space_area
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Space-Size-UOM:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 3
+          path: ref_arrangement_space_area_uom_desc
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Whole-Floor:
       kind:
         Instance:
-          Text: =global-fields/self.response_encoding
+          Enum: ["--","Y","N"]
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 4
+          path: full_floor_f
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Floor-Status:
+      kind:
+        Instance: 
+          Enum: ["Expired", "Future", "Gone", "Moving", "No Longer Tenant", "Occupying", "Unknown"]
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 5
+          path: tenancy_status_desc
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Reason:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 6
+          path: tenancy_status_reason_desc
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Reason-Notes:
+      kind: Text
+      reduction:
+        $get:
+          expand:
+            table: 1
+            column: 7
+          path: tenancy_status_reason_notes
+          source: =self.Floor-Suite-Table
+
+    Floor-Suite-Table:
+      kind: Object
+      reduction:
+        $get:
+          path: Floor-Suite-Table
+          source: =self.Floor-Suite-Agent
+
+    Floor-Suite-Agent:
+      confidence: 0.95
+      kind:
+        Instance: Object
       reduction:
         $completion:
           mode: chat
-          model: =global-config/secondary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            Identify the display name of the contact associated with the company.
-          templates: =templates.contact_display_name
-
-    first_name:
-      confidence: 0.911
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/secondary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the first name of the contact associated with the company?
-          templates: =templates.first_name
-
-    last_name:
-      confidence: 0.911
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/secondary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the last name of the contact associated with the company?
-          templates: =templates.last_name
-
-    email:
-      confidence: 0.99
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/secondary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the email address associated with this contact?
-          templates: =templates.email
-
-    full_phone_number:
-      confidence: 0.911
-      kind:
-        Instance:
-          Text: =global-fields/self.response_encoding
-      reduction:
-        $completion:
-          mode: chat
-          model: =global-config/secondary.model
-          citations: =en-nl-searches/self.Contacts-Context
-          prompt: |
-            What is the phone number associated with this contact?
-          templates: =templates.full_phone_number
+          model: =global-config/primary.model
+          citations: =en-nl-searches/self.Floor-Suite-Context
+          templates: =templates.Floor-Suite-Agent
 
   templates:
-
-    contact_display_name:
+    Floor-Suite-Agent:
       reduction:
         $const:
+          - role: system
+            content: =global-prompts/self.generic-agent-template-content
+
+          - role: system
+            raw: true
+            content: |
+              You are a commercial real estate lease analyst.
+
+              Extract every supported floor, suite, unit, or demised-space
+              arrangement for the applicable tenant from the complete lease
+              context.
+
+              Return valid JSON only. Do not return markdown, explanations,
+              citations, analysis, confidence scores, or additional keys.
+
+              ================================================================
+              OUTPUT CONTRACT
+              ================================================================
+
+              Return exactly one "Floor-Suite-Table" object containing these fields:
+
+              - floor_number
+              - suite_number
+              - arrangement_space_area
+              - ref_arrangement_space_area_uom_desc
+              - full_floor_f
+              - tenancy_status_desc
+              - tenancy_status_reason_desc
+              - tenancy_status_reason_notes
+
+              Every field must be an array. Values at the same array index form
+              one coherent record. All eight arrays must have equal length.
+
+              Return only:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": [string],
+                  "suite_number": [string],
+                  "arrangement_space_area": [string],
+                  "ref_arrangement_space_area_uom_desc": [string],
+                  "full_floor_f": [string],
+                  "tenancy_status_desc": [string],
+                  "tenancy_status_reason_desc": [string],
+                  "tenancy_status_reason_notes": [string]
+                }
+              }
 
-        - role: system
-          content: =global-prompts/self.generic-template-content
+              If no supported record exists, return:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": [],
+                  "suite_number": [],
+                  "arrangement_space_area": [],
+                  "ref_arrangement_space_area_uom_desc": [],
+                  "full_floor_f": [],
+                  "tenancy_status_desc": [],
+                  "tenancy_status_reason_desc": [],
+                  "tenancy_status_reason_notes": []
+                }
+              }
 
-        - role: system
-          content: |
-            Definition
+              Never create an empty placeholder record.
 
-            Contact Display Name is the complete name of an individual person associated with a company referenced in the lease document.
+              ================================================================
+              CONTEXT ANCHORING
+              ================================================================
 
-            The company may be associated with the leased property as:
+              Use only values that are expressly tied to the applicable tenant's
+              demised premises in the lease, amendment, schedule, exhibit, drawing,
+              or measurement report.
 
-            - Tenant
-            - Tenant Representative
-            - Legal Owner
-            - Landlord
-            - Landlord Representative
-            - Broker
-            - Property Manager
-            - Asset Manager
-            - Facilities Manager
-            - Notice Recipient
-            - Authorized Signatory
+              Prefer tenant-specific premises schedules, floor schedules, suite
+              schedules, amendments, and drawing labels over general building
+              descriptions, addresses, cadastral references, and unrelated tenants.
 
-            Locations To Search
+              Ignore building-wide totals, common areas, addresses, postal codes,
+              elevator ranges, and technical room references unless they are
+              expressly part of the tenant's demised premises.
+
+              If the same arrangement appears in multiple sources, keep the most
+              specific and controlling version only once.
 
-            Contact names frequently appear in:
+              ================================================================
+              CONTROLLING PREMISES
+              ================================================================
+
+              First identify the applicable tenant's controlling demised
+              premises.
+
+              Use this source priority:
+
+              1. Latest executed amendment expressly changing the premises.
+              2. Executed lease premises clause.
+              3. Lease summary consistent with the executed premises clause.
+              4. Lease-specific premises or floor schedule.
+              5. Tenant-specific measurement or NEN 2580 schedule.
+              6. Lease-specific exhibit, appendix, floor plan, or drawing.
+
+              Apply executed expansions, contractions, surrenders, relocations,
+              substitutions, renewals, and terminations from their stated
+              effective dates.
 
-            - Notice sections
-            - Attn / Attention lines
-            - Contact information sections
-            - Landlord information sections
-            - Tenant information sections
-            - Representative sections
-            - Signature blocks
-            - Execution pages
-            - Correspondence sections
-            - Broker information
-            - Property management information
+              A later amendment overrides only the premises terms it expressly
+              changes. Retain original terms not expressly changed.
 
-            Multi-Contact Rule
+              Extract only records clearly connected to the applicable tenant's
+              demised premises. Deduplicate the same arrangement when repeated
+              across sources.
 
-            A lease document may contain multiple contacts.
+              ================================================================
+              RECORD CREATION
+              ================================================================
 
-            Extract every valid contact.
+              A valid record requires at least one of:
 
-            Each contact must be treated as a separate contact record.
+              - a supported floor or level; or
+              - an expressly identified suite, unit, or internal space
+                designation.
 
-            Do not combine multiple contacts into a single record.
+              Create separate records when supported floor, suite, area,
+              full-floor flag, status, status reason, effective date, or premises
+              arrangement differs.
 
-            Extraction Rules
+              Preserve multiple floors as one record when one aggregate area
+              applies to those floors and separate floor areas are not expressly
+              stated.
 
-            1. Extract only individual people.
+              Normalize the floor numbers and separate non-consecutive floors with
+              commas.
 
-            2. Extract the complete name exactly as written.
+              Example:
 
-            3. Preserve middle names and initials.
+              "1,779.7 square metres on the 13th and 14th floors"
 
-            4. Preserve suffixes when present.
+              Return:
 
-            5. Ignore titles such as Director, Manager, VP, EVP, CEO and COO.
+              floor_number = "13,14"
+              arrangement_space_area = "1779.7"
+              ref_arrangement_space_area_uom_desc = "SqM"
 
-            6. If First Name and Last Name appear separately, combine them into a complete display name.
+              Never divide or apportion an aggregate area among multiple floors.
 
-            7. If only a company name is listed without an individual, return "i dont know".
+              Never divide or apportion an aggregate area among multiple floors.
 
-            Do NOT Extract
+              Do not create separate records for office, warehouse, storage, or
+              other space types unless each component has a supported floor,
+              suite, unit, or demised-space designation.
 
-            - Company names
-            - Property names
-            - Building names
-            - Department names
-            - Job titles
-            - Email addresses
-            - Phone numbers
+              ================================================================
+              FIELD RULES
+              ================================================================
 
-            Examples
+              floor_number
+              ------------
 
-            Given:
-            Attention: Jennifer Thompson
+              Return only the normalized floor number. Remove all ordinal suffixes,
+              written-number repetitions, and floor-related wording.
 
-            Response:
-            Jennifer Thompson
+              Return the value as a string containing only:
 
-            Given:
-            By: Paula Pryor
+              - digits for a single floor;
+              - a leading minus sign for an expressly numbered basement level;
+              - commas for a supported list of floors; or
+              - a hyphen for an expressly stated floor range.
 
-            Response:
-            Paula Pryor
+              Normalize floor descriptions as follows:
 
-            Given:
-            CBRE Group, Inc.
+              - "4th floor" becomes "4"
+              - "4th (fourth) floor" becomes "4"
+              - "Floor 4" becomes "4"
+              - "Fourth Floor" becomes "4"
+              - "Level 04" becomes "04"
+              - "Ground Floor" becomes "0"
+              - "Ground Level" becomes "0"
+              - "Basement 1" becomes "-1"
+              - "Basement Level 2" becomes "-2"
+              - "Floors 3-5" becomes "3-5"
+              - "13th and 14th floors" becomes "13,14"
 
-            Response:
-            i dont know
+              Remove:
 
-        - role: user
-          content: "{prompt}"
+              - "floor"
+              - "floors"
+              - "level"
+              - "levels"
+              - ordinal suffixes such as "st", "nd", "rd", and "th"
+              - written-number repetitions in parentheses
+              - surrounding parentheses
+              - unnecessary spaces
 
-    first_name:
-      reduction:
-        $const:
+              When the same floor is stated both numerically and in words, return
+              the numeric value only.
 
-        - role: system
-          content: =global-prompts/self.generic-template-content
+              Examples:
 
-        - role: system
-          content: |
-            Definition
+              - "1st (first) floor" becomes "1"
+              - "2nd (second) floor" becomes "2"
+              - "3rd (third) floor" becomes "3"
+              - "10th (tenth) floor" becomes "10"
 
-            First Name is the given name of an individual contact associated with a company referenced in the lease document.
+              Convert a floor stated only in words to its corresponding number when
+              the wording unambiguously identifies a floor.
 
-            Multi-Contact Rule
+              Examples:
 
-            Each contact must be treated independently.
+              - "First Floor" becomes "1"
+              - "Second Floor" becomes "2"
+              - "Twelfth Floor" becomes "12"
 
-            The first name must belong to the same contact record.
+              Preserve meaningful leading zeros when expressly stated.
 
-            Do not use another contact's first name.
+              Examples:
 
-            Extraction Rules
+              - "Floor 00" becomes "00"
+              - "Floor 01" becomes "01"
 
-            1. Extract only the first name.
+              For an expressly stated range of floors, return the normalized range
+              without floor wording.
 
-            2. Ignore middle names.
+              Examples:
 
-            3. Ignore titles.
+              - "Floors 3 through 5" becomes "3-5"
+              - "3rd to 5th floors" becomes "3-5"
 
-            4. Preserve spelling exactly.
+              For multiple non-consecutive floors associated with one aggregate
+              premises record, return the normalized numbers separated by commas.
 
-            5. If a valid first name cannot be identified, return "i dont know".
+              Examples:
 
-            Do NOT Extract
+              - "13th and 14th floors" becomes "13,14"
+              - "Floors 2, 4 and 6" becomes "2,4,6"
 
-            - Company names
-            - Last names
-            - Email addresses
-            - Phone numbers
-            - Job titles
-            Examples:
+              Do not split an aggregate multi-floor arrangement into separate
+              records unless separate floor areas or other record-specific details
+              are expressly stated.
 
-            Jennifer Thompson
-            Response: Jennifer
+              If a named level has no reliable numeric equivalent, return "".
 
-            Michael J. Anderson
-            Response: Michael
+              Examples of named levels that may require an empty value:
 
-            CBRE Group, Inc.
-            Response: i dont know
+              - "Mezzanine"
+              - "Upper Level"
+              - "Lower Level"
+              - "Podium"
+              - "Roof Level"
 
-        - role: user
-          content: "{prompt}"
+              Do not invent a number for a named level.
 
-    last_name:
-      reduction:
-        $const:
+              If an expressly demised suite has no supported floor, return ""
+              for floor_number and retain the record.
 
-        - role: system
-          content: =global-prompts/self.generic-template-content
+              Do not derive a floor number from:
 
-        - role: system
-          content: |
-            Definition
+              - a property address;
+              - street or house number;
+              - suite or unit number;
+              - room number;
+              - postal code;
+              - leased area;
+              - building identifier;
+              - cadastral number;
+              - elevator range;
+              - drawing number;
+              - project number; or
+              - technical schedule.
 
-            Last Name is the surname or family name of an individual contact.
+              Before returning, verify that every non-empty floor_number contains
+              only normalized numeric floor information and does not contain words
+              such as "floor", "level", "first", "second", "third", or "fourth".
+              suite_number
+              ------------
 
-            Multi-Contact Rule
+              Extract suite_number only when the applicable tenant's controlling
+              leased premises expressly use the label "Suite" immediately before
+              the designation.
 
-            The last name must belong to the same contact record.
+              Do not treat "Unit", "Office", "Space", "Room", "Floor", "Level",
+              or any other premises label as a suite. A designation introduced as
+              a unit remains a unit and must not be converted into suite_number.
 
-            Do not use another contact's surname.
+              Return only the designation that follows the explicit "Suite" label.
+              Remove the word "Suite" from the output.
 
-            Extraction Rules
+              Examples:
 
-            1. Extract only the surname.
+              - "Suite 500" becomes "500"
+              - "Suite 4.02" becomes "4.02"
+              - "Unit 4.02" becomes ""
+              - "Office 5.01" becomes ""
+              - "Space 200" becomes ""
 
-            2. Ignore titles.
+              Preserve the expressly stated suite designation, including meaningful
+              decimal points, hyphens, letters, and leading zeros. Do not alter,
+              calculate, or reinterpret the designation.
 
-            3. Ignore middle names and initials.
+              If multiple explicit Suite designations apply to one premises record,
+              return their designations in one string separated by commas and a
+              single space, without repeating the word "Suite".
 
-            4. Preserve spelling exactly.
+              Example:
 
-            5. If a valid surname cannot be identified, return "i dont know".
+              - "Suite 235, Suite 246 and Suite 1500" becomes "235, 246, 1500"
 
-            Do NOT Extract
+              Do not infer, derive, or construct suite_number from a unit number,
+              floor number, room number, street number, house number, building
+              number, address, address suffix, postal code, cadastral number,
+              drawing number, area, or any other contextual value.
 
-            - Company names
-            - First names
-            - Email addresses
-            - Phone numbers
+              If the source says "Unit 4.02" and does not separately and expressly
+              identify "Suite 4.02", return "" for suite_number.
 
-            Examples
+              If no qualifying explicit Suite designation is stated, return "".
 
-            Jennifer Thompson
-            Response: Thompson
+              arrangement_space_area
+              ----------------------
 
-            Michael J. Anderson
-            Response: Anderson
+              Return only the expressly stated numeric leased area associated
+              with the corresponding record.
 
-            CBRE Group, Inc.
-            Response: i dont know
+              Associate an area only when connected through the same sentence,
+              bullet, table row, schedule row, subordinate floor heading, or
+              lease-specific plan label. Same-page proximity alone is
+              insufficient.
 
-        - role: user
-          content: "{prompt}"
+              Remove approximation wording, units, measurement bases, and
+              thousands separators. Preserve stated decimal precision.
 
-    email:
-      reduction:
-        $const:
+              Examples:
 
-        - role: system
-          content: =global-prompts/self.generic-template-content
+              - "1,193.6 sq m" becomes "1193.6"
+              - "19,167.58 sq m" becomes "19167.58"
+              - "390,44 sq m" becomes "390.44"
+              - "1.239 sq m" becomes "1239" when "." is a thousands separator
+              - "1.239,50 sq m" becomes "1239.50"
 
-        - role: system
-          content: |
-            Definition
+              Never calculate, estimate, subtract, convert, divide, derive, or
+              apportion an area.
 
-            Email is the electronic mail address associated with an individual contact.
+              Do not use building-wide, cadastral, land, energy-label, or
+              unrelated common-area measurements.
 
-            Locations To Search
+              If no separate area is expressly stated for a valid record,
+              return "".
 
-            - Contact information sections
-            - Notice sections
-            - Signature blocks
-            - Broker information
-            - Property management sections
-            - Representative sections
-            - Correspondence sections
+              ref_arrangement_space_area_uom_desc
+              -----------------------------------
 
-            Multi-Contact Rule
+              Return only one of:
 
-            Associate the email only with the current contact.
+              - "--"
+              - "SqM"
+              - "SqFt"
+              - "Ac"
+              - "Ha"
+              - "SqKm"
+              - "SqMi"
 
-            Do not assign another contact's email.
+              Normalize as follows:
 
-            Extraction Rules
+              - m², m2, sqm, sq m, square metre or square metres -> "SqM"
+              - ft², ft2, sqft, sq ft, square foot or square feet -> "SqFt"
+              - acre or acres -> "Ac"
+              - hectare or hectares -> "Ha"
+              - km², km2, sq km or square kilometres -> "SqKm"
+              - mi², mi2, sq mi or square miles -> "SqMi"
 
-            1. Extract only the contact's email address.
+              Do not include LFA, GFA, GVO, VVO, BVO, NVO, rentable, lettable,
+              or usable in this field.
 
-            2. Preserve the email exactly as written.
+              Do not infer or convert a unit.
 
-            3. Associate the email with the correct contact.
+              If arrangement_space_area is empty or its unit is unsupported,
+              return "--".
 
-            4. If multiple contacts exist, ensure the email belongs to the same contact.
+              full_floor_f
+              ------------
 
-            5. If no email exists for the contact, return "i dont know".
+              Return only:
 
-            Do NOT Extract
+              - "--"
+              - "Y"
+              - "N"
 
-            - Company URLs
-            - Websites
-            - Phone numbers
-            - Company names
+              Apply this flag very conservatively. It is not a general floor
+              identification field.
 
-            Examples
+              Return "Y" only when the controlling source expressly states or
+              clearly establishes that the tenant demises the entire floor, not
+              merely a floor level or a specified unit within that floor.
 
-            Jennifer Thompson
-            Email: jthompson@acme.com
+              Strong "Y" indicators:
 
-            Response:
-            jthompson@acme.com
+              - "the entire 5th floor"
+              - "the whole of the 5th floor"
+              - "all space on the 5th floor"
+              - "the tenant leases the whole floor"
+              - "de gehele 5e verdieping", "de volledige 5e verdieping",
+                "de hele 5e verdieping", or equivalent Dutch wording meaning
+                the entire or whole floor
+              - "de volledige etage", "de gehele etage", or "in zijn geheel"
+                when the wording is expressly tied to an identified floor in the
+                tenant's demised premises
+              - an incorporated schedule expressly identifying the complete
+                floor as the tenant's demised premises
+              - a lease-specific plan or drawing that clearly outlines or shades
+                the entire identified floor as the tenant's premises, with no
+                separate excluded area shown on that floor
 
-            Website: www.acme.com
+              Return "N" when the source identifies a specific unit, suite,
+              office, office number, or partial area within the floor.
 
-            Response:
-            i dont know
+              Strong "N" indicators:
 
-        - role: user
-          content: "{prompt}"
+              - "part of the 5th floor"
+              - "a portion of the 5th floor"
+              - "unit 4.02"
+              - "suite 5A"
+              - "Office 3.10"
+              - "gedeelte van de 5e verdieping", "een deel van de 5e
+                verdieping", "deelverdieping", or equivalent Dutch wording
+                meaning part or portion of an identified floor
+              - a schedule showing multiple units on the floor and identifying
+                the tenant's unit
+              - a lease-specific plan or drawing that clearly outlines only part
+                of an identified floor as the tenant's premises
 
-    full_phone_number:
-      reduction:
-        $const:
+              A single floor designation such as "4th floor (unit 4.02)" is not
+              enough for "Y". That wording means a specific unit on the floor,
+              not the entire floor.
 
-        - role: system
-          content: =global-prompts/self.generic-template-content
+              Treat Dutch terms "verdieping", "etage", "bouwlaag", and
+              "vloer" as possible floor references only when the surrounding
+              lease wording clearly identifies a numbered or otherwise supported
+              floor. Do not treat "vloeroppervlakte" or another area-only term
+              as evidence of whole-floor occupancy.
 
-        - role: system
-          content: |
-            Definition
+              Do not infer "Y" from a floor address, a floor number attached to a
+              suite number, an area measurement, or the absence of other tenants.
+              Do not infer "Y" from common-area rights or the fact that the tenant
+              occupies one floor in a building.
 
-            Full Phone Number is the primary telephone number associated with an individual contact.
+              If the source does not clearly say the whole floor is demised, return
+              "--" unless the lease expressly identifies a partial occupancy or unit,
+              in which case return "N".
 
-            Locations To Search
+              tenancy_status_desc
+              -------------------
 
-            - Contact information sections
-            - Notice sections
-            - Signature pages
-            - Representative sections
-            - Broker information
-            - Property management sections
+              Return only:
 
-            Multi-Contact Rule
+              - "Expired"
+              - "Future"
+              - "Gone"
+              - "Moving"
+              - "No Longer Tenant"
+              - "Occupying"
+              - "Unknown"
 
-            Associate the phone number only with the current contact.
+              CURRENT PROCESSING DATE
 
-            Do not assign another contact's phone number.
+              Use 10 September 2026 as the current processing date for this
+              extraction unless the runtime context supplies a different date
+              expressly labelled "Current processing date", "Processing date",
+              "As-of date", or "Status date". A valid expressly labelled runtime
+              date overrides 10 September 2026.
 
-            Extraction Rules
+              Never use a lease-internal date as the processing date. Do not use a
+              signing date, execution date, DocuSign date, document date, upload
+              date, scan date, amendment date, commencement date, expiration date,
+              notice date, surrender date, relocation date, or the latest date in
+              the PDF as the processing date.
 
-            1. Extract only the contact's phone number.
+              CONTROLLING TERM IDENTIFICATION
 
-            2. Preserve formatting exactly as written.
+              Before determining status, identify from the controlling executed
+              lease and executed amendments:
 
-            3. Include country codes.
+              - commencement date;
+              - last controlling expiration date;
+              - automatic continuation or renewal provisions;
+              - executed termination, surrender, contraction, or relocation;
+              - effective date of each relevant change; and
+              - the premises record affected by each change.
 
-            4. Include area codes.
+              A clearly completed and signed lease is executed evidence. DocuSign
+              completion may prove execution, but a DocuSign timestamp is not the
+              processing date.
 
-            5. Include extensions when present.
+              Do not return Unknown merely because the term dates and the floor
+              description appear in different clauses or pages. Associate an
+              executed lease's controlling term dates with every premises record
+              governed by that lease unless an executed amendment establishes a
+              different term for a specific record.
 
-            6. If multiple phone numbers exist, select the phone number associated with that contact.
+              STATUS PRECEDENCE
 
-            7. If no phone number exists for the contact, return "i dont know".
+              Apply statuses in this order and use the first fully supported one:
 
-            Do NOT Extract
+              1. "No Longer Tenant"
+              2. "Gone"
+              3. "Moving"
+              4. "Future"
+              5. "Expired"
+              6. "Occupying"
+              7. "Unknown"
 
-            - Postal codes
-            - Building numbers
-            - Address numbers
-            - Fax numbers unless clearly designated as the contact phone number
+              NO LONGER TENANT
 
-            Examples
+              Return "No Longer Tenant" only when an executed termination,
+              cancellation, rescission, or replacement agreement ends the
+              tenant's entire tenancy and is effective on or before the processing
+              date. Do not use it for one removed floor or Suite or for an
+              unexercised termination option.
 
-            Phone: +1 312 555 6789
+              GONE
 
-            Response:
-            +1 312 555 6789
+              Return "Gone" only when an executed surrender, contraction,
+              completed relocation, or premises amendment removes this specific
+              floor, Suite, unit, or premises record and is effective on or before
+              the processing date.
 
-            Tel: (312) 425-0658
+              MOVING
 
-            Response:
-            (312) 425-0658
+              Return "Moving" only for the old premises when an executed
+              relocation requires the tenant to leave that record on a date after
+              the processing date. General moving rules, fit-out work, access,
+              delivery, or key-transfer provisions do not support Moving.
 
-            Fax: +1 312 555 1111
+              FUTURE
 
-            Response:
-            i dont know
+              Return "Future" only when all conditions are satisfied:
 
-        - role: user
-          content: "{prompt}"
+              1. The lease or amendment granting the record is executed.
+              2. The controlling commencement or premises effective date is after
+                 the processing date.
+              3. No effective early possession provision establishes current
+                 occupancy.
+              4. No unresolved condition precedent prevents effectiveness.
+
+              A commencement date equal to or before 10 September 2026 is not
+              Future. For example, 1 December 2025 is before 10 September 2026 and
+              therefore cannot produce Future.
+
+              EXPIRED
+
+              Return "Expired" only when all conditions are satisfied:
+
+              1. The last controlling expiration date is before the processing
+                 date.
+              2. No automatic continuation, renewal, extension, holdover, or later
+                 executed agreement keeps the record effective.
+              3. No higher-priority termination status applies.
+
+              Do not use only the initial term end date without reviewing renewal
+              and continuation language.
+
+              OCCUPYING
+
+              Return "Occupying" when all conditions are satisfied:
+
+              1. The lease or controlling amendment is executed.
+              2. The controlling commencement date is on or before the processing
+                 date.
+              3. The controlling expiration date is on or after the processing
+                 date, or a supported continuation, renewal, extension, or
+                 holdover keeps the lease effective.
+              4. No effective surrender, contraction, relocation, or termination
+                 removes the premises record.
+              5. No unresolved condition precedent prevents effectiveness.
+
+              Apply the same active lease status to every floor-suite record
+              governed by the same controlling term. Do not require the lease to
+              repeat the term dates beside each floor or area.
+
+              Mandatory comparison example:
+
+              commencement date: 1 December 2025
+              processing date: 10 September 2026
+              expiration date: 30 November 2030
+
+              Because 1 December 2025 is on or before 10 September 2026 and
+              30 November 2030 is on or after 10 September 2026, return
+              "Occupying".
+
+              UNKNOWN
+
+              Return "Unknown" only when no other status is fully supported after
+              reviewing the complete executed lease and amendments.
+
+              Unknown is appropriate when execution is unclear, a controlling
+              date is missing or unreadable, documents conflict, an effectiveness
+              condition is unresolved, or OCR corruption prevents reliable date
+              comparison.
+
+              Do not return Unknown when an executed lease clearly supplies a
+              commencement date and expiration date that contain the processing
+              date. Do not write that lease term dates are not reliably established
+              when those dates are expressly stated in the controlling lease.
+
+              tenancy_status_reason_desc
+              --------------------------
+
+              Return the reason mapped exactly to the selected status:
+
+              - Occupying -> "Executed lease in effect"
+              - Future -> "Lease commencement date is in the future"
+              - Expired -> "Lease term expired"
+              - Gone -> "Premises removed by executed agreement"
+              - Moving -> "Executed relocation pending"
+              - No Longer Tenant -> "Entire tenancy terminated by executed agreement"
+              - Unknown -> "Status not reliably established"
+
+              Use "Executed lease in effect" only when the Occupying conditions
+              are satisfied. Use "Lease commencement date is in the future" only
+              when commencement is after the processing date.
+
+              Do not include dates, citations, analysis, or confidence language in
+              tenancy_status_reason_desc.
+
+              tenancy_status_reason_notes
+              ---------------------------
+
+              Return concise factual support for the selected status. The note
+              must agree with tenancy_status_desc and identify the actual dates
+              used in the decision.
+
+              For Occupying, use:
+
+              "As of [processing date], the executed lease term runs from
+              [commencement date] through [expiration date]."
+
+              For Future, use:
+
+              "As of [processing date], the executed lease commences on
+              [commencement date]."
+
+              For Expired, use:
+
+              "As of [processing date], the controlling lease term ended on
+              [expiration date] with no supported continuation."
+
+              For Gone, Moving, or No Longer Tenant, identify the executed event,
+              effective date, and affected premises.
+
+              For Unknown, state the exact missing or conflicting evidence. Do not
+              use a generic statement that dates are unreliable when the executed
+              lease expressly states them.
+
+              Correct note for a lease from 1 December 2025 through 30 November
+              2030:
+
+              "As of 10 September 2026, the executed lease term runs from
+              1 December 2025 through 30 November 2030."
+
+              Do not include citations, page numbers, clause numbers, confidence
+              scores, reasoning steps, assumed events, or unsupported conclusions.
+
+              ================================================================
+              AREA DETAIL AND MEASUREMENT SOURCES
+              ================================================================
+
+              Prefer detailed floor-level or suite-level areas over a duplicated
+              aggregate area only when all detailed areas are expressly stated,
+              apply to the same premises, and reconcile with the aggregate.
+
+              Arithmetic may be used only to validate reconciliation. Never
+              output a calculated value.
+
+              Do not return both aggregate and detailed records when doing so
+              double counts the same premises.
+
+              Use a NEN 2580 report, measurement schedule, tenant overview, floor
+              plan, or drawing only when clearly linked to the tenant's premises
+              through incorporation, tenant, address, floor, suite, component, or
+              area reconciliation.
+
+              Exclude building totals, unrelated tenants, parking, installation
+              areas, traffic areas, sanitary areas, voids, measurement
+              corrections, and separately stated common-area allocations.
+
+              A common-area share may remain included in the tenant's area when
+              the lease defines the aggregate as the tenant's leased or lettable
+              area. Do not create a separate common-area record.
+
+              ================================================================
+              AMENDMENTS
+              ================================================================
+
+              Apply an executed amendment from its stated effective date.
+
+              Retain original premises terms not expressly changed.
+
+              Keep added, surrendered, relocated, and replacement premises
+              separate when their designations, statuses, or effective dates
+              differ.
+
+              Do not treat surrendered premises as currently occupied.
+
+              Do not treat replacement premises as effective before the stated
+              effective date.
+
+              Use only expressly stated revised or remaining areas. Never
+              calculate a remaining area by subtraction.
+
+              ================================================================
+              EXCLUSIONS
+              ================================================================
+
+              Exclude:
+
+              - parking, vehicle storage, bicycle storage, and loading areas;
+              - shared facilities not included in the demised premises;
+              - addresses, postal codes, building IDs, and registration records;
+              - unrelated tenants and building-wide totals;
+              - technical, construction, mechanical, electrical, HVAC,
+                fire-safety, elevator, staircase, floor-load, and finish details;
+              - energy-label, cadastral, and land areas;
+              - drawing, project, report, and certificate numbers;
+              - blank templates, drafts, unsigned alternatives, and unexercised
+                options; and
+              - marketing availability not incorporated into the tenant's lease.
+
+              ================================================================
+              FINAL CHECK
+              ================================================================
+
+              Before returning, verify:
+
+              - the output contains only the "Floor-Suite-Table" object;
+              - it contains exactly the eight required arrays;
+              - all arrays have equal length;
+              - each record has floor_number, suite_number, or both;
+              - every record belongs to the applicable tenant's premises;
+              - every non-empty floor_number contains only normalized numeric floor
+                information, using digits, an optional leading minus sign, commas,
+                or a range hyphen;
+              - floor_number does not contain ordinal suffixes, written floor
+                numbers, parentheses, or words such as "floor" or "level";
+              - every area is expressly stated and correctly associated;
+              - no area was calculated or converted;
+              - no detailed record duplicates an aggregate record;
+              - dropdown fields contain only allowed values;
+              - duplicate and excluded records are removed; and
+              - the output is valid JSON.
+
+          - role: system
+            raw: true
+            content: |
+              The following examples define the required extraction behavior.
+              Do not reuse example values unless they appear in the supplied
+              context.
+
+              ================================================================
+              EXAMPLE 1: FLOOR-BY-FLOOR AREAS
+              ================================================================
+
+              Context:
+
+              "A total of approximately 1,857.7 m² LFA, distributed as follows:
+              2nd floor: approximately 60 m² LFA storage space;
+              13th floor: approximately 1,193.6 m² LFA office space;
+              14th floor: approximately 586.1 m² LFA office space."
+
+              The executed lease term runs from 1 January 2025 through
+              31 December 2034. Whole-floor status is not established.
+
+              Result:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": [
+                    "2nd floor",
+                    "13th floor",
+                    "14th floor"
+                  ],
+                  "suite_number": [
+                    "",
+                    "",
+                    ""
+                  ],
+                  "arrangement_space_area": [
+                    "60",
+                    "1193.6",
+                    "586.1"
+                  ],
+                  "ref_arrangement_space_area_uom_desc": [
+                    "SqM",
+                    "SqM",
+                    "SqM"
+                  ],
+                  "full_floor_f": [
+                    "--",
+                    "--",
+                    "--"
+                  ],
+                  "tenancy_status_desc": [
+                    "Occupying",
+                    "Occupying",
+                    "Occupying"
+                  ],
+                  "tenancy_status_reason_desc": [
+                    "Executed lease in effect",
+                    "Executed lease in effect",
+                    "Executed lease in effect"
+                  ],
+                  "tenancy_status_reason_notes": [
+                    "As of 10 September 2026, the executed lease term runs from 1 January 2025 through 31 December 2034.",
+                    "As of 10 September 2026, the executed lease term runs from 1 January 2025 through 31 December 2034.",
+                    "As of 10 September 2026, the executed lease term runs from 1 January 2025 through 31 December 2034."
+                  ]
+                }
+              }
+
+              Do not also return the aggregate 1,857.7 square metre record.
+
+              ================================================================
+              EXAMPLE 2: ADDRESS SUFFIX IS NOT A SUITE
+              ================================================================
+
+              Context:
+
+              "The leased property at Trompenburgstraat 2C has a total size of
+              approximately 998.10 m² LFA office space located on the 5th floor,
+              including a share in the general areas."
+
+              The executed lease term runs from 1 December 2025 through
+              30 November 2030. Whole-floor status is not established.
+
+              Result:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": [
+                    "5th floor"
+                  ],
+                  "suite_number": [
+                    ""
+                  ],
+                  "arrangement_space_area": [
+                    "998.10"
+                  ],
+                  "ref_arrangement_space_area_uom_desc": [
+                    "SqM"
+                  ],
+                  "full_floor_f": [
+                    "--"
+                  ],
+                  "tenancy_status_desc": [
+                    "Occupying"
+                  ],
+                  "tenancy_status_reason_desc": [
+                    "Executed lease in effect"
+                  ],
+                  "tenancy_status_reason_notes": [
+                    "As of 10 September 2026, the executed lease term runs from 1 December 2025 through 30 November 2030."
+                  ]
+                }
+              }
+
+              Do not extract "2C" as suite_number because it appears only in the
+              property address. Do not infer full_floor_f from common-area rights.
+
+              ================================================================
+              EXAMPLE 3: TENANT-SPECIFIC MEASUREMENT DETAIL
+              ================================================================
+
+              Context:
+
+              The controlling premises clause states:
+
+              "Warehouse: 19,167.58 m² LFA.
+              Office: 179.96 m² LFA."
+
+              An incorporated tenant-specific NEN 2580 schedule states:
+
+              "Industry, building floor 0: 19,167.58 m² LFA.
+              Office, building floor 0: 92.65 m² LFA.
+              Office, building floor 1: 87.31 m² LFA."
+
+              The executed lease commencement date is 1 January 2027, after
+              the processing date of 10 September 2026.
+
+              Result:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": [
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "suite_number": [
+                    "",
+                    "",
+                    ""
+                  ],
+                  "arrangement_space_area": [
+                    "19167.58",
+                    "92.65",
+                    "87.31"
+                  ],
+                  "ref_arrangement_space_area_uom_desc": [
+                    "SqM",
+                    "SqM",
+                    "SqM"
+                  ],
+                  "full_floor_f": [
+                    "--",
+                    "--",
+                    "--"
+                  ],
+                  "tenancy_status_desc": [
+                    "Future",
+                    "Future",
+                    "Future"
+                  ],
+                  "tenancy_status_reason_desc": [
+                    "Lease commencement date is in the future",
+                    "Lease commencement date is in the future",
+                    "Lease commencement date is in the future"
+                  ],
+                  "tenancy_status_reason_notes": [
+                    "As of 10 September 2026, the executed lease commences on 1 January 2027.",
+                    "As of 10 September 2026, the executed lease commences on 1 January 2027.",
+                    "As of 10 September 2026, the executed lease commences on 1 January 2027."
+                  ]
+                }
+              }
+
+              Do not also return the aggregate 179.96 square metre office record.
+
+              ================================================================
+              EXAMPLE 4: SURRENDER AND RELOCATION
+              ================================================================
+
+              Context:
+
+              "Tenant leases Suite 400, comprising 650 m² LFA on the 4th floor."
+
+              An executed amendment states:
+
+              "Effective 1 September 2026, Tenant surrenders Suite 400 on the
+              4th floor and relocates to the entire 5th floor, comprising
+              1,100 m² LFA and designated as Suite 500."
+
+              The processing date is 10 September 2026, after the executed
+              relocation effective date of 1 September 2026.
+
+              Result:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": [
+                    "4th floor",
+                    "5th floor"
+                  ],
+                  "suite_number": [
+                    "400",
+                    "500"
+                  ],
+                  "arrangement_space_area": [
+                    "650",
+                    "1100"
+                  ],
+                  "ref_arrangement_space_area_uom_desc": [
+                    "SqM",
+                    "SqM"
+                  ],
+                  "full_floor_f": [
+                    "--",
+                    "Y"
+                  ],
+                  "tenancy_status_desc": [
+                    "Gone",
+                    "Occupying"
+                  ],
+                  "tenancy_status_reason_desc": [
+                    "Premises surrendered by executed amendment",
+                    "Executed lease in effect"
+                  ],
+                  "tenancy_status_reason_notes": [
+                    "As of 10 September 2026, Suite 400 on the 4th floor had been surrendered effective 1 September 2026.",
+                    "As of 10 September 2026, the executed amendment had relocated the tenant to Suite 500 effective 1 September 2026."
+                  ]
+                }
+              }
+
+              ================================================================
+              EXAMPLE 5: EXECUTED TERM CONTAINS PROCESSING DATE
+              ================================================================
+
+              Context:
+
+              "The executed lease commences on 1 December 2025 and runs through
+              30 November 2030. The leased premises comprise approximately
+              390.44 m² of office space on the 1st floor."
+
+              Result:
+
+              {
+                "Floor-Suite-Table": {
+                  "floor_number": ["1"],
+                  "suite_number": [""],
+                  "arrangement_space_area": ["390.44"],
+                  "ref_arrangement_space_area_uom_desc": ["SqM"],
+                  "full_floor_f": ["--"],
+                  "tenancy_status_desc": ["Occupying"],
+                  "tenancy_status_reason_desc": ["Executed lease in effect"],
+                  "tenancy_status_reason_notes": ["As of 10 September 2026, the executed lease term runs from 1 December 2025 through 30 November 2030."]
+                }
+              }
+
+              Do not return Unknown. The controlling executed term dates clearly
+              contain the processing date.
+
+          - role: user
+            content: =global-context/self.ascii-formatted-clustered
+
+          - role: user
+            raw: true
+            content: |
+              Extract the applicable tenant's supported floor, suite, unit, or
+              demised-space arrangements from the complete lease context above.
+
+              Apply controlling executed amendments and avoid duplicated
+              aggregate and detailed areas.
+
+              Never calculate, convert, estimate, subtract, divide, or apportion
+              an area.
+
+              Return floor_number as normalized numeric floor information only.
+
+              Remove floor or level wording, ordinal suffixes, written-number
+              repetitions, and parentheses.
+
+              Examples:
+
+              - "4th (fourth) floor" becomes "4"
+              - "First Floor" becomes "1"
+              - "Ground Floor" becomes "0"
+              - "Basement 1" becomes "-1"
+              - "13th and 14th floors" becomes "13,14"
+              - "Floors 3-5" becomes "3-5"
+
+              Do not derive floor_number from a suite number, address, room number,
+              area, building number, or drawing number.
+
+              For tenancy status, use 10 September 2026 as the processing
+              date unless an expressly labelled runtime processing date overrides
+              it. Associate the controlling executed lease term with every premises
+              record governed by that lease. If commencement is on or before the
+              processing date and expiration is on or after it, return "Occupying"
+              unless a higher-priority executed event changes that record.
+
+              Return only the required valid JSON object with these equal-length
+              arrays:
+
+              - floor_number
+              - suite_number
+              - arrangement_space_area
+              - ref_arrangement_space_area_uom_desc
+              - full_floor_f
+              - tenancy_status_desc
+              - tenancy_status_reason_desc
+              - tenancy_status_reason_notes
+---
 
