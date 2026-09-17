@@ -82,33 +82,33 @@ namespaces:
     # (i.e., labels with the first letter capitalized run concurrently)
     # however, the collate and join parameters run sequentially
 
-    # Terms:
-    #   reduction:
-    #     $collate:
-    #       - =global-fields/self.Arrangement_Start_Date
-    #       - =global-fields/self.Arrangement_End_Date
-    #       - =global-fields/self.Occupancy_Date
-    #       - =global-fields/self.Lease_Term
-    #       - =global-fields/self.Ref_lease_term_uom_desc
-    #       - =global-fields/self.Reserved_Parking_Spaces
-    #       - =global-fields/self.Cost_per_Reserved_Parking_Space
-    #       - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
-    #       - =global-fields/self.Ref_property_space_quality_type_desc
-    #       - =global-fields/self.Arrangement_Signed_Date
-    #       - =global-fields/self.Asking_Rent_Monthly
-    #       - =global-fields/self.Ref_asking_rent_monthly_uom_desc
-    #       - =global-fields/self.Asking_Rent_Yearly
-    #       - =global-fields/self.Ref_asking_rent_yearly_uom_desc
-    #       - =global-fields/self.Effective_Rent_Monthly
-    #       - =global-fields/self.Ref_effective_rent_monthly_uom_desc
-    #       - =global-fields/self.Effective_Rent_Yearly
-    #       - =global-fields/self.Ref_effective_rent_yearly_uom_desc
-    #       - =global-fields/self.Service_Charge_Per_Area_Value
-    #       - =global-fields/self.Ref_service_charge_per_area_value_price_uom_desc
-    #       - =global-fields/self.Number_Of_Month_Free_Rent
-    #       - =global-fields/self.Tenant_Improvement_Allowance
-    #       - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
-    #       - =global-fields/self.Option_Notes
+    Terms:
+      reduction:
+        $collate:
+          - =global-fields/self.Arrangement_Start_Date
+          - =global-fields/self.Arrangement_End_Date
+          - =global-fields/self.Occupancy_Date
+          - =global-fields/self.Lease_Term
+          - =global-fields/self.Ref_lease_term_uom_desc
+          - =global-fields/self.Reserved_Parking_Spaces
+          - =global-fields/self.Cost_per_Reserved_Parking_Space
+          - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
+          - =global-fields/self.Ref_property_space_quality_type_desc
+          - =global-fields/self.Arrangement_Signed_Date
+          - =global-fields/self.Asking_Rent_Monthly
+          - =global-fields/self.Ref_asking_rent_monthly_uom_desc
+          - =global-fields/self.Asking_Rent_Yearly
+          - =global-fields/self.Ref_asking_rent_yearly_uom_desc
+          - =global-fields/self.Effective_Rent_Monthly
+          - =global-fields/self.Ref_effective_rent_monthly_uom_desc
+          - =global-fields/self.Effective_Rent_Yearly
+          - =global-fields/self.Ref_effective_rent_yearly_uom_desc
+          - =global-fields/self.Service_Charge_Per_Area_Value
+          - =global-fields/self.Ref_service_charge_per_area_value_price_uom_desc
+          - =global-fields/self.Number_Of_Month_Free_Rent
+          - =global-fields/self.Tenant_Improvement_Allowance
+          - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
+          - =global-fields/self.Option_Notes
 
     # #############################################################################################################
     # Lease_Comp_Details:
@@ -196,3 +196,15 @@ namespaces:
 
           property_measurement_notes:
             - =global-fields/self.Property_Measurement_Notes
+
+
+  #############################################################################################################
+
+    lease_break:
+      reduction:
+        $join:
+          arrangement_option_executor_type_desc:
+            - =global-fields/self.Arrangement_Option_Executor_Type_Desc
+
+          arrangement_option_start_date:
+            - =global-fields/self.Arrangement_Option_Start_Date

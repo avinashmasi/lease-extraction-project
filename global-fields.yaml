@@ -491,3 +491,22 @@ namespaces:
           default: =en-nl-completions-measurements/self.Property_Measurement_Notes
           en-nl: =en-nl-completions-measurements/self.Property_Measurement_Notes
 
+  ##lease-break
+    
+    Arrangement_Option_Executor_Type_Desc:
+      type: Lease-Break
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-break/self.Arrangement_Option_Executor_Type_Desc
+          en-nl: =en-nl-completions-lease-break/self.Arrangement_Option_Executor_Type_Desc
+
+    Arrangement_Option_Start_Date:
+      type: Lease-Break
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-lease-break/self.Arrangement_Option_Start_Date
+          en-nl: =en-nl-completions-lease-break/self.Arrangement_Option_Start_Date
+
+

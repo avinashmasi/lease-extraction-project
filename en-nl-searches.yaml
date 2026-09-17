@@ -629,3 +629,71 @@ namespaces:
             magazijn, opslagruimte, entresol, buitenterrein, parkeerplaatsen,
             meetrapport, verhuurbaar vloeroppervlak, VVO, LFA
 
+    ###lease-break
+    Lease-Break-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 50
+          prompt: |
+            Find every passage in the lease PDF related to a tenant, landlord, or mutual
+            lease-break, early-termination, cancellation, surrender, or termination option.
+
+            Search the entire document, including the original lease, amendments, riders,
+            addenda, side letters, exhibits, schedules, appendices, tables, footnotes,
+            and continuation pages.
+
+            Include clauses containing:
+            - lease break or break option
+            - break right or break clause
+            - early termination
+            - termination option or termination right
+            - cancellation right
+            - right to terminate
+            - tenant termination
+            - landlord termination
+            - mutual termination
+            - option to surrender
+            - right to surrender
+            - option to end the lease
+            - termination at the option of a party
+            - exercisable termination
+            - lease termination date
+            - break date
+            - effective termination date
+            - earliest termination date
+            - termination during the term
+
+            Also retrieve the surrounding text containing:
+            - the party entitled to exercise the option
+            - the break or termination effective date
+            - the date on which the option may first be exercised
+            - the notice period or notice deadline
+            - conditions required to exercise the option
+            - rent, payment, or other termination conditions
+            - amendment language that creates, changes, replaces, deletes,
+              waives, or supersedes an earlier option
+
+            Search for equivalent Dutch terms, including:
+            ontbindingsrecht, beëindigingsrecht, tussentijdse beëindiging,
+            voortijdige beëindiging, opzeggingsrecht, opzegoptie,
+            opzegtermijn, beëindiging van de huurovereenkomst,
+            ontbinding van de huurovereenkomst, beëindigingsdatum,
+            opzegdatum, kennisgeving van beëindiging,
+            schriftelijke kennisgeving, verhuurder, huurder.
+
+            Exclude passages that contain only:
+            - ordinary lease commencement dates
+            - ordinary lease expiration dates
+            - renewal or extension dates without an early-termination right
+            - general notice provisions unrelated to lease termination
+            - contact information or notice-address provisions
+            - unrelated property or arrangement options
+
+            Keep the complete surrounding clause or table row so the extraction model can
+            distinguish the option executor and actual break date from the notice deadline,
+            notice period, lease commencement date, lease execution date, amendment date,
+            or ordinary lease expiration date.
