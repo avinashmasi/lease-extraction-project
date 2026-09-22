@@ -94,7 +94,7 @@ namespaces:
             notice contact phone number,
             contact information
 
-  ##Terms
+  #################################################################Terms
 
     Terms-Context:
       kind:
@@ -111,12 +111,18 @@ namespaces:
         - =self.Property-Space-Quality-Type-Search
         - =self.Arrangement-Signed-Date-Search
         - =self.Asking-Rent-Monthly-Search
+        - =self.Ref-Asking-Rent-Monthly-UOM-Search
         - =self.Asking-Rent-Yearly-Search
+        - =self.Ref-Asking-Rent-Yearly-UOM-Search
         - =self.Effective-Rent-Monthly-Search
+        - =self.Ref-Effective-Rent-Monthly-UOM-Search
         - =self.Effective-Rent-Yearly-Search
+        - =self.Ref-Effective-Rent-Yearly-UOM-Search
         - =self.Service-Charge-Per-Area-Value-Search
+        - =self.Ref-Service-Charge-Per-Area-Value-Price-UOM-Search
         - =self.Number-Of-Month-Free-Rent-Search
         - =self.Tenant-Improvement-Allowance-Search
+        - =self.Ref-Tenant-Improvement-Allowance-UOM-Search
         - =self.Option-Notes-Search
 
     Arrangement-Start-Date-Search:
@@ -545,6 +551,36 @@ namespaces:
           prompt: |
             Find language explaining the reason for the arrangement-end action status, including competitor commitment, redevelopment, conflict, contract terms, declined by CBRE or client, competitor demand, direct deal, duplicate or error, existing agent, late pursuit, no decision, no landlord opportunity, transaction elsewhere, renewal or regearing, occupier no longer existing, space too small, unreachable, wrong property options, or wrong team resources.
 
+  ##companies
+    Company-Context:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 40
+          prompt: |
+            admin administration administrator manager property manager managing agent
+            until the landlord informs otherwise tenant must contact manager
+            matters concerning this rental agreement lease contact service desk
+            landlord lessor owner tenant lessee represented by legally represented by
+            corporate director signature block
+            lease parties landlord lessor owner legal owner property owner title holder
+            tenant lessee subtenant sublessee sublandlord sublessor main landlord head landlord
+            principal landlord main lessor property-owning company beneficial owner
+            represented by acting through on behalf of duly represented by legally represented by
+            landlord representative lessor representative property manager asset manager managing agent
+            passive landlord representative notice copy recipient notice address care of c/o
+            tenant representative lessee representative authorized representative agent broker
+            real estate broker tenant broker landlord broker leasing agent advisor
+            third-party logistics 3PL logistics provider warehouse operator fulfilment provider
+            logistics recipient customer client principal receiving logistics services
+            parties recitals definitions notices signature blocks execution page amendment assignment
+            novation assumption sublease guaranty guarantee letter of authority power of attorney
+            chamber of commerce trade register statutory name registered legal entity company extract
+            account identifier MIQ CIQ company id internal account foreign key
+
   ##  Floor-Suite
     Floor-Suite-Context:
       kind:
@@ -565,6 +601,8 @@ namespaces:
             expansion, contraction, premises exhibit, floor plan,
             tenant premises table, demised area by floor, unit allocation
 
+  
+
   ##parking 
     Parking-Context:
       kind:
@@ -584,6 +622,8 @@ namespaces:
             parking charge, parking rate, monthly parking cost, annual parking cost,
             per space per month, per space per year, parking exhibit, parking appendix,
             amendment to parking, parking clause, tenant parking arrangement, parking rights schedule
+
+  
 
   ##measurements
     Measurements-Context:

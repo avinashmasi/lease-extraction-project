@@ -308,7 +308,7 @@ namespaces:
           default: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Reason_Type_Desc
           en-nl: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Reason_Type_Desc
 
-    
+
     # Property type parking details
 
     parking_type_desc:
@@ -316,64 +316,64 @@ namespaces:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_type_desc
-          en-nl: =en-nl-completions-parking/self.parking_type_desc
+          default: =en-nl-completions-property-type-parking-details/self.parking_type_desc
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_type_desc
 
     parking_sub_type_desc:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_sub_type_desc
-          en-nl: =en-nl-completions-parking/self.parking_sub_type_desc
+          default: =en-nl-completions-property-type-parking-details/self.parking_sub_type_desc
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_sub_type_desc
 
     number_parking_space:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.number_parking_space
-          en-nl: =en-nl-completions-parking/self.number_parking_space
+          default: =en-nl-completions-property-type-parking-details/self.number_parking_space
+          en-nl: =en-nl-completions-property-type-parking-details/self.number_parking_space
 
     parking_cost_monthly:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_cost_monthly
-          en-nl: =en-nl-completions-parking/self.parking_cost_monthly
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly
 
     parking_cost_monthly_uom:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_cost_monthly_uom
-          en-nl: =en-nl-completions-parking/self.parking_cost_monthly_uom
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly_uom
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_monthly_uom
 
     parking_comments:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_comments
-          en-nl: =en-nl-completions-parking/self.parking_comments
+          default: =en-nl-completions-property-type-parking-details/self.parking_comments
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_comments
 
     parking_cost_yearly:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_cost_yearly
-          en-nl: =en-nl-completions-parking/self.parking_cost_yearly
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly
 
     parking_cost_yearly_uom:
       type: property_lease_arrangement_parking
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-parking/self.parking_cost_yearly_uom
-          en-nl: =en-nl-completions-parking/self.parking_cost_yearly_uom
+          default: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly_uom
+          en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly_uom
 
      # Floor/Suite
 
@@ -508,5 +508,32 @@ namespaces:
           key: =self.jurisdiction
           default: =en-nl-completions-lease-break/self.Arrangement_Option_Start_Date
           en-nl: =en-nl-completions-lease-break/self.Arrangement_Option_Start_Date
+
+
+  ##companies
+
+    Company-Role-Desc:
+      type: company_contact_role_addresses
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-company-contact-role-addresses/self.role_desc
+          en-nl: =en-nl-completions-company-contact-role-addresses/self.role_desc
+
+    Company-Name:
+      type: company_contact_role_addresses
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-company-contact-role-addresses/self.company_name
+          en-nl: =en-nl-completions-company-contact-role-addresses/self.company_name
+          
+    Company-ID:
+      type: company_contact_role_addresses
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-company-contact-role-addresses/self.company_id
+          en-nl: =en-nl-completions-company-contact-role-addresses/self.company_id
 
 

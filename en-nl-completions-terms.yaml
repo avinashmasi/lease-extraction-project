@@ -529,7 +529,12 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Asking Rent Monthly value. If not found, respond "i dont know".
+            Extract the explicit total monthly asking/base rent for the initial lease period.
+            Accept Dutch labels such as huurprijs per maand, kale huur per maand, maandhuur,
+            and aanvangshuur per maand. Exclude annual rent, effective rent, per-area rates,
+            service costs, VAT, and parking. Do not calculate from another period.
+            Normalize Dutch/European numbers to plain decimal notation and return only the number.
+            If no explicit total monthly asking/base rent exists, return "i dont know".
           templates: =templates.Asking_Rent_Monthly
 
     Ref_asking_rent_monthly_uom_desc:
@@ -587,13 +592,13 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicitly stated total Monthly Effective Rent from the lease PDF.
-            Carefully align PDF table values with the correct row and column headers.
-            Use the first chronological initial lease period or Lease Year 1.
-            Do not use Monthly Base Rent, Annual Effective Rent, per-area rates,
-            service charges, or other neighboring values.
-            Do not calculate or convert values.
-            Return only the numeric value. If not explicitly found, return "i dont know".
+            Determine the total monthly effective rent for the lease commencement period.
+            First use an explicitly labeled monthly effective rent. Otherwise divide an explicitly
+            labeled annual effective rent by 12. If neither exists, use the total monthly fixed/base
+            rent applicable on the Arrangement Start Date, or divide that period's annual total by 12.
+            Use dates and period labels only to select the correct rent row; never return a date.
+            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
+            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
           templates: =templates.Effective_Rent_Monthly
 
     Ref_effective_rent_monthly_uom_desc:
@@ -622,13 +627,13 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicitly stated total Annual Effective Rent from the lease PDF.
-            Carefully align PDF table values with the correct row and column headers.
-            Use the first chronological initial lease period or Lease Year 1.
-            Do not use Annual Base Rent, Monthly Effective Rent, per-area rates,
-            service charges, or other neighboring values.
-            Do not calculate, annualize, multiply, or convert values.
-            Return only the numeric value. If not explicitly found, return "i dont know".
+            Determine the total yearly effective rent for the lease commencement period.
+            First use an explicitly labeled annual effective rent. Otherwise multiply an explicitly
+            labeled monthly effective rent by 12. If neither exists, use the total annual fixed/base
+            rent applicable on the Arrangement Start Date, or multiply that period's monthly total by 12.
+            Use dates and period labels only to select the correct rent row; never return a date.
+            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
+            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
           templates: =templates.Effective_Rent_Yearly
 
     Ref_effective_rent_yearly_uom_desc:
@@ -895,7 +900,12 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Asking Rent Monthly value. If not found, respond "i dont know".
+            Extract the explicit total monthly asking/base rent for the initial lease period.
+            Accept Dutch labels such as huurprijs per maand, kale huur per maand, maandhuur,
+            and aanvangshuur per maand. Exclude annual rent, effective rent, per-area rates,
+            service costs, VAT, and parking. Do not calculate from another period.
+            Normalize Dutch/European numbers to plain decimal notation and return only the number.
+            If no explicit total monthly asking/base rent exists, return "i dont know".
           templates: =templates.Asking_Rent_Monthly
 
     Ref_asking_rent_monthly_uom_desc:
@@ -953,13 +963,13 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicitly stated total Monthly Effective Rent from the lease PDF.
-            Carefully align PDF table values with the correct row and column headers.
-            Use the first chronological initial lease period or Lease Year 1.
-            Do not use Monthly Base Rent, Annual Effective Rent, per-area rates,
-            service charges, or other neighboring values.
-            Do not calculate or convert values.
-            Return only the numeric value. If not explicitly found, return "i dont know".
+            Determine the total monthly effective rent for the lease commencement period.
+            First use an explicitly labeled monthly effective rent. Otherwise divide an explicitly
+            labeled annual effective rent by 12. If neither exists, use the total monthly fixed/base
+            rent applicable on the Arrangement Start Date, or divide that period's annual total by 12.
+            Use dates and period labels only to select the correct rent row; never return a date.
+            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
+            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
           templates: =templates.Effective_Rent_Monthly
 
     Ref_effective_rent_monthly_uom_desc:
@@ -988,13 +998,13 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicitly stated total Annual Effective Rent from the lease PDF.
-            Carefully align PDF table values with the correct row and column headers.
-            Use the first chronological initial lease period or Lease Year 1.
-            Do not use Annual Base Rent, Monthly Effective Rent, per-area rates,
-            service charges, or other neighboring values.
-            Do not calculate, annualize, multiply, or convert values.
-            Return only the numeric value. If not explicitly found, return "i dont know".
+            Determine the total yearly effective rent for the lease commencement period.
+            First use an explicitly labeled annual effective rent. Otherwise multiply an explicitly
+            labeled monthly effective rent by 12. If neither exists, use the total annual fixed/base
+            rent applicable on the Arrangement Start Date, or multiply that period's monthly total by 12.
+            Use dates and period labels only to select the correct rent row; never return a date.
+            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
+            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
           templates: =templates.Effective_Rent_Yearly
 
     Ref_effective_rent_yearly_uom_desc:
@@ -2116,12 +2126,11 @@ namespaces:
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
-            3. Use the Year 1 rent period when multiple lease years are present.
-            4. Do not infer or calculate the currency.
+            3. Only consider monthly rent values such as Monthly Asking Rent, Monthly Base Rent, Monthly Rent, Fixed Monthly Rent, or Monthly Rental Amount.
+            4. Use the Year 1 rent period when multiple lease years are present.
             5. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
-            6. Only return a currency if an explicit Asking Rent Monthly value exists.
-            7. If there is no explicit Monthly Asking Rent, Monthly Base Rent, Fixed Monthly Rent, Monthly Rental Amount, or Monthly Rent value, return "" (empty string).
-            8. Do not infer the currency from annual rents, quarterly payments, payment schedules, rent obligations, service charges, operating expenses, or calculated monthly amounts.
+            6. If the currency cannot be clearly determined, output "" (empty string).
+            7. Do not use annual rents, quarterly rents, service charges, parking charges, taxes, operating expenses, or calculated monthly amounts.
 
         - role: system
           content: |
@@ -2134,7 +2143,7 @@ namespaces:
             Response: "USD"
 
             Example 3:
-            Input context: "Annual Rent: €1,320,823.06"
+            Input context: "Annual Rent: €301,380.00"
             Response: ""
 
             Example 4:
@@ -2381,11 +2390,8 @@ namespaces:
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
-            3. Use the Year 1 effective rent period when multiple lease years are present.
-            4. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
-            5. Before extracting the currency, verify that an explicit Monthly Effective Rent value exists.
-            6. If Monthly Effective Rent, Effective Monthly Rent, Effective Rent, or Net Effective Rent is not explicitly stated, return "" (empty string).
-            7. Do not infer the currency from asking rent, base rent, payment obligations, rent schedules, annual rents, or quarterly payment periods.
+            3. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            4. If the currency cannot be clearly determined, output "" (empty string).
 
         - role: system
           content: |
@@ -2394,8 +2400,8 @@ namespaces:
             Response: "EUR"
 
             Example 2:
-            Input context: "Monthly Base Rent: $25,115.00"
-            Response: ""
+            Input context: "Net Effective Rent per Month: $6,922.40"
+            Response: "USD"
 
         - role: user
           content: "{prompt}"
@@ -2525,25 +2531,18 @@ namespaces:
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
-            3. Use the Year 1 effective rent period when multiple lease years are present.
-            4. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
-            5. Before extracting the currency, verify that an explicit Annual Effective Rent value exists.
-
-            6. If Annual Effective Rent, Effective Annual Rent, Yearly Effective Rent, or Annual Net Effective Rent is not explicitly stated, return "" (empty string).
-
-            7. Do not infer annual effective rent currency from annual asking rent, annual base rent, rent schedules, or payment obligations.
+            3. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
+            4. If the currency cannot be clearly determined, output "" (empty string).
 
         - role: system
-          content: |  
+          content: |
             Example 1:
-
             Input context: "Annual Effective Rent: €301,380.00"
             Response: "EUR"
 
             Example 2:
-
-            Input context: "Annual Base Rent: $301,380.00"
-            Response: ""
+            Input context: "Annual Net Effective Rent: $301,380.00"
+            Response: "USD"
 
         - role: user
           content: "{prompt}"
@@ -2566,14 +2565,14 @@ namespaces:
             ## STRICT OUTPUT CONTRACT
             Output must be one of the following only:
             - a clean numeric value such as 5.00, 12.50, 25.75
-            - or exactly: i don't know
+            - or exactly: i dont know
 
             Rules:
             - Remove currency symbols, units, and measurement descriptors from the final answer.
             - Output only the raw numeric value.
             - If the service charge is stated as a per-unit rate, extract that rate.
             - If the service charge varies over time, use the initial or first lease-year rate.
-            - If the lease provides only an aggregate service charge without a per-unit breakdown, output i don't know
+            - If the lease provides only an aggregate service charge without a per-unit breakdown, output i dont know
 
             ## NUMBER FORMAT NORMALIZATION (EN/NL)
             Lease documents may use US/UK number formatting (e.g., "$5.00") or European/Dutch number formatting (e.g., "€ 5,00" or "€ 1.250,50", where the comma is the decimal separator).
@@ -2595,9 +2594,9 @@ namespaces:
             - service charge percentages or formulas
 
             ## DECISION RULES
-            1. If a clear numeric dollar amount per unit area is stated, output that numeric value only.
+            1. If a clear numeric currency amount per unit area is stated, output that numeric value only.
             2. If the text includes different amounts over time, use the first lease-year amount.
-            3. If no explicit numeric per-unit service charge is stated, output i don't know
+            3. If no explicit numeric per-unit service charge is stated, output i dont know
 
             ## EXAMPLES
             Example 1:
@@ -2614,7 +2613,7 @@ namespaces:
 
             Example 4:
             Input context: "Total Annual Service Charge: $125,000.00"
-            Response: i don't know
+            Response: i dont know
 
         - role: user
           content: "{prompt}"
@@ -2648,8 +2647,10 @@ namespaces:
             2. Normalize to the exact labels:
                - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
-            3. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
-            4. If there is no explicit currency for the per-area service charge, output "" (empty string).
+            3. If a matching per-area service-charge rate exists in a Netherlands lease and no
+              conflicting currency is stated, return EUR. Explicit currency evidence takes priority.
+            4. If "$" is ambiguous and the document does not establish which dollar currency applies,
+              do not return USD.
 
             ## KEY LANGUAGE TO LOOK FOR
             - "€5.00 per square foot per month"
@@ -2659,8 +2660,10 @@ namespaces:
             ## DECISION RULES
             1. If the per-area service charge is stated in euros, output EUR.
             2. If the per-area service charge is stated in a clearly established US Dollar amount, output USD.
-            3. If the currency symbol is ambiguous or not established, output "".
-            4. Only return a currency when the service charge is explicitly expressed per unit area.
+            3. If a valid per-area service-charge rate is stated in a Netherlands lease without a
+              conflicting currency, output EUR.
+            4. Only return a currency when the service charge is explicitly expressed per unit area;
+              otherwise output "".
             5. If the document only provides:
               - total service charge
               - service charge advance payment
@@ -2671,6 +2674,8 @@ namespaces:
               return "".
 
             6. Do not infer a currency from aggregate service charge amounts without an explicit per-area rate.
+            7. The allowed output contract overrides the generic unknown instruction: never output
+               "i dont know" for this currency field.
 
             ## EXAMPLES
             Example 1:
@@ -2696,6 +2701,10 @@ namespaces:
             Example 6:
             Input context: "Total Annual Service Charge €125,000"
             Response: ""
+
+            Example 7:
+            Input context: "Nederlands huurcontract. Servicekosten: 5,00 per m2 per jaar"
+            Response: EUR
 
         - role: user
           content: "{prompt}"

@@ -1,6 +1,6 @@
+# file name: en-nl-completions-floor-suite.yaml
 kind: Ontology/v2
 name: en-nl-completions-floor-suite
-
 namespaces:
   self:
     Floor-Suite-Floor:
@@ -24,7 +24,8 @@ namespaces:
           source: =self.Floor-Suite-Table
 
     Floor-Suite-Space-Size:
-      kind: Text
+      kind: 
+        Instance: Number
       reduction:
         $get:
           expand:
@@ -44,7 +45,9 @@ namespaces:
           source: =self.Floor-Suite-Table
 
     Floor-Suite-Whole-Floor:
-      kind: Text
+      kind:
+        Instance:
+          Enum: ["--","Y","N"]
       reduction:
         $get:
           expand:
@@ -54,7 +57,9 @@ namespaces:
           source: =self.Floor-Suite-Table
 
     Floor-Suite-Floor-Status:
-      kind: Text
+      kind:
+        Instance: 
+          Enum: ["Expired", "Future", "Gone", "Moving", "No Longer Tenant", "Occupying", "Unknown"]
       reduction:
         $get:
           expand:
@@ -124,7 +129,7 @@ namespaces:
               OUTPUT CONTRACT
               ================================================================
 
-              Return exactly one "Floor-Suite-Table" object containing these fields:
+              Return exactly one "Floor-Suite-Table" object containing:
 
               - floor_number
               - suite_number
@@ -174,27 +179,26 @@ namespaces:
               CONTEXT ANCHORING
               ================================================================
 
-              Use only values that are expressly tied to the applicable tenant's
-              demised premises in the lease, amendment, schedule, exhibit, drawing,
-              or measurement report.
+              Use only values expressly tied to the applicable tenant's demised
+              premises in the lease, amendment, schedule, exhibit, drawing, or
+              measurement report.
 
-              Prefer tenant-specific premises schedules, floor schedules, suite
-              schedules, amendments, and drawing labels over general building
-              descriptions, addresses, cadastral references, and unrelated tenants.
+              Prefer tenant-specific sources over general building descriptions,
+              addresses, cadastral references, unrelated tenants, and marketing
+              information.
 
               Ignore building-wide totals, common areas, addresses, postal codes,
-              elevator ranges, and technical room references unless they are
-              expressly part of the tenant's demised premises.
+              elevator ranges, and technical room references unless expressly
+              included in the tenant's demised premises.
 
               If the same arrangement appears in multiple sources, keep the most
-              specific and controlling version only once.
+              specific controlling version only once.
 
               ================================================================
               CONTROLLING PREMISES
               ================================================================
 
-              First identify the applicable tenant's controlling demised
-              premises.
+              First identify the applicable tenant's controlling demised premises.
 
               Use this source priority:
 
@@ -206,15 +210,52 @@ namespaces:
               6. Lease-specific exhibit, appendix, floor plan, or drawing.
 
               Apply executed expansions, contractions, surrenders, relocations,
-              substitutions, renewals, and terminations from their stated
-              effective dates.
+              substitutions, renewals, and terminations from their effective dates.
 
-              A later amendment overrides only the premises terms it expressly
-              changes. Retain original terms not expressly changed.
+              A later amendment overrides only the terms it expressly changes.
+              Retain original terms not expressly changed.
 
-              Extract only records clearly connected to the applicable tenant's
-              demised premises. Deduplicate the same arrangement when repeated
-              across sources.
+              SOURCE PRIORITY AND GRANULARITY
+
+              Source priority determines which premises are included in the demise.
+              It does not permit an aggregate area from a higher-priority source to
+              replace a more specific floor-level or suite-level area from a
+              reliably incorporated source.
+
+              Use the executed premises clause to establish the scope of the demise.
+              Within that supported scope, use an incorporated tenant-specific
+              measurement report, NEN 2580 schedule, floor schedule, or
+              lease-specific drawing for expressly stated floor-level or suite-level
+              areas.
+
+              A specific floor-level area is more granular than a whole-premises or
+              multi-floor aggregate area.
+
+              FUNCTION-BY-FLOOR GRANULARITY
+
+              Granularity is determined by the complete combination of premises
+              component, use or function, floor, area, and measurement basis.
+
+              When a measurement schedule splits one aggregate use category across
+              multiple floors, use the floor-specific rows and do not assign the
+              aggregate use-category total to one floor.
+
+              When the same floor contains two or more separately measured uses or
+              components, preserve each row as a separate record. Do not add those
+              areas merely because the floor_number is identical.
+
+              A whole-category total such as total office area is less specific than
+              separate office rows for floor 0 and floor 1. A whole-floor total is
+              less specific than separately stated component rows on that floor when
+              those rows describe the tenant's demise and use the applicable leased
+              area basis.
+
+              Prefer the most specific complete set of tenant-applicable rows that
+              reconciles to the controlling aggregate. Use arithmetic only to check
+              reconciliation, never to create an output area.
+
+              Do not assign an aggregate premises area to one floor merely because
+              that floor is mentioned elsewhere in the lease.
 
               ================================================================
               RECORD CREATION
@@ -222,121 +263,305 @@ namespaces:
 
               A valid record requires at least one of:
 
-              - a supported floor or level; or
-              - an expressly identified suite, unit, or internal space
-                designation.
+              - a supported numeric floor or level; or
+              - an explicit Suite designation that can be returned in suite_number.
 
-              Create separate records when supported floor, suite, area,
-              full-floor flag, status, status reason, effective date, or premises
-              arrangement differs.
+              Do not create a record when floor_number and suite_number would both
+              be empty.
 
-              Preserve a combined floor designation as one record when one
-              aggregate area applies to multiple floors and separate floor areas
-              are not expressly stated.
+              Create separate records when floor, suite, area, full-floor flag,
+              status, effective date, or premises arrangement differs.
+              Do not create a Floor-Suite-Table record from a parking-space,
+              vehicle-space, or bicycle-space entry, even when it mentions a floor.
 
-              Example:
+              An excluded parking entry must not shift, duplicate, split, or change
+              the floor and area pairing of the premises entries around it.
 
-              "1,779.7 square metres on the 13th and 14th floors"
+              DETAILED FLOOR AREA PRIORITY
 
-              Return:
+              Before assigning an area to a floor or suite, search the complete
+              lease context for an expressly stated area for that specific floor or
+              suite.
 
-              floor_number = "13th and 14th floors"
-              arrangement_space_area = "1779.7"
-              ref_arrangement_space_area_uom_desc = "SqM"
+              A floor-level or suite-level area from an incorporated
+              tenant-specific schedule, NEN 2580 report, measurement report, or
+              lease-specific drawing takes priority over a less granular aggregate
+              premises area for arrangement_space_area.
 
-              Never divide or apportion an aggregate area among multiple floors.
+              If separate areas are expressly stated for individual floors:
 
-              Do not create separate records for office, warehouse, storage, or
-              other space types unless each component has a supported floor,
-              suite, unit, or demised-space designation.
+              A complete floor-by-floor breakdown may include more than one record
+              on the same floor when different uses or components are separately
+              measured. Completeness is evaluated across all tenant-applicable
+              rows, not merely one row per floor.
+
+              - create one record for each supported floor;
+              - use only the area expressly stated for that floor;
+              - keep the floor number and area from the same schedule row, table
+                row, sentence, bullet, heading, or clearly linked measurement entry;
+              - do not assign the aggregate premises area to an individual floor;
+              - do not return a duplicated aggregate record; and
+              - do not add outdoor, common, installation, traffic, parking, or
+                other excluded areas to an indoor floor area.
+
+              Exact reconciliation with the lease aggregate is not required when
+              the difference is expressly explained by covered or uncovered outdoor
+              area, common-area treatment, installation area, traffic area, parking
+              area, measurement-basis differences, expressly excluded components,
+              or an identifiable document discrepancy.
+
+              Use arithmetic only to validate or understand reconciliation. Never
+              create, adjust, apportion, or correct an output area through
+              arithmetic.
+
+              Create an aggregate multi-floor record only when:
+
+              - the aggregate is expressly associated with those multiple floors;
+                and
+              - no reliable floor-by-floor area breakdown exists.
+
+              Never assign a multi-floor or whole-premises aggregate area to one
+              individual floor unless the source expressly states that the entire
+              aggregate applies to that floor.
+
+              COMPLETE PREMISES-LIST PRESERVATION
+
+              Evaluate every line, bullet, and row in the controlling tenant
+              premises description before returning JSON. Do not stop after the
+              first supported floor-area pair.
+
+              Create a separate record for every expressly stated premises
+              component when its floor, area, suite, status, effective date, or
+              arrangement differs. Multiple components on the same floor remain
+              separate when each has its own expressly stated area.
+
+              Business space, warehouse, office, canteen, showroom, storage, and
+              other components must each be retained when each component is tied
+              to a supported floor and its own stated area.
+
+              Before returning, compare proposed records with every supported line
+              in the controlling premises list. Each supported line must appear
+              exactly once unless a later executed amendment removes or replaces it.
+
+              Do not use the first listed component or an aggregate as a substitute
+              for remaining supported components.
+
+              EXPRESS PARENT-FLOOR LINK
+
+              An unnumbered named component, including a mezzanine, may use a
+              numeric parent floor only when the same controlling sentence,
+              bullet, row, or schedule entry expressly says that the component is
+              in, on, or within that numbered floor.
+
+              Example: "220 m2 mezzanine within the ground-floor warehouse"
+              supports floor_number "0" and area "220".
+
+              Do not infer a parent floor from physical assumptions or page
+              proximity. A standalone unnumbered mezzanine, cellar, basement, or
+              named level still does not support a numeric floor.
 
               ================================================================
-              FIELD RULES
-              ================================================================
-
               floor_number
-              ------------
+              ================================================================
 
-              Return the floor designation exactly as stated in the controlling
-              source.
+              Return only normalized numeric floor information.
 
-              Examples:
+              Allowed forms:
 
-              - "-1"
-              - "00"
-              - "0"
-              - "01"
-              - "Ground Floor"
-              - "1st floor"
-              - "First Floor"
-              - "Mezzanine"
-              - "Basement"
-              - "13th and 14th floors"
-              - "Floors 3-5"
+              - digits for a single floor;
+              - a leading minus sign for an expressly numbered basement level;
+              - commas for an expressly supported list; or
+              - a hyphen for an expressly stated range.
 
-              Do not convert numeric and written floor designations.
+              Normalize:
 
-              If an expressly demised suite has no supported floor, return ""
-              for floor_number and retain the record.
+              - "4th floor" -> "4"
+              - "4th (fourth) floor" -> "4"
+              - "Fourth Floor" -> "4"
+              - "Level 04" -> "04"
+              - "Ground Floor" -> "0"
+              - "Ground Level" -> "0"
+              - "Basement 1" -> "-1"
+              - "Basement Level 2" -> "-2"
+              - "Floors 3-5" -> "3-5"
+              - "13th and 14th floors" -> "13,14"
 
-              Do not derive a floor from an address, suite number, room number,
-              postal code, area, drawing, elevator range, building identifier,
-              or technical schedule.
+              Remove floor or level wording, ordinal suffixes, written-number
+              repetitions, parentheses, and unnecessary spaces. Preserve meaningful
+              leading zeros.
 
+              Return a negative floor only when the source expressly provides a
+              numbered basement designation.
+
+              Do not convert an unnumbered Basement, Cellar, Kelder, Souterrain,
+              Mezzanine, Lower Level, Upper Level, Podium, or Roof Level into a
+              numeric floor.
+
+              In particular:
+
+              - "Cellar" does not become "-1".
+              - "Basement" does not become "-1".
+              - "Kelder" does not become "-1".
+              - "Souterrain" does not become "-1".
+
+              A named internal space does not create a separate record unless it
+              has a supported numeric floor or explicit Suite designation.
+
+              Do not derive a floor from an address, street number, suite, unit,
+              room, postal code, area, building identifier, cadastral number,
+              elevator range, drawing number, project number, server-room reference,
+              delivery specification, or technical schedule.
+
+              Before returning, verify that every non-empty floor_number contains
+              only digits, an optional leading minus sign, commas, or a range
+              hyphen.
+
+              ================================================================
               suite_number
-              ------------
+              ================================================================
 
-              Return the internal suite, unit, office, or space designation.
+              Extract suite_number only when the controlling premises expressly use
+              the label "Suite" immediately before the designation.
 
-              Remove the introductory label:
+              Return only the designation following "Suite". Preserve meaningful
+              decimal points, hyphens, letters, and leading zeros.
 
-              - "Suite 500" becomes "500"
-              - "Unit 2C" becomes "2C"
-              - "Office 5.01" becomes "5.01"
-              - "Space A" becomes "A"
-              - "Unit B-12" becomes "B-12"
+              Do not convert Unit, Office, Space, Room, Floor, Level, or another
+              label into a suite.
 
-              Do not extract a street number, house number, building number,
-              cadastral number, or address suffix as suite_number.
+              If multiple explicit Suite designations apply to one coherent record,
+              join them with ", ". If none exists, return "".
 
-              Example:
+              ================================================================
+              FLOOR-AREA PROVENANCE LOCK
+              ================================================================
 
-              Do not extract "2C" from "Trompenburgstraat 2C" unless the lease
-              separately identifies "Suite 2C", "Unit 2C", or equivalent.
+              For every proposed record, identify the exact source relationship
+              between floor_number and arrangement_space_area.
 
+              Treat each premises sentence, bullet, table row, or schedule row as
+              one atomic record. Keep its floor and area together, and never shift
+              either value across an excluded parking or technical entry.
+
+              A floor number and area may be combined only when:
+
+              1. Both appear in the same sentence, bullet, table row, schedule row,
+                subordinate heading, or lease-specific plan label; or
+
+              2. One source establishes the floor and another incorporated source
+                expressly maps a specific area to that same floor without
+                ambiguity.
+
+              Do not combine:
+
+              - a floor number from a delivery clause with an aggregate area from
+                the premises clause;
+              - a floor number from a technical description with a whole-property
+                area;
+              - a floor number from a server-room, installation-room, or access
+                clause with a total leased area;
+              - one floor from a multi-floor premises description with the combined
+                area of all floors; or
+              - an indoor floor number with covered or uncovered outdoor area.
+
+              record_area_is_specific is TRUE only when the stated area expressly
+              applies to that record's floor, suite, or coherent multi-floor
+              designation.
+
+              If record_area_is_specific is FALSE:
+
+              - do not use the aggregate area for that record;
+              - search for a more specific supported area;
+              - if no specific area exists, return "" for arrangement_space_area;
+                and
+              - return "--" for ref_arrangement_space_area_uom_desc.
+
+              ================================================================
               arrangement_space_area
-              ----------------------
+              ================================================================
 
-              Return only the expressly stated numeric leased area associated
-              with the corresponding record.
+              FLOOR REQUIRED FOR AREA OUTPUT
 
-              Associate an area only when connected through the same sentence,
-              bullet, table row, schedule row, subordinate floor heading, or
-              lease-specific plan label. Same-page proximity alone is
-              insufficient.
+              Return arrangement_space_area only when the same record has a
+              supported non-empty floor_number or explicit suite_number.
 
-              Remove approximation wording, units, measurement bases, and
-              thousands separators. Preserve stated decimal precision.
+              Do not extract an area first and then infer, invent, or backfill
+              floor_number "0".
+
+              If an area is not expressly tied to a supported numeric floor or
+              explicit Suite designation, delete the complete record. Do not
+              retain the area with an empty floor_number or suite_number.
+
+              Return only an expressly stated numeric leased area that applies
+              specifically to the corresponding floor, suite, or coherent
+              multi-floor record.
+
+              Valid direct relationships include:
+
+              - floor and area in the same sentence or bullet;
+              - floor and area in the same table or schedule row;
+              - an area beneath a clearly controlling floor heading;
+              - an incorporated NEN 2580 row identifying both building floor and
+                lettable area; or
+              - a lease-specific drawing label identifying both designation and
+                area.
+
+              Do not assign a whole-property or multi-floor aggregate area to a
+              single floor merely because that floor appears elsewhere.
+
+              Do not use an aggregate containing warehouse, office, other space,
+              covered outdoor space, or multiple floors as the area of floor 0
+              unless the controlling source expressly states that the complete
+              aggregate is located on floor 0.
+
+              If a measurement schedule provides floor 0 with one area and floor 1
+              with another area, return those stated floor-level areas separately.
+              Do not replace them with the lease's combined premises area.
+
+              If a measurement schedule provides an aggregate category in the lease
+              clause and then separates that category by floor, replace the aggregate
+              category record with all applicable floor-specific rows. Do not attach
+              the aggregate category area to the first, last, or most prominent floor.
+
+              If floor 0 contains a warehouse row and an office row, and floor 1
+              contains another office row, return all three rows separately when all
+              belong to the tenant's demise. Do not merge the two floor-0 rows and do
+              not assign total office area to floor 1.
+
+              Remove approximation wording, units, measurement bases, and thousands
+              separators. Preserve stated decimal precision.
 
               Examples:
 
-              - "1,193.6 sq m" becomes "1193.6"
-              - "19,167.58 sq m" becomes "19167.58"
-              - "390,44 sq m" becomes "390.44"
-              - "1.239 sq m" becomes "1239" when "." is a thousands separator
-              - "1.239,50 sq m" becomes "1239.50"
+              - "1,193.6 sq m" -> "1193.6"
+              - "19,167.58 sq m" -> "19167.58"
+              - "390,44 sq m" -> "390.44"
+              - "1.239 sq m" -> "1239" when "." is a thousands separator
+              - "1.239,50 sq m" -> "1239.50"
 
               Never calculate, estimate, subtract, convert, divide, derive, or
-              apportion an area.
+              apportion an area. If no specific area is expressly stated, return
+              "".
 
-              Do not use building-wide, cadastral, land, energy-label, or
-              unrelated common-area measurements.
+              OUTDOOR AND NON-FLOOR AREA SEPARATION
 
-              If no separate area is expressly stated for a valid record,
-              return "".
+              Do not add covered or uncovered outdoor area to a floor's
+              arrangement_space_area.
 
+              An outdoor area does not create a Floor-Suite-Table record unless it
+              has a supported numeric floor or explicit Suite designation and is
+              otherwise permitted by the record rules.
+
+              When a measurement report separately states indoor lettable floor
+              area and covered or uncovered building-related outdoor area, use only
+              the stated indoor lettable area for the floor record.
+
+              Do not combine outdoor area with floor 0 merely because the outdoor
+              area is physically at ground level.
+
+              ================================================================
               ref_arrangement_space_area_uom_desc
-              -----------------------------------
+              ================================================================
 
               Return only one of:
 
@@ -348,66 +573,40 @@ namespaces:
               - "SqKm"
               - "SqMi"
 
-              Normalize as follows:
+              Normalize m², m2, sqm, sq m, and square metre(s) to "SqM".
+              Normalize ft², ft2, sqft, sq ft, and square foot/feet to "SqFt".
+              Normalize acre(s), hectare(s), square kilometre(s), and square
+              mile(s) to their corresponding allowed values.
 
-              - m², m2, sqm, sq m, square metre or square metres -> "SqM"
-              - ft², ft2, sqft, sq ft, square foot or square feet -> "SqFt"
-              - acre or acres -> "Ac"
-              - hectare or hectares -> "Ha"
-              - km², km2, sq km or square kilometres -> "SqKm"
-              - mi², mi2, sq mi or square miles -> "SqMi"
+              Do not infer or convert a unit. If arrangement_space_area is empty or
+              the unit is unsupported, return "--".
 
-              Do not include LFA, GFA, GVO, VVO, BVO, NVO, rentable, lettable,
-              or usable in this field.
-
-              Do not infer or convert a unit.
-
-              If arrangement_space_area is empty or its unit is unsupported,
-              return "--".
-
+              ================================================================
               full_floor_f
-              ------------
+              ================================================================
 
-              Return only:
+              Return only "--", "Y", or "N".
 
-              - "--"
-              - "Y"
-              - "N"
+              Return "Y" only when the controlling source expressly establishes
+              that the tenant demises the entire identified floor.
 
-              Return "Y" only when the controlling source expressly states or
-              clearly establishes that the tenant leases the entire floor.
+              Return "N" when the source expressly identifies a specific unit,
+              Suite, office, or partial area within the floor.
 
-              Examples:
+              Otherwise return "--". Do not infer "Y" from a floor number, area,
+              absence of other tenants, or common-area rights.
 
-              - "the entire 5th floor"
-              - "the whole of the 5th floor"
-              - "all space on the 5th floor"
-              - an incorporated schedule clearly identifying the complete floor
-                as the tenant's demised premises
+              ================================================================
+              TENANCY STATUS FIELDS
+              ================================================================
 
-              Return "N" only when the controlling source expressly states or
-              clearly establishes that the tenant leases part of a floor.
+              Determine tenancy_status_desc first. Only after finalizing the
+              status, derive tenancy_status_reason_desc and
+              tenancy_status_reason_notes from the same verified dates or event.
 
-              Examples:
+              Never determine status, reason, and note independently.
 
-              - "part of the 5th floor"
-              - "a portion of the 5th floor"
-              - a controlling schedule showing multiple units on the floor and
-                identifying the tenant's unit
-
-              A suite designation alone does not always prove that the suite is
-              less than the entire floor. Return "N" only when a partial-floor
-              arrangement is supported.
-
-              Otherwise return "--".
-
-              Do not infer the flag from common-area rights, apparent area size,
-              the number of named tenants, or the absence of other tenants.
-
-              tenancy_status_desc
-              -------------------
-
-              Return only:
+              Return tenancy_status_desc using only:
 
               - "Expired"
               - "Future"
@@ -417,131 +616,308 @@ namespaces:
               - "Occupying"
               - "Unknown"
 
-              Use an expressly supplied current processing date only when one is
-              present in the context.
-
-              Apply these rules:
-
-              - "Occupying": an executed lease or amendment is in effect on the
-                supplied date, or current occupancy is expressly stated.
-              - "Future": an executed lease commencement date is after the
-                supplied date.
-              - "Expired": the lease expired before the supplied date with no
-                supported extension, renewal, or holdover.
-              - "Gone": an executed surrender or premises amendment removed the
-                record from the tenant's premises.
-              - "Moving": an executed relocation is pending or the document
-                expressly identifies the tenant as moving from the record.
-              - "No Longer Tenant": an executed termination or express statement
-                establishes that the tenant no longer leases or occupies the
-                record.
-              - "Unknown": no other allowed status is reliably supported.
-
-              For an effective relocation already completed by the supplied
-              date, use "Gone" for the old premises and "Occupying" for the
-              replacement premises.
-
-              Do not determine status from upload dates, PDF metadata,
-              signature-platform timestamps alone, drafts, unsigned proposals,
-              marketing documents, or unincorporated availability schedules.
-
-              tenancy_status_reason_desc
-              --------------------------
-
-              Return a concise reason corresponding to tenancy_status_desc.
-
-              Use these preferred mappings:
-
-              - Occupying -> "Executed lease in effect"
-              - Future -> "Lease commencement date is in the future"
-              - Expired -> "Lease term expired"
-              - Gone -> "Premises surrendered by executed amendment"
-              - Moving -> "Tenant relocated by executed amendment"
-              - No Longer Tenant -> "Lease terminated by executed agreement"
-              - Unknown -> "Status not stated"
-
-              Adapt the reason only when the supported event differs, while
-              keeping it concise and factual.
-
-              Do not include dates, citations, analysis, or confidence language.
-
-              tenancy_status_reason_notes
-              ---------------------------
-
-              Return concise factual support for the status and reason.
-
-              Include supported commencement, expiration, amendment, surrender,
-              relocation, or termination dates and the affected floor or suite.
-
-              Do not include citations, page numbers, clause numbers, confidence
-              scores, reasoning steps, or unsupported conclusions.
-
-              If no useful supporting fact is stated, return "".
-
               ================================================================
-              AREA DETAIL AND MEASUREMENT SOURCES
+              CONTROLLING DATES
               ================================================================
 
-              Prefer detailed floor-level or suite-level areas over a duplicated
-              aggregate area only when all detailed areas are expressly stated,
-              apply to the same premises, and reconcile with the aggregate.
+              Use 2026-09-21 as the processing date unless the runtime context
+              expressly labels another Current processing date, Processing date,
+              As-of date, or Status date.
 
-              Arithmetic may be used only to validate reconciliation. Never
-              output a calculated value.
+              Do not use a lease, signature, execution, DocuSign, document,
+              delivery, key-handover, payment, rent-free, indexation, renewal,
+              termination, surrender, relocation, or option date as the
+              processing date.
 
-              Do not return both aggregate and detailed records when doing so
-              double counts the same premises.
+              For each supported premises record, identify:
 
-              Use a NEN 2580 report, measurement schedule, tenant overview, floor
-              plan, or drawing only when clearly linked to the tenant's premises
-              through incorporation, tenant, address, floor, suite, component, or
-              area reconciliation.
+              - commencement_date;
+              - expiration_date;
+              - processing_date; and
+              - event_date only when an executed termination, surrender,
+                contraction, substitution, or relocation applies.
 
-              Exclude building totals, unrelated tenants, parking, installation
-              areas, traffic areas, sanitary areas, voids, measurement
-              corrections, and separately stated common-area allocations.
+              Use only executed dates controlling that record.
 
-              A common-area share may remain included in the tenant's area when
-              the lease defines the aggregate as the tenant's leased or lettable
-              area. Do not create a separate common-area record.
+              Apply an executed amendment when it expressly changes the premises,
+              commencement date, expiration date, or event date. A later executed
+              amendment overrides only the terms it expressly changes.
 
-              ================================================================
-              AMENDMENTS
-              ================================================================
-
-              Apply an executed amendment from its stated effective date.
-
-              Retain original premises terms not expressly changed.
-
-              Keep added, surrendered, relocated, and replacement premises
-              separate when their designations, statuses, or effective dates
-              differ.
-
-              Do not treat surrendered premises as currently occupied.
-
-              Do not treat replacement premises as effective before the stated
-              effective date.
-
-              Use only expressly stated revised or remaining areas. Never
-              calculate a remaining area by subtraction.
+              Ignore drafts, unsigned amendments, proposals, negotiations,
+              intentions, unexercised options, and possible future arrangements.
 
               ================================================================
-              EXCLUSIONS
+              DATE COMPARISON
               ================================================================
 
-              Exclude:
+              Normalize every controlling date to YYYY-MM-DD.
 
-              - parking, vehicle storage, bicycle storage, and loading areas;
-              - shared facilities not included in the demised premises;
-              - addresses, postal codes, building IDs, and registration records;
-              - unrelated tenants and building-wide totals;
-              - technical, construction, mechanical, electrical, HVAC,
-                fire-safety, elevator, staircase, floor-load, and finish details;
-              - energy-label, cadastral, and land areas;
-              - drawing, project, report, and certificate numbers;
-              - blank templates, drafts, unsigned alternatives, and unexercised
-                options; and
-              - marketing availability not incorporated into the tenant's lease.
+              Remove hyphens and compare the complete YYYYMMDD values as
+              eight-digit integers.
+
+              Calculate internally and do not output:
+
+              commencement_key = commencement_date as YYYYMMDD
+              expiration_key = expiration_date as YYYYMMDD
+              processing_key = processing_date as YYYYMMDD
+              event_key = event_date as YYYYMMDD
+
+              Compare complete date keys only. Do not compare dates by document
+              order, page order, clause order, year alone, month alone, or day
+              alone.
+
+              Chronology must always be described accurately:
+
+              - a smaller date key is before a larger date key;
+              - an equal date key is on the same date;
+              - a larger date key is after a smaller date key.
+
+              Never describe an earlier date as after a later date or a later
+              date as before an earlier date.
+
+              ================================================================
+              STATUS DECISION ORDER
+              ================================================================
+
+              Apply the first reliably supported rule in this exact order:
+
+              1. "No Longer Tenant"
+              2. "Gone"
+              3. "Moving"
+              4. "Unknown" when controlling evidence is unreliable
+              5. "Future"
+              6. "Expired"
+              7. "Occupying"
+
+              ================================================================
+              EVENT-BASED STATUSES
+              ================================================================
+
+              Return "No Longer Tenant" only when an executed agreement ends the
+              tenant's entire tenancy and event_key <= processing_key.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Entire tenancy terminated by executed agreement"
+
+              tenancy_status_reason_notes =
+              "The tenant's entire tenancy ended by an executed agreement effective [event_date], on or before the processing date [processing_date]."
+
+              Return "Gone" only when an executed surrender, contraction,
+              completed relocation, substitution, or amendment removes the
+              specific premises record and event_key <= processing_key.
+
+              Apply "Gone" only to the removed record.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Premises removed by executed agreement"
+
+              tenancy_status_reason_notes =
+              "[premises] was removed by an executed [event_type] effective [event_date], on or before the processing date [processing_date]."
+
+              Return "Moving" only when an executed relocation, substitution,
+              or future surrender will remove the existing premises and
+              event_key > processing_key.
+
+              Apply "Moving" only to the outgoing premises. Determine the
+              replacement premises status from its own controlling dates.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Executed relocation pending"
+
+              tenancy_status_reason_notes =
+              "An executed relocation will remove [premises] effective [event_date], after the processing date [processing_date]."
+
+              ================================================================
+              DATE-BASED STATUSES
+              ================================================================
+
+              Return "Future" only when:
+
+              processing_key < commencement_key
+
+              and no higher-priority event applies.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Lease commencement date is in the future"
+
+              tenancy_status_reason_notes =
+              "The executed lease commencement date [commencement_date] is after the processing date [processing_date]."
+
+              Return "Expired" only when:
+
+              processing_key > expiration_key
+
+              and no higher-priority event or supported continuation applies.
+
+              Before returning "Expired", check for an effective extension,
+              renewal, expiration-date amendment, automatic extension, exercised
+              renewal option, or other supported continuation.
+
+              If a continuation changes the expiration date, use the updated
+              expiration date and determine the status again.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Lease term expired"
+
+              tenancy_status_reason_notes =
+              "The executed lease expiration date [expiration_date] is before the processing date [processing_date], and no supported continuation exists."
+
+              Return "Occupying" only when:
+
+              commencement_key <= processing_key
+              AND
+              processing_key <= expiration_key
+
+              and no higher-priority event applies.
+
+              Treat commencement_date and expiration_date as inclusive.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Executed lease in effect"
+
+              tenancy_status_reason_notes =
+              "The processing date [processing_date] falls within the executed lease term from [commencement_date] through [expiration_date]."
+
+              ================================================================
+              UNKNOWN
+              ================================================================
+
+              Return "Unknown" when the evidence required to establish another
+              status is missing, conflicting, ambiguous, or unreadable.
+
+              This includes:
+
+              - missing or unreliable commencement_date;
+              - missing or unreliable expiration_date;
+              - missing or unreliable processing_date;
+              - commencement_date after expiration_date;
+              - unresolved conflicting controlling dates;
+              - an unreadable controlling amendment date; or
+              - uncertainty about whether a renewal or extension became effective.
+
+              Return:
+
+              tenancy_status_reason_desc =
+              "Status not reliably established"
+
+              tenancy_status_reason_notes =
+              "The status cannot be reliably established because [specific missing, conflicting, ambiguous, or unreadable controlling evidence]."
+
+              Replace the bracketed explanation with the specific evidence
+              problem. Do not leave unresolved placeholders.
+
+              Do not return "Unknown" merely because arrangement_space_area,
+              suite_number, full_floor_f, or area unit is empty.
+
+              Tenancy status is independent from floor-area availability.
+
+              ================================================================
+              EXACT STATUS MAPPING
+              ================================================================
+
+              After finalizing tenancy_status_desc, use only these exact reason
+              mappings:
+
+              - "Occupying" -> "Executed lease in effect"
+              - "Future" -> "Lease commencement date is in the future"
+              - "Expired" -> "Lease term expired"
+              - "Gone" -> "Premises removed by executed agreement"
+              - "Moving" -> "Executed relocation pending"
+              - "No Longer Tenant" ->
+                "Entire tenancy terminated by executed agreement"
+              - "Unknown" -> "Status not reliably established"
+
+              Generate exactly one note using the corresponding status rule.
+
+              Never use a Future reason or note for another status.
+              Never use an Occupying reason or note for another status.
+              Never retain a reason or note from a previously considered status.
+
+              ================================================================
+              RECORD CONSISTENCY
+              ================================================================
+
+              Apply these rules independently to every supported premises record.
+
+              When records share the same commencement_date, expiration_date,
+              and processing_date, and no record-specific event applies, return
+              the same status, reason, and note for all those records.
+
+              A record-specific executed event may change only the record
+              expressly affected by that event.
+
+              Do not create a floor, suite, unit, area, or placeholder record
+              merely because a tenancy event or status is mentioned.
+
+              If a premises record is unsupported, remove the complete record
+              instead of retaining it with an Unknown status.
+
+              ================================================================
+              FINAL VALIDATION
+              ================================================================
+
+              Immediately before returning JSON, verify every record:
+
+              - status uses one allowed value;
+              - reason and note match the finalized status;
+              - reason and note use the same verified dates;
+              - Future satisfies processing_key < commencement_key;
+              - Expired satisfies processing_key > expiration_key;
+              - Occupying satisfies commencement_key <= processing_key AND
+                processing_key <= expiration_key;
+              - Gone has an executed record removal with
+                event_key <= processing_key;
+              - Moving has an executed pending removal with
+                event_key > processing_key;
+              - No Longer Tenant has an executed entire-tenancy termination
+                with event_key <= processing_key;
+              - continuation evidence was checked before returning Expired;
+              - no earlier date is described as after a later date;
+              - no later date is described as before an earlier date; and
+              - no unresolved placeholders remain.
+
+              Apply this final date correction when no higher-priority executed
+              event applies:
+
+              - if processing_key < commencement_key, return "Future";
+              - otherwise, if processing_key > expiration_key and no supported
+                continuation exists, return "Expired";
+              - otherwise, if commencement_key <= processing_key AND
+                processing_key <= expiration_key, return "Occupying";
+              - otherwise, return "Unknown".
+
+              After the final correction, regenerate both the reason and note
+              from the finalized status. Do not preserve an earlier reason or
+              note.
+
+              ================================================================
+              AMENDMENTS AND EXCLUSIONS
+              ================================================================
+
+              Apply executed amendments from their effective dates. Retain original
+              terms not expressly changed. Keep added, surrendered, relocated, and
+              replacement premises separate when their designations, statuses, or
+              effective dates differ.
+
+              Exclude parking, vehicle storage, bicycle storage, loading areas,
+              shared facilities outside the demise, addresses, postal codes,
+              building IDs, registrations, unrelated tenants, building totals,
+              technical details, energy-label areas, cadastral or land areas,
+              drawing/report/certificate numbers, blank templates, drafts, unsigned
+              alternatives, unexercised options, and unincorporated marketing
+              availability.
 
               ================================================================
               FINAL CHECK
@@ -549,261 +925,213 @@ namespaces:
 
               Before returning, verify:
 
-              - the output contains only the "Floor-Suite-Table" object;
-              - it contains exactly the eight required arrays;
-              - all arrays have equal length;
-              - each record has floor_number, suite_number, or both;
+              - only the "Floor-Suite-Table" object is returned;
+              - exactly the eight required arrays are present and have equal length;
+              - each record has a supported non-empty floor_number or suite_number;
+              - no unnumbered named level was converted into a numeric floor;
               - every record belongs to the applicable tenant's premises;
-              - every area is expressly stated and correctly associated;
-              - no value was calculated or converted;
+              - every non-empty floor_number contains only normalized numeric floor
+                information;
+              - every non-empty arrangement_space_area is specifically tied to the
+                floor_number or suite_number at the same index;
+              - no aggregate premises area was assigned to one floor unless the
+                source expressly states that the entire aggregate applies to that
+                floor;
+              - floor numbers obtained from delivery, access, server-room,
+                installation, or technical clauses did not inherit an aggregate
+                area from another clause;
+              - covered and uncovered outdoor areas were not added to indoor floor
+                areas;
+              - an incorporated tenant-specific floor-level measurement was not
+                replaced by a less granular whole-property or use-category aggregate;
+              - every aggregate use category was checked for a complete floor-specific
+                breakdown before an aggregate record was created;
+              - separately measured uses on the same floor were preserved as separate
+                records and were not added together;
+              - source priority determined premises scope and did not overwrite a
+                more specific supported floor-level measurement;
+              - no calculated or converted area is returned;
               - no detailed record duplicates an aggregate record;
-              - dropdown fields contain only allowed values;
-              - duplicate and excluded records are removed; and
-              - the output is valid JSON.
+              - every supported line in the controlling premises list was evaluated;
+              - multiple separately stated components on the same floor were not collapsed;
+              - an expressly parent-floor-linked component retained that parent floor;
+              - dropdown fields use only allowed values;
+              - duplicates and exclusions are removed; and
+              - no parking-space, vehicle-space, or bicycle-space entry created
+                a Floor-Suite-Table record;
+              - every floor and area remained paired with the same controlling
+                premises sentence, bullet, table row, or schedule row;
+              - the response is valid JSON.
 
           - role: system
             raw: true
             content: |
-              The following examples define the required extraction behavior.
+              EXAMPLES
+
               Do not reuse example values unless they appear in the supplied
               context.
 
-              ================================================================
-              EXAMPLE 1: FLOOR-BY-FLOOR AREAS
-              ================================================================
+              EXAMPLE 1: DETAILED FLOOR AREAS
 
               Context:
+              "A total of 1,857.7 m², distributed as follows: 2nd floor 60 m²;
+              13th floor 1,193.6 m²; 14th floor 586.1 m²."
 
-              "A total of approximately 1,857.7 m² LFA, distributed as follows:
-              2nd floor: approximately 60 m² LFA storage space;
-              13th floor: approximately 1,193.6 m² LFA office space;
-              14th floor: approximately 586.1 m² LFA office space."
+              Return floors "2", "13", and "14" with areas "60", "1193.6",
+              and "586.1". Do not return the aggregate or floor "13,14".
 
-              The supplied current processing date falls within the executed
-              lease term. Whole-floor status is not established.
-
-              Result:
-
-              {
-                "Floor-Suite-Table": {
-                  "floor_number": [
-                    "2nd floor",
-                    "13th floor",
-                    "14th floor"
-                  ],
-                  "suite_number": [
-                    "",
-                    "",
-                    ""
-                  ],
-                  "arrangement_space_area": [
-                    "60",
-                    "1193.6",
-                    "586.1"
-                  ],
-                  "ref_arrangement_space_area_uom_desc": [
-                    "SqM",
-                    "SqM",
-                    "SqM"
-                  ],
-                  "full_floor_f": [
-                    "--",
-                    "--",
-                    "--"
-                  ],
-                  "tenancy_status_desc": [
-                    "Occupying",
-                    "Occupying",
-                    "Occupying"
-                  ],
-                  "tenancy_status_reason_desc": [
-                    "Executed lease in effect",
-                    "Executed lease in effect",
-                    "Executed lease in effect"
-                  ],
-                  "tenancy_status_reason_notes": [
-                    "The supplied current processing date falls within the executed lease term.",
-                    "The supplied current processing date falls within the executed lease term.",
-                    "The supplied current processing date falls within the executed lease term."
-                  ]
-                }
-              }
-
-              Do not also return the aggregate 1,857.7 square metre record.
-
-              ================================================================
-              EXAMPLE 2: ADDRESS SUFFIX IS NOT A SUITE
-              ================================================================
+              EXAMPLE 2: AGGREGATE MULTI-FLOOR AREA
 
               Context:
+              "1,779.7 m² on the 13th and 14th floors."
 
-              "The leased property at Trompenburgstraat 2C has a total size of
-              approximately 998.10 m² LFA office space located on the 5th floor,
-              including a share in the general areas."
+              No separate floor areas exist.
 
-              The supplied current processing date falls within the executed
-              lease term. Whole-floor status is not established.
+              Return floor_number "13,14" and arrangement_space_area "1779.7".
+              Never apportion the area.
 
-              Result:
-
-              {
-                "Floor-Suite-Table": {
-                  "floor_number": [
-                    "5th floor"
-                  ],
-                  "suite_number": [
-                    ""
-                  ],
-                  "arrangement_space_area": [
-                    "998.10"
-                  ],
-                  "ref_arrangement_space_area_uom_desc": [
-                    "SqM"
-                  ],
-                  "full_floor_f": [
-                    "--"
-                  ],
-                  "tenancy_status_desc": [
-                    "Occupying"
-                  ],
-                  "tenancy_status_reason_desc": [
-                    "Executed lease in effect"
-                  ],
-                  "tenancy_status_reason_notes": [
-                    "The supplied current processing date falls within the executed lease term."
-                  ]
-                }
-              }
-
-              Do not extract "2C" as suite_number because it appears only in the
-              property address. Do not infer full_floor_f from common-area rights.
-
-              ================================================================
-              EXAMPLE 3: TENANT-SPECIFIC MEASUREMENT DETAIL
-              ================================================================
+              EXAMPLE 3: UNNUMBERED CELLAR
 
               Context:
+              "The leased property consists of retail space on the ground floor
+              and a cellar."
 
-              The controlling premises clause states:
+              Return only floor_number "0". Do not return "-1" for the cellar and
+              do not create a separate cellar record.
 
-              "Warehouse: 19,167.58 m² LFA.
-              Office: 179.96 m² LFA."
-
-              An incorporated tenant-specific NEN 2580 schedule states:
-
-              "Industry, building floor 0: 19,167.58 m² LFA.
-              Office, building floor 0: 92.65 m² LFA.
-              Office, building floor 1: 87.31 m² LFA."
-
-              The executed commencement date is after the supplied current
-              processing date.
-
-              Result:
-
-              {
-                "Floor-Suite-Table": {
-                  "floor_number": [
-                    "0",
-                    "0",
-                    "1"
-                  ],
-                  "suite_number": [
-                    "",
-                    "",
-                    ""
-                  ],
-                  "arrangement_space_area": [
-                    "19167.58",
-                    "92.65",
-                    "87.31"
-                  ],
-                  "ref_arrangement_space_area_uom_desc": [
-                    "SqM",
-                    "SqM",
-                    "SqM"
-                  ],
-                  "full_floor_f": [
-                    "--",
-                    "--",
-                    "--"
-                  ],
-                  "tenancy_status_desc": [
-                    "Future",
-                    "Future",
-                    "Future"
-                  ],
-                  "tenancy_status_reason_desc": [
-                    "Lease commencement date is in the future",
-                    "Lease commencement date is in the future",
-                    "Lease commencement date is in the future"
-                  ],
-                  "tenancy_status_reason_notes": [
-                    "The executed lease commencement date is after the supplied current processing date.",
-                    "The executed lease commencement date is after the supplied current processing date.",
-                    "The executed lease commencement date is after the supplied current processing date."
-                  ]
-                }
-              }
-
-              Do not also return the aggregate 179.96 square metre office record.
-
-              ================================================================
-              EXAMPLE 4: SURRENDER AND RELOCATION
-              ================================================================
+              EXAMPLE 4: AGGREGATE AREA MUST NOT BE ASSIGNED TO FLOOR 0
 
               Context:
+              The premises clause states approximately 3,550 m² of warehouse,
+              office, other space, and covered outdoor space. A delivery clause
+              mentions offices on the ground and first floors. An incorporated
+              tenant-specific NEN 2580 schedule states:
 
-              "Tenant leases Suite 400, comprising 650 m² LFA on the 4th floor."
+              "Building floor 0: 3,400 m² LFA."
+              "Building floor 1: 120 m² LFA."
+              "Covered outdoor space: 20 m²."
 
-              An executed amendment states:
+              Return:
+              floor_number = ["0", "1"]
+              arrangement_space_area = ["3400", "120"]
+              ref_arrangement_space_area_uom_desc = ["SqM", "SqM"]
 
-              "Effective 1 September 2026, Tenant surrenders Suite 400 on the
-              4th floor and relocates to the entire 5th floor, comprising
-              1,100 m² LFA and designated as Suite 500."
+              Do not assign "3550" to floor 0. Do not add covered outdoor area to
+              floor 0.
 
-              The supplied current processing date is after 1 September 2026.
+              EXAMPLE 5: ACTIVE LEASE
 
-              Result:
+              Processing date: 2026-09-10.
+              Commencement date: 2026-09-01.
+              Expiration date: 2031-08-31.
 
-              {
-                "Floor-Suite-Table": {
-                  "floor_number": [
-                    "4th floor",
-                    "5th floor"
-                  ],
-                  "suite_number": [
-                    "400",
-                    "500"
-                  ],
-                  "arrangement_space_area": [
-                    "650",
-                    "1100"
-                  ],
-                  "ref_arrangement_space_area_uom_desc": [
-                    "SqM",
-                    "SqM"
-                  ],
-                  "full_floor_f": [
-                    "--",
-                    "Y"
-                  ],
-                  "tenancy_status_desc": [
-                    "Gone",
-                    "Occupying"
-                  ],
-                  "tenancy_status_reason_desc": [
-                    "Premises surrendered by executed amendment",
-                    "Executed lease in effect"
-                  ],
-                  "tenancy_status_reason_notes": [
-                    "Suite 400 on the 4th floor was surrendered effective 1 September 2026.",
-                    "The amendment relocated the tenant to Suite 500 comprising the entire 5th floor effective 1 September 2026."
-                  ]
-                }
-              }
+              Because 20260901 <= 20260910 <= 20310831, return "Occupying",
+              reason "Executed lease in effect", and the corresponding Occupying
+              note. Never return Future for these dates.
+
+              EXAMPLE 6: FUTURE LEASE
+
+              Processing date: 2026-09-10.
+              Commencement date: 2027-01-01.
+              Expiration date: 2037-12-31.
+
+              Because 20260910 < 20270101, return Future with the mapped reason and
+              Future note.
 
           - role: user
             content: =global-context/self.ascii-formatted-clustered
+
+          - role: system
+            raw: true
+            content: |
+              FINAL TENANCY, FLOOR, AND AREA ENFORCEMENT
+
+              Use 2026-09-21 as the default processing date unless the runtime
+              context expressly labels another Current processing date, Processing
+              date, As-of date, or Status date.
+
+              Normalize controlling dates to YYYY-MM-DD, remove hyphens, and compare
+              YYYYMMDD values as eight-digit integers.
+
+              Apply the comparison in this exact order: processing_key less than
+              commencement_key means Future; otherwise processing_key greater than
+              expiration_key means Expired; otherwise the term is active. Do not
+              compare only month and day values.
+
+              If commencement_key <= processing_key AND processing_key <=
+              expiration_key, status must be "Occupying" unless a higher-priority
+              executed event applies.
+
+              Return "Future" only when processing_key < commencement_key.
+
+              Do not invent a numeric floor for an unnumbered named level. A
+              negative floor requires an expressly numbered basement designation.
+
+              Do not create a record when floor_number and suite_number would both
+              be empty.
+
+              This is a mandatory complete-record deletion rule. If both
+              floor_number and suite_number are empty, delete the corresponding
+              arrangement_space_area, ref_arrangement_space_area_uom_desc,
+              full_floor_f, tenancy_status_desc, tenancy_status_reason_desc, and
+              tenancy_status_reason_notes values at the same index.
+
+              Never return an area-only record. Never assign floor_number "0"
+              merely because the premises are a warehouse, business space,
+              office, boiler room, mezzanine, or physically appear to be at
+              ground level.              
+
+              For each record, verify that arrangement_space_area expressly applies
+              to the floor_number or suite_number at the same index.
+
+              Never assign a whole-property, multi-floor, or multi-component
+              aggregate area to one floor unless the source expressly states that
+              the complete aggregate applies to that floor.
+
+              When an incorporated tenant-specific NEN 2580 schedule or measurement
+              report provides separate floor-level LFA values, use those stated
+              values for the corresponding floor records.
+
+              When an aggregate use-category area is split into floor-specific rows,
+              return every applicable floor-specific row and suppress the aggregate
+              category area. Preserve separately measured components on the same
+              floor as separate records.
+
+              Do not add covered or uncovered outdoor area to an indoor floor area.
+
+              These area rules must not remove or alter an independently supported
+              floor_number.
+
+              Evaluate every supported floor-area line in the controlling premises
+              clause, schedule, or incorporated measurement source. Do not stop
+              after the first valid record. Preserve separately stated components
+              on the same floor.
+
+              Determine tenancy_status_desc first, then regenerate both the reason
+              and note only from that finalized status.
+
+              Apply this final date rule exactly when no higher-priority executed
+              event applies:
+
+              - if processing_key < commencement_key, return "Future";
+              - otherwise, if processing_key > expiration_key and no supported
+                continuation exists, return "Expired";
+              - otherwise, if commencement_key <= processing_key AND
+                processing_key <= expiration_key, return "Occupying";
+              - otherwise, return "Unknown".
+
+              Never return "Future" when commencement_key <= processing_key.
+
+              For "Occupying", return exactly:
+
+              tenancy_status_reason_desc = "Executed lease in effect"
+
+              tenancy_status_reason_notes =
+              "The processing date [processing_date] falls within the executed lease term from [commencement_date] through [expiration_date]."
+
+              After finalizing the status, discard any reason or note generated
+              for an earlier candidate status. Never describe an earlier
+              commencement date as after a later processing date.
 
           - role: user
             raw: true
@@ -811,11 +1139,26 @@ namespaces:
               Extract the applicable tenant's supported floor, suite, unit, or
               demised-space arrangements from the complete lease context above.
 
-              Apply controlling executed amendments and avoid duplicated
-              aggregate and detailed areas.
+              Apply controlling executed amendments and avoid duplicated aggregate
+              and detailed areas.
 
-              Never calculate, convert, estimate, subtract, divide, or apportion
-              an area.
+              Never calculate, convert, estimate, subtract, divide, or apportion an
+              area.
+
+              Return floor_number as normalized numeric floor information only.
+
+              Do not convert an unnumbered named level into a numeric floor. Do not
+              create a record when floor_number and suite_number would both be
+              empty.
+
+              For each record, return only an area expressly tied to that record's
+              floor or suite. Do not assign a whole-premises or multi-floor
+              aggregate area to one floor. Prefer incorporated tenant-specific
+              floor-level measurements and keep outdoor area separate.
+
+              For tenancy status, determine status first, derive the reason from the
+              finalized status, and generate the note from the same status and
+              verified normalized dates.
 
               Return only the required valid JSON object with these equal-length
               arrays:

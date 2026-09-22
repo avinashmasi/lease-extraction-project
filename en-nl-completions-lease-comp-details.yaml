@@ -1319,91 +1319,171 @@ namespaces:
               - Occupying
               - Unknown
 
-            Determine the tenant status as of the current date on which this
-            extraction is being performed.
+            Determine the tenant status as of the supplied runtime processing
+            date. The runtime context must explicitly label this value as the
+            Current processing date, Processing date, As-of date, or Status date.
+            Never use the document date, signature date, delivery date, payment
+            date, rent-free date, renewal date, termination date, surrender date,
+            relocation date, option date, or the model's implicit knowledge of
+            today's date as the processing date. If it is not supplied, return
+            Unknown.
 
-            Compare the operative lease commencement date, expiry date,
-            termination date, and any exercised break date against the current date.
+            Review the complete lease package and chronology. Use only executed
+            documents and controlling dates for the applicable premises record.
+            An executed amendment overrides only the commencement, expiration,
+            premises, or event term that it expressly changes. Ignore drafts,
+            unsigned amendments, proposals, negotiations, intentions, and
+            unexercised options. Confirmed extensions, renewals, or amendments
+            must be applied before evaluating expiration.
 
-            Apply the following rules in priority order:
+            Normalize all controlling dates to YYYY-MM-DD and compare complete
+            dates, not document order or year/month/day fragments. Use:
+              commencement_key = commencement date
+              expiration_key = expiration date
+              processing_key = runtime processing date
+              event_key = executed event date
 
-            1. Gone
-              Select Gone only if the document explicitly confirms that the
-              tenant has vacated, surrendered, or permanently left the premises.
+            Apply these rules in exactly this priority order:
 
-            2. No Longer Tenant
-              Select No Longer Tenant only if the document explicitly confirms
-              that the tenancy relationship has been terminated or that the
-              party has ceased to be the tenant.
+            1. No Longer Tenant
+              Return No Longer Tenant only when an executed agreement ends the
+              tenant's entire tenancy and event_key is on or before processing_key.
+              An ordinary expiry or a premises-only removal is not sufficient.
+
+            2. Gone
+              Return Gone only when an executed surrender, contraction,
+              substitution, completed relocation, or amendment removes this
+              specific premises record and event_key is on or before processing_key.
+              Apply Gone only to the affected premises record.
 
             3. Moving
-              Select Moving only if the document confirms that the tenant is
-              currently relocating or transferring its operations to or from
-              another property.
+              Return Moving only when an executed relocation, substitution, or
+              future surrender will remove this existing premises record and
+              event_key is after processing_key. A possible relocation,
+              alternative property, break option, or intention is insufficient.
 
-              Do not select Moving merely because:
-                - an alternative location is mentioned;
-                - the tenant has a future relocation right;
-                - the lease contains a break option; or
-                - relocation is a condition for exercising a break option.
-
-            4. Expired
-              Select Expired if:
-                - the operative lease expiry or confirmed termination date is
-                  earlier than the current date; and
-                - there is no evidence of renewal, extension, holding over,
-                  or continued occupation.
+            4. Unknown
+              Return Unknown when controlling evidence is missing, conflicting,
+              ambiguous, unreadable, or not executed. This includes missing or
+              unreliable processing, commencement, or expiration dates;
+              commencement after expiration; an unresolved amendment; or
+              uncertainty about whether a continuation became effective.
 
             5. Future
-              Select Future if:
-                - the lease has been signed or executed; and
-                - the lease commencement date is later than the current date.
+              Return Future only when processing_key is before commencement_key,
+              the lease is executed, and no higher-priority event applies.
+              A future break, rent review, payment, renewal, or expiry date does
+              not make the status Future.
 
-              A future break date, rent review date, payment date, renewal date,
-              expiry date, or other future event does not make the tenant
-              status Future.
+            6. Expired
+              Return Expired only when processing_key is after expiration_key,
+              no higher-priority event applies, and no effective extension,
+              renewal, expiration-date amendment, automatic extension, exercised
+              renewal option, holding over, or other supported continuation exists.
 
-            6. Occupying
-              Select Occupying if:
-                - the lease commencement date is on or before the current date;
-                - the operative lease expiry or termination date is after the
-                  current date; and
-                - there is no evidence that the tenant has vacated, surrendered
-                  the premises, or ceased to be the tenant.
+            7. Occupying
+              Return Occupying only when commencement_key is on or before
+              processing_key and processing_key is on or before expiration_key,
+              with no higher-priority event. Treat both commencement and
+              expiration dates as inclusive. Confirmed move-out, surrender,
+              termination, or removal overrides an otherwise active date range.
 
-              For an executed lease, physical occupation does not need to be
-              explicitly stated if the lease is active according to its
-              commencement and end dates.
+            Do not create a premises record merely because status language appears.
+            Do not use empty area, suite, floor, or unit fields as a reason for
+            Unknown when the status dates and event evidence are reliable.
 
-            7. Unknown
-              Select Unknown if:
-                - the operative commencement date cannot be identified;
-                - the lease dates are incomplete, ambiguous, or conflicting;
-                - it is unclear whether the document was executed;
-                - the document explicitly states that an unfulfilled condition
-                  prevents the lease from becoming effective; or
-                - the tenant status cannot otherwise be reliably determined.
+            Before responding, validate the selected status against its exact
+            date rule and regenerate the decision from the final controlling
+            dates. Return only the exact category name with no quotes,
+            punctuation, explanation, or extra text.
+              Output exactly one of these values, with matching capitalization and
+              no quotes, punctuation, explanation, or extra text:
 
-            Additional rules:
+              Expired
+              Future
+              Gone
+              Moving
+              No Longer Tenant
+              Occupying
+              Unknown
 
-              - Use only the dates governing the actual lease being classified.
-              - Do not use dates from examples, templates, general conditions,
-                appendices, headers, footers, signature certificates, or
-                unrelated agreements.
-              - A break option by itself does not mean that the lease has ended.
-              - Use a break date as the termination date only if the document
-                confirms that the break option was exercised.
-              - Do not assume that a break option has been exercised merely
-                because it is available.
-              - A renewal option does not mean that the lease has been renewed.
-              - Treat a signed lease as active from its stated commencement date
-                unless the document explicitly confirms cancellation,
-                non-fulfilment of a condition, termination, surrender, or vacation.
-              - If the lease is signed before its commencement date, classify
-                it as Future.
-              - If the commencement date has passed and the lease remains active,
-                classify it as Occupying.
-              - Return exactly one allowed category.
+        - role: user
+          content: "{prompt}"
+
+    ACT_1954_F:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+
+        - role: system
+          content: |
+            Determine whether the lease is protected by the Landlord and Tenant Act 1954.
+
+            Respond ONLY with one of the following values:
+
+              "Y"
+              "N"
+
+            Do not explain.
+            Do not use quotes.
+            Do not provide additional text.
+
+            #### Classification Rules:
+
+            - "Y"
+              - The lease benefits from security of tenure under the Landlord and Tenant Act 1954.
+              - Look for phrases such as:
+                - protected by the Landlord and Tenant Act 1954
+                - security of tenure
+                - inside the Act
+                - tenancy protected by Part II of the Landlord and Tenant Act 1954
+                - tenant has statutory renewal rights
+
+            - "N"
+              - The lease has been contracted out of the Landlord and Tenant Act 1954.
+              - Look for phrases such as:
+                - outside the Landlord and Tenant Act 1954
+                - contracted out
+                - exclusion of sections 24-28
+                - statutory declaration
+                - simple declaration
+                - no security of tenure
+                - tenancy excluded from Part II of the Act
+
+            - If the lease clearly states that it is contracted out of the Act, respond with "N".
+
+            - If the lease clearly states that security of tenure applies under the Act, respond with "Y".
+
+            ####
+
+            Examples:
+
+            1. Given:
+              "This Lease is protected by the security of tenure provisions of the Landlord and Tenant Act 1954."
+
+              Response:
+              Y
+
+            2. Given:
+              "The parties agree that the tenancy is excluded from Sections 24 to 28 of the Landlord and Tenant Act 1954."
+
+              Response:
+              N
+
+            3. Given:
+              "Tenant has the benefit of statutory renewal rights under Part II of the Act."
+
+              Response:
+              Y
+
+            4. Given:
+              "The Lease has been contracted out of the security of tenure provisions of the Landlord and Tenant Act 1954."
+
+              Response:
+              N
+
+            ####
 
         - role: user
           content: "{prompt}"
@@ -2239,7 +2319,10 @@ namespaces:
 
             Output Rules:
 
-              - Return ONLY the date in YYYY-MM-DD format.
+              # kind: Instance: Date parses input as kind_date_input_format (MDY);
+              # ISO text here fails that parse and the value is demoted to `hint`
+              # instead of being promoted to `abstract`.
+              - Return ONLY the date in MM/DD/YYYY format.
               - Always return a four-digit year.
               - Do not use quotation marks.
               - Do not return explanatory text.
@@ -2247,8 +2330,8 @@ namespaces:
               - Never convert a year beginning with 20 into a year beginning
                 with 19.
               - For example:
-                  - 31 March 2031 must be returned as 2031-03-31
-                  - 30 April 2032 must be returned as 2032-04-30
+                  - 31 March 2031 must be returned as 03/31/2031
+                  - 30 April 2032 must be returned as 04/30/2032
               - If no reliable future action date can be identified, return:
                 i dont know
 
@@ -2372,39 +2455,39 @@ namespaces:
                 "The matter shall be revisited on 15 March 2028."
 
               Response:
-                2028-03-15
+                03/15/2028
 
               Given:
                 "The landlord is expected to provide a response by June 30, 2027."
 
               Response:
-                2027-06-30
+                06/30/2027
 
               Given:
                 "The amended break option is effective on 1 July 2029."
 
               Response:
-                2029-07-01
+                07/01/2029
 
               Given:
                 "The break option is effective on 31 March 2031, subject to
                 twelve months' prior notice."
 
               Response:
-                2031-03-31
+                03/31/2031
 
               Given:
                 "The notice must be served no later than 31 March 2030 for the
                 break to take effect on 31 March 2031."
 
               Response:
-                2031-03-31
+                03/31/2031
 
               Given:
                 "Client requested a follow-up review on 10 February 2028."
 
               Response:
-                2028-02-10
+                02/10/2028
 
               Given:
                 "The lease commenced on 1 January 2025."
@@ -2426,7 +2509,7 @@ namespaces:
               Response:
                 i dont know
 
-            Return exactly one date in YYYY-MM-DD format or:
+            Return exactly one date in MM/DD/YYYY format or:
             i dont know
 
         - role: user
