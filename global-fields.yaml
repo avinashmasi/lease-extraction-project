@@ -35,8 +35,8 @@ namespaces:
               expression: "'ascii' if lang == 'en' else 'utf-8'"
           - $set: 'ascii'
 
-    # #################################
-    # Terms
+  # #################################
+  # Terms
 
     Arrangement_Start_Date:
       reduction:
@@ -206,9 +206,7 @@ namespaces:
           default: =en-nl-completions-terms/self.Option_Notes
           en-nl: =en-nl-completions-terms/self.Option_Notes
 
-    
-
-    # Lease comp details
+  # Lease comp details
      
     total_leased_space:
       reduction:
@@ -308,8 +306,7 @@ namespaces:
           default: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Reason_Type_Desc
           en-nl: =en-nl-completions-lease-comp-details/self.Arrangement_End_Action_Status_Reason_Type_Desc
 
-
-    # Property type parking details
+  # Property type parking details
 
     parking_type_desc:
       type: property_lease_arrangement_parking
@@ -375,7 +372,7 @@ namespaces:
           default: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly_uom
           en-nl: =en-nl-completions-property-type-parking-details/self.parking_cost_yearly_uom
 
-     # Floor/Suite
+  # Floor/Suite
 
     Floor-Suite-Floor:
       type: Floor-Suite
@@ -508,7 +505,6 @@ namespaces:
           key: =self.jurisdiction
           default: =en-nl-completions-lease-break/self.Arrangement_Option_Start_Date
           en-nl: =en-nl-completions-lease-break/self.Arrangement_Option_Start_Date
-
 
   ##companies
 

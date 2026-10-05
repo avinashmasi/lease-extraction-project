@@ -1,5 +1,5 @@
 kind: Ontology/v2
-name: en-nl-completions-companies
+name: en-nl-completions-company-contact-role-addresses
 namespaces:
   self:
     role_desc:
