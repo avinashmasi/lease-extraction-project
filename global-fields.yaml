@@ -536,4 +536,13 @@ namespaces:
           default: =en-nl-completions-company-contact-role-addresses/self.company_id
           en-nl: =en-nl-completions-company-contact-role-addresses/self.company_id
 
+    ################################################################################################33
+
+    property_name:
+      reduction:
+        $match:
+          key: =self.jurisdiction
+          default: =en-nl-completions-property/self.Property_Name
+          en-nl: =en-nl-completions-property/self.Property_Name
+
 

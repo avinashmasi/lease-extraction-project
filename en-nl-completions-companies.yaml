@@ -1,6 +1,5 @@
-# file name: en-nl-completions-company-contact-role-addresses.yaml
 kind: Ontology/v2
-name: en-nl-completions-company-contact-role-addresses
+name: en-nl-completions-companies
 namespaces:
   self:
     role_desc:
@@ -778,6 +777,89 @@ namespaces:
               calculate, or guess an ID.
 
               ================================================================
+              DUTCH ROLE-WORDING EQUIVALENCE
+              ================================================================
+
+              Apply all existing role, evidence, chain-completion, manager-enumeration, and
+              signature-block rules equally to Dutch, English, and bilingual wording. Dutch wording
+              has exactly the same evidentiary effect as the corresponding English wording.
+
+              Treat these Dutch terms as equivalent for role evaluation:
+              - verhuurder, hoofdverhuurder, onderverhuurder:
+                landlord, main lessor, sublessor;
+              - huurder, medehuurder, onderhuurder:
+                tenant, co-tenant, subtenant;
+              - eigenaar, juridisch eigenaar, geregistreerd eigenaar:
+                owner, legal owner, registered owner;
+              - beheerder, vastgoedbeheerder, property manager:
+                manager, property manager;
+              - contractbeheerder, contractmanager:
+                contract manager;
+              - asset manager, vermogensbeheerder:
+                asset manager;
+              - technisch beheerder, technisch manager:
+                technical manager;
+              - vertegenwoordiger, gemachtigde, gevolmachtigde:
+                representative, agent, attorney-in-fact;
+              - adviseur, makelaar, bedrijfsmakelaar:
+                adviser, broker, commercial real estate agent;
+              - bestuurder, directeur, beherend vennoot:
+                director, managing director, general partner.
+
+              Treat these Dutch operative connectors as equivalent:
+              - "rechtsgeldig vertegenwoordigd door";
+              - "vertegenwoordigd door";
+              - "handelend door";
+              - "handelend namens";
+              - "namens";
+              - "door";
+              - "optredend als";
+              - "treedt op als";
+              - "aldus ondertekend";
+              - "ondertekend namens";
+              - "totdat verhuurder anders meedeelt, treedt als beheerder op";
+              - "huurder dient contact op te nemen met";
+              - "voor alle aangelegenheden betreffende de huurovereenkomst".
+
+              Apply the existing rules after translating only the legal function internally. Do not
+              translate or alter company_name.
+
+              DUTCH TENANT REPRESENTATION:
+              When Tenant A is "rechtsgeldig vertegenwoordigd door", "vertegenwoordigd door",
+              "handelend door", or otherwise expressly represented by a separate Company B, keep
+              Tenant A as TENANT and evaluate Company B as TENANT REP under the existing rules. If
+              Company B is then represented by a natural person, retain Company B and exclude only
+              the natural person.
+
+              DUTCH MULTIPLE-MANAGER ENUMERATION:
+              When one administration or manager block separately identifies a "Property Manager",
+              "beheerder", "Contract Manager", "contractmanager", "contractbeheerder", "Asset
+              Manager", or "technisch beheerder", evaluate every separately named company. Do not
+              stop after the first manager, address, registration number, telephone number, email,
+              bullet, line break, or page break.
+
+              If the lease directs the tenant to contact the Property Manager or Contract Manager,
+              or the beheerder or contractmanager, regarding the lease or further lease matters,
+              every separately named qualifying company is LANDLORD REP.
+
+              DUTCH AND ENGLISH MIXED LABELS:
+              Dutch leases may use English role labels inside otherwise Dutch text. A label such as
+              "Property Manager: Savills Asset & Property Management B.V." followed by "Contract
+              Manager: Orion Investment Partners B.V." creates two separate candidates. Return both
+              companies as LANDLORD REP when the clause gives both an active landlord-side function.
+
+              DUTCH EXECUTION:
+              In every executed landlord or tenant signature block, independently evaluate each
+              separate company following "door", "namens", "vertegenwoordigd door", "handelend door",
+              "By:", or equivalent wording. A separate company with the capacity bestuurder,
+              directeur, manager, beherend vennoot, gevolmachtigde, Director, Managing Director,
+              General Partner, or Attorney-in-Fact is evaluated under the existing corporate
+              representative rules.
+
+              A following natural-person entry excludes only the natural person and never removes a
+              preceding qualifying company.
+
+              ================================================================
               MANDATORY SECOND-PASS COMPLETENESS AUDIT
               ================================================================
               After drafting records, scan the complete document a second time independently. First
@@ -863,17 +945,22 @@ namespaces:
                  natural person.
               25. Never duplicate a remaining company to preserve the number of candidate records.
               26. Confirm that each final company-role pair has its own independent evidence.
-              27. Leave company_id empty unless an explicit internal MIQ/CIQ account identifier is
+              27. For Dutch or bilingual documents, reapply every existing English role rule using
+                  the Dutch equivalents in DUTCH ROLE-WORDING EQUIVALENCE. Confirm that every
+                  separately named beheerder, Property Manager, contractmanager, Contract Manager,
+                  contractbeheerder, asset manager, and technisch beheerder was evaluated
+                  independently. Do not stop after the first manager company.
+              28. Leave company_id empty unless an explicit internal MIQ/CIQ account identifier is
                  provided for the exact company.
-              28. Never place trade-register, VAT, tax, cadastral, establishment, or DocuSign
+              29. Never place trade-register, VAT, tax, cadastral, establishment, or DocuSign
                  numbers in company_id.
-              29. Return no unsupported role or placeholder record.
-              30. Before output, verify that every company named after "By:",
+              30. Return no unsupported role or placeholder record.
+              31. Before output, verify that every company named after "By:",
                   "represented by", or "acting through" in an executed landlord
                   signature block was evaluated for LANDLORD REP when accompanied
                   by a corporate representative capacity. Exclude natural persons
                   but retain every separate qualifying company.
-              31. Return valid JSON with no surrounding text.
+              32. Return valid JSON with no surrounding text.
           # ----------------------------------------------------------------
           # Behavior examples
           # ----------------------------------------------------------------
@@ -1168,6 +1255,46 @@ namespaces:
               corporate representative merely because LEGAL OWNER and TENANT have
               already been extracted.
 
+              When retrieved context contains an executed party signature block, evaluate every
+              separate company after "By:", "represented by", "acting through", "door:", "namens:",
+              or "vertegenwoordigd door"; a company with a corporate Director, Bestuurder, Manager,
+              General Partner, or Attorney-in-Fact capacity is a representative of the party whose
+              block it executes, and a following natural person excludes only that person.
+
+              DUTCH OPERATIVE ROLE CHECK
+
+              Apply these rules to the original Dutch text without requiring an English translation:
+
+              1. If a lease-specific clause states "treedt als beheerder op", "beheerder:",
+                 "vastgoedbeheerder:", "property manager:", "contractmanager:", or
+                 "contractbeheerder:" followed by a legal company, first resolve the Verhuurder and
+                 LEGAL OWNER to their exact legal company names.
+
+                 Return the named manager as LANDLORD REP only if the manager is a different legal
+                 entity from every Verhuurder and LEGAL OWNER. Compare the complete legal names
+                 case-insensitively after trimming whitespace and normalizing punctuation.
+
+                 If the manager and Verhuurder or LEGAL OWNER resolve to the same legal entity,
+                 treat the clause as landlord self-management and create no LANDLORD REP candidate
+                 or record. Do not create the record first and delete it later.
+
+                 If the manager is a separate legal entity, return it as LANDLORD REP when the tenant
+                 must contact, notify, report to, correspond with, or deal with that manager
+                 regarding the lease, property, maintenance, administration, or further lease
+                 matters.
+
+                 References such as "Verhuurder zelf" always resolve to the landlord and never
+                 create a LANDLORD REP candidate or record.
+
+              2. If the tenant identification states that the tenant is "rechtsgeldig
+                 vertegenwoordigd door", "vertegenwoordigd door", or acts "door tussenkomst van" a
+                 separate legal company, retain the identified tenant as TENANT and return that
+                 separate company as TENANT REP. If that company is subsequently represented by a
+                 natural person, exclude only the natural person and retain the company.
+
+              Perform this Dutch operative-role check before finalizing the arrays, even when
+              LEGAL OWNER and TENANT have already been found.
+
               ================================================================
               SIGNATURE ENTRY SEPARATION
               ================================================================
@@ -1219,29 +1346,46 @@ namespaces:
               Extract every supported company-role record from the complete lease context.
 
               Return only Company-Table with equal-length arrays for role_desc, company_name, and
-              company_id.
+              company_id. Use only the seven supported role values.
 
-              Use only the seven supported role values. Keep only legal company or organization
-              names. Reject natural persons both before role mapping and immediately before output.
-              A title, initials-plus-surname pattern, residence, VAT number, tax number, passport
-              detail, contact detail, or landlord role must never be accepted as legal-entity
-              evidence. Delete the entire record when company_name is a person. Leave that role
-              absent unless another company has independent controlling evidence for it. Never
-              transfer a rejected LEGAL OWNER role to the tenant and never duplicate a remaining
-              company to keep the same record count.
+              Do not finalize after extracting the landlord and tenant. Independently inspect every
+              executed signature page in the current lease and every amendment, extension, renewal,
+              assignment, novation, assumption, and side letter.
 
-              Do not stop after LEGAL OWNER and TENANT. Inspect the summary, key-data page,
-              administration clause, maintenance portal, service-desk details, signature blocks, and
-              representation chains. Resolve separate landlord managers, including expressly
-              appointed construction, building, maintenance, facilities, engineering, works, or
-              service companies; corporate landlord directors; corporate managing companies; general
-              partners; attorneys-in-fact; passive notice recipients; and every company in nested
-              landlord-side and tenant-side representation chains. Self-management by the owner does
-              not create a duplicate LANDLORD REP.
+              In each landlord signature block, evaluate every separate "By:", "door:", "namens:",
+              "represented by", "vertegenwoordigd door", "acting through", and equivalent entry.
 
-              Never return the same legal entity as both LEGAL OWNER and LANDLORD REP or LANDLORD
-              REP PASSIVE. Representative roles require a separate company. Other multi-role cases
-              require independent evidence.
+              When a separate legal company appears after such an entry with a corporate capacity
+              such as Director, Bestuurder, Managing Director, Manager, General Partner, or
+              Attorney-in-Fact, return that company as LANDLORD REP when it is different from the
+              LEGAL OWNER.
+
+              A later natural-person director or signatory excludes only that natural person. It
+              must not remove, invalidate, or cause omission of the preceding corporate company.
+
+              This signature-page audit is mandatory even when:
+              - the document is only an amendment;
+              - LEGAL OWNER and TENANT have already been extracted;
+              - the amendment body does not mention the corporate representative;
+              - the company appears only on the executed signature page; or
+              - the corporate company is followed by a natural-person signer.
+
+              For every manager candidate, resolve the Verhuurder and LEGAL OWNER before creating
+              the record. Create LANDLORD REP only when the manager is a different legal entity.
+              When the manager is the same entity as Verhuurder or LEGAL OWNER, do not create a
+              LANDLORD REP candidate or record.
+
+              MANDATORY FINAL ROLE-CONFLICT GATE:
+              After all candidate records have been created, compare every LANDLORD REP and
+              LANDLORD REP PASSIVE company_name against every LEGAL OWNER company_name using
+              case-insensitive comparison after trimming whitespace and normalizing punctuation.
+              If both names identify the same legal entity, delete the complete LANDLORD REP or
+              LANDLORD REP PASSIVE record, including its role_desc, company_name, and company_id.
+              Keep only the LEGAL OWNER record for that entity. This deletion is mandatory even
+              when the lease separately labels that same landlord as beheerder, manager,
+              administrator, lease contact, payment recipient, or reporting point. A landlord
+              managing its own property is not a separate representative. Perform this deletion
+              immediately before returning the final arrays and do not recreate the deleted record.
 
               Leave company_id empty unless an explicit internal MIQ/CIQ account identifier is
-              supplied for that exact company.
+              supplied for the exact company. Return valid JSON only.

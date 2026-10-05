@@ -94,7 +94,7 @@ namespaces:
             notice contact phone number,
             contact information
 
-  #################################################################Terms
+  ############  Terms
 
     Terms-Context:
       kind:
@@ -121,6 +121,7 @@ namespaces:
         - =self.Service-Charge-Per-Area-Value-Search
         - =self.Ref-Service-Charge-Per-Area-Value-Price-UOM-Search
         - =self.Number-Of-Month-Free-Rent-Search
+        - =self.Rent-Incentive-Search
         - =self.Tenant-Improvement-Allowance-Search
         - =self.Ref-Tenant-Improvement-Allowance-UOM-Search
         - =self.Option-Notes-Search
@@ -242,7 +243,23 @@ namespaces:
           max_score: =global-config/search.chunk-max-l2-distance
           top_k: 12
           prompt: |
-            Extract the Monthly Asking Rent, Monthly Base Rent, Monthly Rental Amount, Monthly Rent Schedule, Advertised Monthly Rent, or Quoted Monthly Rent. If not found, respond "i dont know".
+            Find Monthly Asking Rent, Monthly Base Rent, Monthly Lease Rent,
+            Monthly Contract Rent, Monthly Fixed Rent, maandhuur,
+            huurprijs per maand, kale huur per maand, aanvangshuur per maand.
+            Also retrieve:
+            - Asking Rent Yearly
+            - Annual Base Rent
+            - Annual Asking Rent
+
+            Include column headers, row labels and lease periods.
+            Exclude:
+            - Effective Rent
+            - Service Charges
+            - VAT
+            - CAM
+            - Parking Charges
+            - Per SF Rates
+            - Per SQM Rates
 
     Ref-Asking-Rent-Monthly-UOM-Search:
       kind:
@@ -264,7 +281,22 @@ namespaces:
           max_score: =global-config/search.chunk-max-l2-distance
           top_k: 12
           prompt: |
-            Extract the Annual Asking Rent, Annual Base Rent, Annual Rental Amount, Yearly Rent, Annual Fixed Rent, or Annual Rent Schedule. If not found, respond "i dont know".
+            Find Annual Asking Rent, Annual Base Rent, Annual Fixed Rent,
+            Annual Lease Rent, Commencing Annual Rent, Total Rent Per Year,
+            jaarhuur, huurprijs per jaar, aanvangshuurprijs, kale jaarhuur.
+
+            Also retrieve:
+            - Monthly Asking Rent
+            - Monthly Base Rent
+            Include column headers, row labels and lease periods.
+            Exclude:
+            - Effective Rent
+            - Service Charges
+            - VAT
+            - CAM
+            - Parking Charges
+            - Per SF Rates
+            - Per SQM Rates
 
     Ref-Asking-Rent-Yearly-UOM-Search:
       kind:
@@ -286,7 +318,11 @@ namespaces:
           max_score: =global-config/search.chunk-max-l2-distance
           top_k: 12
           prompt: |
-            Extract the Monthly Effective Rent, Net Effective Monthly Rent, Effective Monthly Rental Rate, Discounted Monthly Rent, or Effective Lease Rate. If not found, respond "i dont know".
+            Find the rent schedule or text explicitly stating Monthly Effective Rent,
+            Effective Monthly Rent, Net Effective Rent per Month, Effectieve huur per
+            maand, Netto effectieve huur per maand, or Effectieve maandhuur. Include
+            period labels and column headers to distinguish the total monthly amount
+            from annual effective rent and per-area effective rental rates.
 
     Ref-Effective-Rent-Monthly-UOM-Search:
       kind:
@@ -308,7 +344,11 @@ namespaces:
           max_score: =global-config/search.chunk-max-l2-distance
           top_k: 12
           prompt: |
-            Extract the Annual Effective Rent, Net Effective Annual Rent, Effective Annual Rental Rate, Discounted Annual Rent, or Effective Lease Rate. If not found, respond "i dont know".
+            Find the rent schedule or text explicitly stating Annual Effective Rent,
+            Effective Annual Rent, Net Effective Annual Rent, effectieve jaarhuur,
+            netto effectieve jaarhuur, or effectieve huur per jaar. Include row
+            periods and column headings to distinguish an annual effective total
+            from a monthly effective total and per-area rates.
 
     Ref-Effective-Rent-Yearly-UOM-Search:
       kind:
@@ -354,6 +394,21 @@ namespaces:
           prompt: |
             Extract the number of free rent months, free rent period, rent abatement period, rent holiday, concession period, promotional free rent, or months of rent forgiveness. If not found, respond "i dont know".
 
+    Rent-Incentive-Search:
+      kind:
+        Text: =global-fields/self.response_encoding
+      reduction:
+        $search:
+          mode: loader
+          max_score: =global-config/search.chunk-max-l2-distance
+          top_k: 12
+          prompt: |
+            Find rent-free months (huurvrij, huurvrije periode, rent holiday),
+            annual rental discounts (huurkorting), rent abatements, concessions,
+            one-time rent credits, and stepped rent schedules. Include the amount,
+            applicable dates or periods, lease term, and whether a landlord
+            contribution actually reduces rent rather than paying for fit-out.
+
     Tenant-Improvement-Allowance-Search:
       kind:
         Text: =global-fields/self.response_encoding
@@ -387,8 +442,8 @@ namespaces:
           prompt: |
             Extract lease option provisions including renewal options, extension options, rights of first refusal, rights of first offer, purchase options, expansion options, contraction rights, termination options, and tenant option clauses. If not found, respond "i dont know".
 
-  ##  Lease-Comp-Details
-  
+  ############  Lease-Comp-Details
+
     Lease-Comp-Details-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -551,7 +606,7 @@ namespaces:
           prompt: |
             Find language explaining the reason for the arrangement-end action status, including competitor commitment, redevelopment, conflict, contract terms, declined by CBRE or client, competitor demand, direct deal, duplicate or error, existing agent, late pursuit, no decision, no landlord opportunity, transaction elsewhere, renewal or regearing, occupier no longer existing, space too small, unreachable, wrong property options, or wrong team resources.
 
-  ##companies
+  ############  companies
     Company-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -580,8 +635,9 @@ namespaces:
             novation assumption sublease guaranty guarantee letter of authority power of attorney
             chamber of commerce trade register statutory name registered legal entity company extract
             account identifier MIQ CIQ company id internal account foreign key
+            executed signature block By represented by acting through Title Director Managing Director Manager General Partner Attorney-in-Fact bestuurder directeur namens vertegenwoordigd door
 
-  ##  Floor-Suite
+  ############  Floor-Suite
     Floor-Suite-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -601,9 +657,7 @@ namespaces:
             expansion, contraction, premises exhibit, floor plan,
             tenant premises table, demised area by floor, unit allocation
 
-  
-
-  ##parking 
+  ############  parking 
     Parking-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -623,9 +677,7 @@ namespaces:
             per space per month, per space per year, parking exhibit, parking appendix,
             amendment to parking, parking clause, tenant parking arrangement, parking rights schedule
 
-  
-
-  ##measurements
+  ############  measurements
     Measurements-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -669,7 +721,7 @@ namespaces:
             magazijn, opslagruimte, entresol, buitenterrein, parkeerplaatsen,
             meetrapport, verhuurbaar vloeroppervlak, VVO, LFA
 
-    ###lease-break
+  ###lease-break
     Lease-Break-Context:
       kind:
         Text: =global-fields/self.response_encoding

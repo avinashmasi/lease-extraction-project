@@ -374,11 +374,11 @@ namespaces:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
-          mode: chain
+          mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Arrangement Start Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+            Extract the Arrangement Start Date and format it as DD/MM/YYYY. If not found, respond "i dont know".
           templates: =templates.Arrangement_Start_Date
 
     Arrangement_End_Date:
@@ -394,7 +394,7 @@ namespaces:
           prompt: |
             What is the explicit Arrangement End Date in this lease agreement or sublease? Extract only dates that are
             directly mentioned as arrangement end dates, expiration dates, termination dates, or final dates in clearly defined term sections or rent schedules.
-            Format your answer as MM/DD/YYYY. If no explicit arrangement end date exists, respond only with 'i dont know'.
+            Format your answer as DD/MM/YYYY. If no explicit arrangement end date exists, respond only with 'i dont know'.
           templates: =templates.Arrangement_End_Date
 
     Occupancy_Date:
@@ -409,7 +409,7 @@ namespaces:
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
             Extract the explicit Occupancy Date or Possession Date from the lease agreement.
-            Return only the date as IT IS written or formatted as MM/DD/YYYY.
+            Return only the date as IT IS written or formatted as DD/MM/YYYY.
             If no explicit occupancy or possession date exists in the document, respond with 'i dont know'.
           templates: =templates.Occupancy_Date
 
@@ -420,7 +420,7 @@ namespaces:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
-          mode: chain
+          mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
@@ -511,11 +511,11 @@ namespaces:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
-          mode: chain
+          mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Arrangement Signed Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+            Extract the Arrangement Signed Date and format it as DD/MM/YYYY. If not found, respond "i dont know".
           templates: =templates.Arrangement_Signed_Date
 
     Asking_Rent_Monthly:
@@ -529,12 +529,11 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicit total monthly asking/base rent for the initial lease period.
-            Accept Dutch labels such as huurprijs per maand, kale huur per maand, maandhuur,
-            and aanvangshuur per maand. Exclude annual rent, effective rent, per-area rates,
-            service costs, VAT, and parking. Do not calculate from another period.
-            Normalize Dutch/European numbers to plain decimal notation and return only the number.
-            If no explicit total monthly asking/base rent exists, return "i dont know".
+            Extract Asking Rent Monthly.
+            Prefer the explicitly stated monthly asking/base rent.
+            If unavailable, calculate from Asking Rent Yearly ÷ 12.
+            Exclude effective rent, service charges, VAT, CAM, taxes, parking and per-area rates.
+            Return only the numeric value or "i dont know".
           templates: =templates.Asking_Rent_Monthly
 
     Ref_asking_rent_monthly_uom_desc:
@@ -563,7 +562,12 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Asking Rent Yearly value. If not found, respond "i dont know".
+            What is the total annual asking/base rent before concessions? Prefer
+            the directly stated commencing annual rent for the first payable
+            period. Only if absent, multiply its stated monthly asking/base rent
+            by 12. A rent-free zero payment is not the quoted asking rate. Exclude
+            effective rent, per-area rates, VAT, service charges and parking.
+            Return only the numeric amount, or "i dont know" if absent.
           templates: =templates.Asking_Rent_Yearly
 
     Ref_asking_rent_yearly_uom_desc:
@@ -592,13 +596,15 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Determine the total monthly effective rent for the lease commencement period.
-            First use an explicitly labeled monthly effective rent. Otherwise divide an explicitly
-            labeled annual effective rent by 12. If neither exists, use the total monthly fixed/base
-            rent applicable on the Arrangement Start Date, or divide that period's annual total by 12.
-            Use dates and period labels only to select the correct rent row; never return a date.
-            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
-            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
+            Prefer a directly stated total monthly effective/net effective rent;
+            if absent, divide a directly stated annual effective total by 12.
+            If neither is stated, derive the annual effective rent from asking
+            rent, the initial lease term, and documented rent-free months or
+            rent-reducing discounts, then divide by 12. If the complete lease
+            has no applicable incentives, use asking yearly / 12. Do not treat
+            fit-out allowances as discounts unless applied to rent. Exclude
+            per-area rates, VAT and service charges; do not guess missing inputs.
+            Return only the numeric amount, or "i dont know" if absent.
           templates: =templates.Effective_Rent_Monthly
 
     Ref_effective_rent_monthly_uom_desc:
@@ -627,13 +633,14 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Determine the total yearly effective rent for the lease commencement period.
-            First use an explicitly labeled annual effective rent. Otherwise multiply an explicitly
-            labeled monthly effective rent by 12. If neither exists, use the total annual fixed/base
-            rent applicable on the Arrangement Start Date, or multiply that period's monthly total by 12.
-            Use dates and period labels only to select the correct rent row; never return a date.
-            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
-            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
+            Prefer a directly stated total annual effective/net effective rent;
+            if absent, multiply a directly stated monthly effective total by 12.
+            If neither is stated, derive annual effective rent from asking rent,
+            the initial lease term, and documented rent-free months or rent-reducing
+            discounts. If the complete lease has no applicable incentives, use
+            asking yearly. Exclude fit-out allowances not applied to rent, per-area
+            rates, VAT and service charges; do not guess missing inputs. Return
+            only the numeric amount, or "i dont know" if absent.
           templates: =templates.Effective_Rent_Yearly
 
     Ref_effective_rent_yearly_uom_desc:
@@ -745,11 +752,11 @@ namespaces:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
-          mode: chain
+          mode: chat
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Arrangement Start Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+            Extract the Arrangement Start Date and format it as DD/MM/YYYY. If not found, respond "i dont know".
           templates: =templates.Arrangement_Start_Date
 
     Arrangement_End_Date:
@@ -765,7 +772,7 @@ namespaces:
           prompt: |
             What is the explicit Arrangement End Date in this lease agreement or sublease? Extract only dates that are
             directly mentioned as arrangement end dates, expiration dates, termination dates, or final dates in clearly defined term sections or rent schedules.
-            Format your answer as MM/DD/YYYY. If no explicit arrangement end date exists, respond only with 'i dont know'.
+            Format your answer as DD/MM/YYYY. If no explicit arrangement end date exists, respond only with 'i dont know'.
           templates: =templates.Arrangement_End_Date
 
     Occupancy_Date:
@@ -780,7 +787,7 @@ namespaces:
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
             Extract the explicit Occupancy Date or Possession Date from the lease agreement.
-            Return only the date as IT IS written or formatted as MM/DD/YYYY.
+            Return only the date as IT IS written or formatted as DD/MM/YYYY.
             If no explicit occupancy or possession date exists in the document, respond with 'i dont know'.
           templates: =templates.Occupancy_Date
 
@@ -791,7 +798,7 @@ namespaces:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
-          mode: chain
+          mode: chat
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
@@ -882,30 +889,29 @@ namespaces:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
-          mode: chain
+          mode: chat
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Arrangement Signed Date and format it as MM/DD/YYYY. If not found, respond "i dont know".
+            Extract the Arrangement Signed Date and format it as DD/MM/YYYY. If not found, respond "i dont know".
           templates: =templates.Arrangement_Signed_Date
 
     Asking_Rent_Monthly:
-      confidence: 0.80
+      confidence: 0.85
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
       reduction:
         $completion:
           mode: chat
-          model: =global-config/secondary.model
+          model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicit total monthly asking/base rent for the initial lease period.
-            Accept Dutch labels such as huurprijs per maand, kale huur per maand, maandhuur,
-            and aanvangshuur per maand. Exclude annual rent, effective rent, per-area rates,
-            service costs, VAT, and parking. Do not calculate from another period.
-            Normalize Dutch/European numbers to plain decimal notation and return only the number.
-            If no explicit total monthly asking/base rent exists, return "i dont know".
+            Extract Asking Rent Monthly.
+            Prefer the explicitly stated monthly asking/base rent.
+            If unavailable, calculate from Asking Rent Yearly ÷ 12.
+            Exclude effective rent, service charges, VAT, CAM, taxes, parking and per-area rates.
+            Return only the numeric value or "i dont know".
           templates: =templates.Asking_Rent_Monthly
 
     Ref_asking_rent_monthly_uom_desc:
@@ -934,7 +940,12 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Asking Rent Yearly value. If not found, respond "i dont know".
+            What is the total annual asking/base rent before concessions? Prefer
+            the directly stated commencing annual rent for the first payable
+            period. Only if absent, multiply its stated monthly asking/base rent
+            by 12. A rent-free zero payment is not the quoted asking rate. Exclude
+            effective rent, per-area rates, VAT, service charges and parking.
+            Return only the numeric amount, or "i dont know" if absent.
           templates: =templates.Asking_Rent_Yearly
 
     Ref_asking_rent_yearly_uom_desc:
@@ -963,13 +974,15 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Determine the total monthly effective rent for the lease commencement period.
-            First use an explicitly labeled monthly effective rent. Otherwise divide an explicitly
-            labeled annual effective rent by 12. If neither exists, use the total monthly fixed/base
-            rent applicable on the Arrangement Start Date, or divide that period's annual total by 12.
-            Use dates and period labels only to select the correct rent row; never return a date.
-            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
-            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
+            Prefer a directly stated total monthly effective/net effective rent;
+            if absent, divide a directly stated annual effective total by 12.
+            If neither is stated, derive the annual effective rent from asking
+            rent, the initial lease term, and documented rent-free months or
+            rent-reducing discounts, then divide by 12. If the complete lease
+            has no applicable incentives, use asking yearly / 12. Do not treat
+            fit-out allowances as discounts unless applied to rent. Exclude
+            per-area rates, VAT and service charges; do not guess missing inputs.
+            Return only the numeric amount, or "i dont know" if absent.
           templates: =templates.Effective_Rent_Monthly
 
     Ref_effective_rent_monthly_uom_desc:
@@ -998,13 +1011,14 @@ namespaces:
           model: =global-config/secondary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Determine the total yearly effective rent for the lease commencement period.
-            First use an explicitly labeled annual effective rent. Otherwise multiply an explicitly
-            labeled monthly effective rent by 12. If neither exists, use the total annual fixed/base
-            rent applicable on the Arrangement Start Date, or multiply that period's monthly total by 12.
-            Use dates and period labels only to select the correct rent row; never return a date.
-            Exclude asking rent, per-area rates, service charges, and unrelated neighboring values.
-            Return only the normalized numeric value, or "i dont know" when no unambiguous total exists.
+            Prefer a directly stated total annual effective/net effective rent;
+            if absent, multiply a directly stated monthly effective total by 12.
+            If neither is stated, derive annual effective rent from asking rent,
+            the initial lease term, and documented rent-free months or rent-reducing
+            discounts. If the complete lease has no applicable incentives, use
+            asking yearly. Exclude fit-out allowances not applied to rent, per-area
+            rates, VAT and service charges; do not guess missing inputs. Return
+            only the numeric amount, or "i dont know" if absent.
           templates: =templates.Effective_Rent_Yearly
 
     Ref_effective_rent_yearly_uom_desc:
@@ -1264,7 +1278,7 @@ namespaces:
                and the lease explicitly states that occupancy begins on the commencement date,
                use the commencement date.
 
-            Return only the final occupancy date in MM/DD/YYYY format (e.g., 06/01/2025).
+            Return only the final occupancy date in DD/MM/YYYY format (e.g., 06/01/2025).
             Do not include any explanation or additional text.
 
             If the occupancy date cannot be determined from the lease text,
@@ -1294,7 +1308,7 @@ namespaces:
 
               Tenant opened for business on January 15, 2024.
 
-            Response: "01/15/2024"
+            Response: "15/01/2024"
 
             4. Given:
               Target Occupancy Date: July 1, 2011.
@@ -1920,7 +1934,7 @@ namespaces:
 
             ## OUTPUT FORMAT
 
-            Return only the date in MM/DD/YYYY format.
+            Return only the date in DD/MM/YYYY format.
 
             If no valid signed date exists, return:
 
@@ -1936,7 +1950,7 @@ namespaces:
             "Executed on May 15, 2023"
 
             Response:
-            05/15/2023
+            15/05/2023
 
             Example 2
 
@@ -1952,7 +1966,7 @@ namespaces:
             "Signed this 20th day of June, 2022"
 
             Response:
-            06/20/2022
+            20/06/2022
 
             Example 4
 
@@ -1986,7 +2000,7 @@ namespaces:
             Tenant executed this Amendment on August 5, 2025."
 
             Response:
-            08/05/2025
+            05/08/2025
 
             #### END EXAMPLES ####
 
@@ -2001,107 +2015,186 @@ namespaces:
 
         - role: system
           content: |
+            ROLE
+            You are a senior commercial real estate lease abstractor. You extract
+            the MONTHLY ASKING RENT for the leased premises described in this
+            document. You work only from evidence present in the supplied text and
+            citations. You never invent, estimate, or infer an amount.
+
             FIELD DEFINITION
+            Asking Rent Monthly is the total base/asking rent payable per month
+            for the leased premises, before concessions and before any additional
+            charges. It is a total money amount, not a rate per area unit.
 
-            Asking Rent Monthly is the rent quoted on a monthly basis.
+            ACCEPTED LABELS (ASKING RENT FAMILY)
+            English: Asking Rent, Base Rent, Initial Rent, Rental Rate, Annual
+            Rent, Monthly Rent, Annual Base Rent, Monthly Base Rent, Monthly
+            Installment of Base Rent, Fixed Rent, Minimum Rent, Commencing Rent,
+            Quoted Rent.
+            Dutch: huurprijs, kale huur, aanvangshuurprijs, maandhuur, huurprijs
+            per maand, kale huur per maand, jaarhuur, kale jaarhuur, huurprijs
+            per jaar.
 
-            This is the headline monthly rent marketed by the landlord and should be extracted exactly as stated.
+            EXTRACTION PRIORITY - FOLLOW IN STRICT ORDER
 
-            EXTRACTION RULES
+            PRIORITY 1 - DIRECT EXTRACTION (MONTHLY)
+            If a MONTHLY asking/base rent total is explicitly stated for the
+            leased premises, return that value EXACTLY as stated (normalized to
+            plain decimal). Do NOT calculate. Do NOT cross-check against an
+            annual figure. Do NOT overwrite it with a derived value, even if the
+            stated monthly value multiplied by 12 does not equal a stated annual
+            value.
 
-            - Extract only explicitly stated monthly rent values.
-            - Prefer the Year 1 monthly rent when multiple lease years are present.
-            - Extract values appearing under:
-              * Monthly Base Rent
-              * Monthly Rent
-              * Fixed Monthly Rent
-              * Monthly Asking Rent
-              * Monthly Rental Amount
-              * Base Monthly Rent
-              * Kale huur per maand (Dutch: base rent per month)
-              * Huurprijs per maand (Dutch: rental price per month)
-              * Aanvangshuur per maand (Dutch: initial rent per month)
+            PRIORITY 2 - DERIVED CALCULATION (ONLY IF PRIORITY 1 FAILS)
+            If NO monthly amount is stated but a YEARLY asking/base rent total is
+            explicitly stated for the same leased premises and the same rent
+            period, return: Yearly / 12, rounded to 2 decimal places.
 
-            ## NUMBER FORMAT NORMALIZATION (EN/NL)
-            Lease documents may use US/UK number formatting (e.g., "$25,115.00") or European/Dutch number formatting (e.g., "€ 25.115,00" or "€ 25 115,00", where the comma is the decimal separator).
-            - Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators.
-            - Do not confuse a Dutch decimal comma with a thousands separator.
+            PRIORITY 3 - NOT FOUND
+            If neither an explicit monthly nor an explicit yearly asking/base
+            rent for the leased premises can be established, return exactly:
+            i dont know
 
-            PRIORITY
+            VALIDATION - EVERY CANDIDATE MUST PASS ALL CHECKS
+            1. RENT TYPE CHECK: the label belongs to the ASKING RENT family.
+               A value labelled effective or net effective rent FAILS.
+            2. FREQUENCY CHECK: the value is explicitly monthly (Priority 1) or
+               explicitly yearly (Priority 2 source). If the frequency of an
+               amount is not stated or cannot be established from its label,
+               column heading, or sentence, the value FAILS - do not assume.
+            3. SUBJECT CHECK: the amount applies to the leased premises of this
+               lease, not to the whole building, another suite, a comparable
+               property, a landlord financial summary, or an unrelated party.
+            4. TOTALITY CHECK: the value is a total amount, not a per-square-foot
+               or per-square-meter rate, and not a payment instalment covering a
+               period other than one month or one year.
+            5. CONTEXT CHECK: re-read the sentence, row, and column heading that
+               contain the value and confirm checks 1-4 before returning it.
+               If any check is uncertain, return i dont know.
 
-            1. Year 1 Monthly Base Rent
-            2. Year 1 Monthly Rent
-            3. Year 1 Fixed Monthly Rent
-            4. Explicit Monthly Asking Rent
+            MULTIPLE VALUES / TABLES
+            - Never take the first rent number encountered simply because it
+              appears first. Evaluate all candidates and select the one that most
+              precisely matches BOTH the requested rent type and frequency.
+            - In a table, reconstruct the row and its column heading together.
+              Never take a neighboring column, a later lease year, or an
+              escalated step amount.
+            - When a rent schedule has several periods, use the first payable
+              period of the initial term (Lease Year 1 / Months 1-12).
+            - Rent-free periods: an explicit 0 caused by a rent-free (huurvrij)
+              or abated period is NOT the asking rent. Use the first positive
+              quoted asking rent. Asking rent is always the rent BEFORE
+              concessions.
+            - Amendments: if an amendment or expansion restates the rent for the
+              premises, use the amended rent.
 
-            DO NOT EXTRACT
+            EXCLUSIONS - NEVER RETURN THESE
+            Effective rent or net effective rent, CAM charges, operating
+            expenses, additional rent, insurance charges, property taxes, real
+            estate taxes, service charges (servicekosten), VAT/BTW, parking
+            charges, utility charges, tenant improvement or fit-out allowances,
+            security deposits, escalation schedules or escalation percentages,
+            percentage rent, turnover rent, late fees, building-wide rent
+            figures, landlord financial summaries, and any value belonging to an
+            unrelated property.
 
-            - Effective Rent
-            - Net Effective Rent
-            - Annual Rent
-            - Annual Base Rent
-            - Rental Rate Per Square Foot
-            - Rental Rate Per Square Meter
-            - Service Charges
-            - CAM Charges
-            - Operating Expenses
-            - Parking Charges
-            - Tenant Improvement Allowances
-            - Free Rent Values
-            - Abatement Values
+            NUMBER NORMALIZATION (EN / NL)
+            Remove currency symbols and thousands separators; use a period as the
+            decimal separator. "$75,077.10" and "EUR 75.077,10" both become
+            75077.10. Never mistake a Dutch decimal comma for a thousands
+            separator. Preserve a directly stated value exactly; round only
+            values you calculated, to 2 decimal places.
 
-            IMPORTANT
+            ANTI-HALLUCINATION CONTROLS
+            - Do not infer, estimate, average, or annualize a per-area rate.
+            - Do not convert a quarterly, weekly, or per-payment-period amount.
+            - Do not assume a rent is monthly because the amount "looks monthly".
+            - Do not reuse a number from a different field or document section.
+            - If confidence is low or the link between the value and the leased
+              premises cannot be established, return i dont know.
 
-            - Extract only values explicitly stated in the document.
-            - Do not calculate monthly rent from annual rent.
-            - Do not derive values using yearly rent divided by 12.
-            - Do not use effective rent.
-            - If multiple monthly rent amounts exist, return the first lease year monthly rent.
-            - Return only the numeric amount.
-            - If not found return:
-              i dont know
+            OUTPUT
+            Return ONLY the numeric value. No currency symbol, no unit, no label,
+            no explanation, no extra text. If not determinable, return exactly:
+            i dont know
 
         - role: system
           content: |
-            Example 1
+            Examples:
 
-            Period During Lease Term | Annual Base Rent | Monthly Installment of Base Rent
-            Lease Year 1             | $301,380.00      | $25,115.00
+            Period | Annual Base Rent | Monthly Installment of Base Rent
+            Lease Year 1 | $301,380.00 | $25,115.00
 
             Response:
             25115.00
-
-            Example 2
+            Reason: monthly is directly stated (Priority 1); no calculation.
 
             Months | Monthly Base Rent | Monthly Base Rent/sf
-            1-12   | $75,077.10        | $2.55
+            1-12 | $75,077.10 | $2.55
 
             Response:
             75077.10
+            Reason: the per-sf rate is excluded; the monthly total is used.
 
-            Example 3
-
-            Period | Monthly Base Rent
-            12/1/22 – 11/30/23 | $6,922.40
-
-            Response:
-            6922.40
-
-            Example 4
-
-            Lease Year 1 | Effective Monthly Rent $5,000
-            Lease Year 1 | Monthly Base Rent $6,000
+            Period | Monthly Base Rent | Monthly Effective Rent
+            Months 1-12 | $25,000.00 | $20,000.00
 
             Response:
-            6000
+            25000.00
+            Reason: effective rent is the wrong rent type for this field.
 
-            Example 5
+            Annual Base Rent: $120,000.00
 
-            Annual Base Rent: $120,000
+            Response:
+            10000.00
+            Reason: no monthly stated, so 120000 / 12 (Priority 2).
+
+            De aanvangshuurprijs bedraagt op jaarbasis EUR 150.000,00 exclusief
+            BTW en servicekosten.
+
+            Response:
+            12500.00
+            Reason: yearly stated, 150000 / 12; VAT and service charges excluded.
+
+            Annual Base Rent: EUR 301.380,00 | Monthly Base Rent: EUR 25.115,00
+
+            Response:
+            25115.00
+            Reason: the explicitly stated monthly value is never overwritten.
+
+            Period | Annual | Monthly
+            Months 1-12 | $0 | $0
+            Months 13-24 | $1,707,496.56 | $142,291.38
+
+            Response:
+            142291.38
+            Reason: the rent-free zero is not the asking rent.
+
+            Building total rental income: $2,400,000 per year.
+            Premises: Suite 300. Rent for Suite 300 not stated.
 
             Response:
             i dont know
+            Reason: building-wide figure is not the premises rent.
 
+            Period | Monthly Base Rent/SF
+            Year 1 | $2.50
+
+            Response:
+            i dont know
+            Reason: only a per-area rate is given; area is not a substitute.
+
+            Tenant shall pay $9,000 per quarter.
+
+            Response:
+            i dont know
+            Reason: quarterly frequency is neither monthly nor yearly.
+
+            Monthly CAM charge: $3,200. Operating expenses: $1,100 per month.
+
+            Response:
+            i dont know
+            Reason: no asking/base rent is stated.
 
         - role: user
           content: "{prompt}"
@@ -2126,11 +2219,13 @@ namespaces:
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
-            3. Only consider monthly rent values such as Monthly Asking Rent, Monthly Base Rent, Monthly Rent, Fixed Monthly Rent, or Monthly Rental Amount.
-            4. Use the Year 1 rent period when multiple lease years are present.
+            3. Use the currency of the selected monthly asking/base rent total. If the
+              monthly amount was calculated from an annual asking/base rent total,
+              use the currency of that annual source instead.
+            4. Use the first positive quoted rent period when initial months are free.
             5. If "$" is ambiguous and the document does not establish which dollar currency applies, return "" (empty string).
             6. If the currency cannot be clearly determined, output "" (empty string).
-            7. Do not use annual rents, quarterly rents, service charges, parking charges, taxes, operating expenses, or calculated monthly amounts.
+            7. Do not use effective rents, per-area rates, quarterly rents, service charges, parking charges, taxes, or operating expenses.
 
         - role: system
           content: |
@@ -2144,7 +2239,7 @@ namespaces:
 
             Example 3:
             Input context: "Annual Rent: €301,380.00"
-            Response: ""
+            Response: "EUR"
 
             Example 4:
             Input context: "Per payment period of 3 calendar months the rent is €330,205.77"
@@ -2161,14 +2256,18 @@ namespaces:
 
         - role: system
           content: |
-    
-            Give the output only if it is explicitly mentioned in the given text.
-
-            Strictly do not calculate, derive, annualize, multiply, convert, or infer any rent values.
+            Prefer the explicitly stated total annual asking/base rent before
+            concessions. Only if
+            no annual total is stated for the selected rent period, multiply its
+            explicitly stated total monthly asking/base rent by 12.
+            Select the first period with positive quoted rent when initial months
+            are free. Match each amount to its period row and column heading.
 
             Extract only the value that is explicitly identified as:
 
             - Annual Rent
+            - Total Rent per Year
+            - Commencing Annual Rent
             - Annual Base Rent
             - Annual Rental Amount
             - Yearly Rent
@@ -2176,13 +2275,15 @@ namespaces:
             - Annual Minimum Rent
             - Kale jaarhuur (Dutch: base annual rent)
             - Huurprijs per jaar (Dutch: rental price per year)
+            - Aanvangshuurprijs (Dutch: initial rent price, when stated per year)
             - Jaarhuur (Dutch: yearly rent)
 
             Do NOT extract:
 
-            - Monthly Rent
+            - Monthly Rent as the annual value without multiplying by 12
             - Effective Rent
             - Rent Per Square Foot
+            - Rent Per Square Meter
             - Service Charges
             - CAM Charges
             - Operating Expenses
@@ -2192,9 +2293,10 @@ namespaces:
             Lease documents may use US/UK number formatting (e.g., "$301,380.00") or European/Dutch number formatting (e.g., "€ 301.380,00", where the comma is the decimal separator).
             Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators. Do not confuse a Dutch decimal comma with a thousands separator.
 
-            Return only the numeric annual rent amount.
+            Return only the numeric annual rent amount. Never annualize a per-area
+            rate, quarterly payment, service charge, or an effective rent value.
 
-            If no explicit annual rent amount is provided, return:
+            If neither a total annual nor a total monthly asking/base rent is provided, return:
             "i dont know"
 
             Here is an example:
@@ -2227,15 +2329,26 @@ namespaces:
             "Base Rent shall be $25,000 per month."
 
             Expected Output:
-            i dont know
+            300000
 
             Reason:
-            Only a monthly rent amount is provided. Do not annualize or calculate.
+            No annual total is given; the stated total monthly base rent is multiplied by 12.
+
+            Here is another example:
+
+            "Annual Base Rent: € 301.380,00 | Monthly Base Rent: € 25.000,00"
+
+            Expected Output:
+            301380.00
+
+            Reason:
+            The directly stated annual value takes priority over the calculated amount.
 
         - role: user
           content: "{prompt}"
 
     Ref_asking_rent_yearly_uom_desc:
+
       reduction:
         $const:
         - role: system
@@ -2251,7 +2364,9 @@ namespaces:
             - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for the currency explicitly associated with the annual asking rent value.
+            1. Look for the currency explicitly associated with the annual asking rent
+              value. If the annual amount was calculated from monthly asking/base
+              rent, use the currency of that monthly source instead.
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
@@ -2276,100 +2391,195 @@ namespaces:
         $const:
         - role: system
           content: =global-prompts/self.generic-template-content
-
         - role: system
           content: |
-            Extract the explicitly stated total monthly effective rent from the lease PDF.
+            Extract the Total Effective Rent Monthly amount.
 
-            FIELD DEFINITION:
-            Monthly effective rent is the total rent amount explicitly identified as effective,
-            net effective, or equivalent for one month after concessions, abatements, free rent,
-            incentives, or other rent adjustments.
+            DEFINITION
+            Effective Rent Monthly represents the actual monthly rent payable
+            after considering all rent incentives, concessions, abatements,
+            rent-free periods, rent discounts, rental credits, and lease incentives.
 
-            EXTRACTION RULES:
-            1. Extract only values explicitly associated with:
-               - Monthly Effective Rent
-               - Effective Monthly Rent
-               - Net Effective Rent per Month
-               - Monthly Net Effective Rent
-               - Effective Rent per Month
-               - Effective Monthly Rental Amount
-               - Effectieve huur per maand
-               - Netto effectieve huur per maand
-               - Effectieve maandhuur
+            EXTRACTION PRIORITY
 
-            2. When extracting from a PDF table:
-               - Reconstruct the table using the row period and column headers.
-               - Match the value to the exact effective-rent column.
-               - Do not select a neighboring Base Rent, Annual Rent, Effective Rent/SF,
-                 service charge, operating expense, or parking column.
-               - If multiple periods exist, select the first chronological initial lease period
-                 or Lease Year 1.
+            STEP 1 - DIRECT MONTHLY EFFECTIVE RENT
+            Search the entire document for explicit monthly effective rent values.
+            Examples include:
+            - Monthly Effective Rent
+            - Effective Monthly Rent
+            - Net Effective Rent Per Month
+            - Monthly Net Effective Rent
+            - Effective Base Rent
+            - Net Effective Monthly Rent
+            - Effective Rent PM
+            - effectieve huur per maand
+            - netto effectieve huur per maand
+            If found, return that value immediately.
+            A stated value of 0 is valid.
 
-            3. The value must be a total monthly amount.
-               Do not extract a per-square-foot, per-square-meter, or area-based rate.
+            STEP 2 - DIRECT ANNUAL EFFECTIVE RENT
+            If no monthly effective rent exists:
+            Search for:
+            - Annual Effective Rent
+            - Effective Annual Rent
+            - Effective Yearly Rent
+            - Net Effective Annual Rent
+            - Annual Net Effective Rent
+            - effectieve jaarhuur
+            - netto jaarhuur
+            - effective base rent
 
-            4. Do not calculate, annualize, divide, multiply, average, estimate, or infer.
-               Do not calculate monthly effective rent from annual effective rent.
+            If found:
+            Effective Rent Monthly =
+            Effective Rent Yearly / 12
+            Round to 2 decimals.
 
-            5. Do not extract:
-               - Monthly Base Rent
-               - Fixed Monthly Rent
-               - Asking Rent
-               - Annual Base Rent
-               - Annual Effective Rent
-               - Effective Rent/SF
-               - Effective Rent/SQM
-               - Service Charges
-               - CAM or operating expenses
-               - Parking charges
-               - Free-rent amounts
-               - Tenant-improvement allowances
+            STEP 3 - CALCULATE EFFECTIVE RENT
+            If no effective rent amount exists directly,
+            calculate it using asking rent and incentives.
 
-            NUMBER NORMALIZATION:
-            - Remove currency symbols and thousands separators.
-            - Use a period as the decimal separator.
-            - "$75,077.10" becomes "75077.10".
-            - "€ 75.077,10" becomes "75077.10".
-            - Return only the numeric value.
+            ASKING RENT IDENTIFICATION
+            Search for:
+            - Annual Base Rent
+            - Base Rent
+            - Annual Rent
+            - Total Annual Rent
+            - Commencing Annual Rent
+            - huurprijs per jaar
+            - aanvangshuurprijs
+            - yearly rent
 
-            OUTPUT:
-            Return only the numeric monthly effective rent.
-            If no explicit total monthly effective rent is found, return:
-            i dont know
+            Ignore:
+            - VAT
+            - Service charges
+            - Utilities
+            - Operating expenses
+            - Taxes
+            - Maintenance charges
+            - Per-square-foot rent
+            - Per-square-meter rent
+            - Parking charges unless included in stated rent
 
-        - role: system
-          content: |
+            INCENTIVE IDENTIFICATION
+
+            Search entire document for:
+            - rent free
+            - rent-free
+            - free rent
+            - rent holiday
+            - huurvrij
+            - huurvrije periode
+            - incentive
+            - lease incentive
+            - rental incentive
+            - concession
+            - rent discount
+            - rental discount
+            - huurkorting
+            - vacancy compensation
+            - rent reduction
+            - landlord contribution applied against rent
+            - abatement
+            - stepped rent
+
+            CALCULATION RULES
+            RULE A - RENT FREE MONTHS
+            If:
+            Annual Rent = A
+            Lease Months = T
+            Free Months = F
+            Effective Annual Rent =
+            A × ((T - F) / T)
+
+            Example:
+            Annual Rent = 424192.50
+            Lease Term = 60 months
+            Rent Free = 8 months
+            Effective Annual =
+            424192.50 × (52/60)
+
+            RULE B - ANNUAL RENT DISCOUNT
+            If annual discount exists:
+            Effective Annual Rent =
+            Asking Annual Rent
+            minus Annual Discount
+
+            RULE C - ONE-TIME RENT CREDIT
+
+            If one-time rent credit exists:
+            Annualized Credit =
+            Credit Amount / Lease Years
+            Effective Annual Rent =
+            Asking Annual Rent
+            minus Annualized Credit
+
+            RULE D - MULTIPLE CONCESSIONS
+            If multiple incentives exist:
+            Apply all incentives one time only.
+            Combine:
+            - rent free months
+            - annual discounts
+            - rental abatements
+            - vacancy compensation
+            - incentive credits
+
+            RULE E - STEPPED RENT
+            For stepped rent schedules:
+            Calculate total rent across the full
+            initial lease term.
+            Divide by lease years.
+            Do not use a simple rent-free formula
+            when rent changes by period.
+
+            RULE F - NO INCENTIVES
+            If lease contains no incentives:
+            Effective Annual Rent =
+            Asking Annual Rent
+            VALIDATION
+            Preferred source order:
+            1. Direct Monthly Effective Rent
+            2. Direct Annual Effective Rent
+            3. Calculated Effective Annual Rent
+            4. Calculated Effective Monthly Rent
+
+            Direct values always override calculated values.
+            If Effective Annual Rent is known:
+            Effective Monthly Rent =
+            Effective Annual Rent / 12
+            If Effective Monthly Rent is known:
+            Effective Annual Rent =
+            Effective Monthly Rent × 12
+
+            Never use:
+            - VAT
+            - taxes
+            - service charges
+            - common area maintenance
+            - utilities
+            - operating expenses
+            - parking fees
+            - insurance costs
+
+            NUMBER NORMALIZATION
+            Convert:
+            €75.077,10 → 75077.10
+            $75,077.10 → 75077.10
+
+            OUTPUT
+            Return only the numeric monthly amount.
             Examples:
+            29693.48
+            22530.57
+            8114.06
 
-            Period | Monthly Base Rent | Monthly Effective Rent
-            Months 1-12 | $25,000.00 | $20,000.00
+            If a reliable value cannot be identified
+            or calculated, return:
 
-            Response:
-            20000.00
-
-            Period | Annual Effective Rent | Monthly Effective Rent
-            Lease Year 1 | $240,000.00 | $20,000.00
-
-            Response:
-            20000.00
-
-            Period | Monthly Base Rent | Effective Rent/SF
-            Year 1 | $25,000.00 | $2.50
-
-            Response:
-            i dont know
-
-            Monthly Base Rent: $25,000.00
-            Annual Effective Rent: $240,000.00
-
-            Response:
             i dont know
 
         - role: user
           content: "{prompt}"
 
-    
     Ref_effective_rent_monthly_uom_desc:
       reduction:
         $const:
@@ -2386,7 +2596,10 @@ namespaces:
             - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for the currency explicitly associated with the monthly effective rent value.
+            1. Use the currency associated with the direct monthly effective rent.
+              If calculated from annual effective/net effective rent, use that
+              source's currency. If derived from asking rent and incentives, use
+              the asking rent currency; never use an unrelated charge's currency.
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.
@@ -2414,99 +2627,210 @@ namespaces:
 
         - role: system
           content: |
-            Extract the explicitly stated total annual effective rent from the lease PDF.
 
-            FIELD DEFINITION:
-            Annual effective rent is the total annual rent amount explicitly identified as
-            effective, net effective, or equivalent after concessions, abatements, free rent,
-            incentives, or other rent adjustments.
+            Extract the Effective Rent Yearly amount.
+            FIELD DEFINITION
+            Effective Rent Yearly is the annual rent payable after
+            applying all rent concessions, incentives,
+            rent-free periods, abatements, rental discounts,
+            vacancy discounts and lease incentives.
 
-            EXTRACTION RULES:
-            1. Extract only values explicitly associated with:
-               - Annual Effective Rent
-               - Effective Annual Rent
-               - Yearly Effective Rent
-               - Annual Net Effective Rent
-               - Net Effective Annual Rent
-               - Effective Rent per Year
-               - Effective Annual Rental Amount
-               - Effectieve jaarhuur
-               - Netto effectieve jaarhuur
-               - Effectieve huur per jaar
-               - Netto jaarhuur
+            Effective Rent Yearly is NOT the same as
+            Asking Rent Yearly unless the lease explicitly
+            contains no rent incentives.
 
-            2. When extracting from a PDF table:
-               - Reconstruct the table using the row period and column headers.
-               - Match the value to the exact annual effective-rent column.
-               - Do not select a neighboring Annual Base Rent, Monthly Rent,
-                 Monthly Effective Rent, Effective Rent/SF, service charge,
-                 operating expense, or parking column.
-               - If multiple periods exist, select the first chronological initial lease period
-                 or Lease Year 1.
+            ----------------------------------------
+            PRIORITY 1
+            DIRECT EFFECTIVE YEARLY RENT
+            ----------------------------------------
 
-            3. The value must be a total annual amount.
-               Do not extract a per-square-foot, per-square-meter, or area-based rate.
+            Search the entire document for:
+            - Annual Effective Rent
+            - Effective Annual Rent
+            - Effective Rent Yearly
+            - Effective Yearly Rent
+            - Annual Net Effective Rent
+            - Net Effective Annual Rent
+            - Effective Rent Per Year
+            - Annual Effective Rental Amount
+            - effective annual base rent
+            - netto effectieve jaarhuur
+            - effectieve jaarhuur
+            - netto jaarhuur
+            - effectieve huur per jaar
+            If found:
+            Return the explicitly stated annual effective rent.
+            Never recalculate a direct effective rent value.
 
-            4. Do not calculate, annualize, divide, multiply, average, estimate, or infer.
-               Do not calculate annual effective rent by multiplying monthly rent by 12.
+            ----------------------------------------
+            PRIORITY 2
+            MONTHLY EFFECTIVE RENT
+            ----------------------------------------
 
-            5. Do not extract:
-               - Annual Base Rent
-               - Annual Asking Rent
-               - Monthly Effective Rent
-               - Monthly Base Rent
-               - Effective Rent/SF
-               - Effective Rent/SQM
-               - Service Charges
-               - CAM or operating expenses
-               - Parking charges
-               - Free-rent amounts
-               - Tenant-improvement allowances
+            If no annual effective rent exists:
+            Search for:
+            - Monthly Effective Rent
+            - Effective Monthly Rent
+            - Monthly Net Effective Rent
+            - Net Effective Monthly Rent
+            - effectieve huur per maand
+            - netto effectieve huur per maand
+            If found:
+            Effective Rent Yearly =
+            Effective Rent Monthly × 12
 
-            NUMBER NORMALIZATION:
-            - Remove currency symbols and thousands separators.
-            - Use a period as the decimal separator.
-            - "$301,380.00" becomes "301380.00".
-            - "€ 301.380,00" becomes "301380.00".
-            - Return only the numeric value.
+            ----------------------------------------
+            PRIORITY 3
+            CALCULATE EFFECTIVE RENT
+            ----------------------------------------
 
-            OUTPUT:
-            Return only the numeric annual effective rent.
-            If no explicit total annual effective rent is found, return:
-            i dont know
+            Only calculate when no direct effective rent exists.
+            STEP A
+            Find Asking Rent Yearly.
+            Search for:
+            - Annual Rent
+            - Annual Base Rent
+            - Base Rent
+            - Commencing Rent
+            - Total Annual Rent
+            - huurprijs per jaar
+            - aanvangshuurprijs
+            - yearly ren
+            Ignore:
+            - VAT
+            - service charges
+            - operating expenses
+            - maintenance
+            - utilities
+            - taxes
+            - parking fees
+            - insurance
 
-        - role: system
-          content: |
+            STEP B
+            Search entire lease for concessions.
+            Keywords:
+            - rent free
+            - rent-free
+            - free rent
+            - rent holiday
+            - huurvrij
+            - huurvrije periode
+            - concession
+            - incentive
+            - lease incentive
+            - rental incentive
+            - rent reduction
+            - huurkorting
+            - annual discount
+            - rental discount
+            - abatement
+            - vacancy compensation
+            - landlord contribution
+            - rent credit
+            - stepped rent
+
+            ----------------------------------------
+            CALCULATION RULES
+            ----------------------------------------
+
+            RULE 1
+            RENT FREE MONTHS
+            Annual Rent = A
+            Lease Months = T
+            Rent Free Months = F
+            Effective Annual Rent =
+            A × ((T - F) / T)
+
+            Example:
+            A = 424192.50
+            T = 60
+            F = 8
+
+            Result:
+            356321.70
+
+            RULE 2
+            ANNUAL RENT DISCOUNT
+            Effective Annual Rent =
+            Asking Annual Rent
+            - Annual Discount
+
+            RULE 3
+            ONE TIME INCENTIVE
+            Lease Years = T / 12
+            Annualized Incentive =
+            Incentive Amount / Lease Years
+            Effective Annual Rent =
+            Asking Annual Rent
+            - Annualized Incentive
+
+            RULE 4
+            MULTIPLE INCENTIVES
+            Combine:
+            - rent free periods
+            - rent discounts
+            - abatements
+            - vacancy compensation
+            - incentive credits
+            Apply each concession only once.
+
+            RULE 5
+            STEPPED RENT
+            When rent changes during the lease:
+            Calculate total payable rent for all steps.
+            Total Effective Rent =
+            Sum of all step rents
+            Effective Annual Rent =
+            Total Effective Rent / Lease Years
+            Never use the simple rent-free formula
+            for stepped rent schedules.
+
+            ----------------------------------------
+            VALIDATION
+            ----------------------------------------
+
+            Use values in this order:
+            1. Direct Annual Effective Rent
+            2. Direct Monthly Effective Rent × 12
+            3. Calculated Effective Rent
+            Direct values always override calculations.
+            Do not return:
+            - Asking Rent
+            - Base Rent
+            - Monthly Rent
+            - Rent/SF
+            - Rent/SQM
+            - Service Charge
+            - CAM
+            - Operating Expenses
+            - Parking Fees
+
+            ----------------------------------------
+            SPECIAL RULE
+            ----------------------------------------
+
+            Only when the entire lease contains
+            NO concessions, incentives,
+            discounts or rent-free periods:
+            Effective Rent Yearly =
+            Asking Rent Yearly
+
+            ----------------------------------------
+            NUMBER NORMALIZATION
+            ----------------------------------------
+
+            $301,380.00 -> 301380.00
+            €301.380,00 -> 301380.00
+            Remove:
+            - currency symbols
+            - thousand separators
+            Return only the numeric value.
             Examples:
-
-            Period | Annual Base Rent | Annual Effective Rent | Monthly Effective Rent
-            Lease Year 1 | $300,000.00 | $240,000.00 | $20,000.00
-
-            Response:
-            240000.00
-
-            Period | Effective Annual Rent | Effective Monthly Rent
-            Months 1-12 | €240.000,00 | €20.000,00
-
-            Response:
-            240000.00
-
-            Period | Annual Base Rent | Monthly Base Rent | Effective Rent/SF
-            Year 1 | $300,000.00 | $25,000.00 | $2.50
-
-            Response:
+            356321.70
+            270366.90
+            97368.68
+            If no reliable value exists:
             i dont know
-
-            Monthly Effective Rent: $20,000.00
-
-            Response:
-            i dont know
-
-            Annual Base Rent: $300,000.00
-            Annual Effective Rent: $240,000.00
-
-            Response:
-            240000.00
 
         - role: user
           content: "{prompt}"
@@ -2527,7 +2851,10 @@ namespaces:
             - "" (empty string)
 
             EXTRACTION & NORMALIZATION RULES:
-            1. Look for the currency explicitly associated with the annual effective rent value.
+            1. Use the currency associated with the direct annual effective rent.
+              If calculated from monthly effective/net effective rent, use that
+              source's currency. If derived from asking rent and incentives, use
+              the asking rent currency; never use an unrelated charge's currency.
             2. Normalize the extracted currency to one of the exact ALLOWED OUTPUT VALUES:
                 - Use "EUR" for amounts denoted with "€", "EUR", or "Euro(s)".
                 - Use "USD" for amounts denoted with "$", "USD", "US Dollar(s)", or "Dollar(s)" when the document establishes a US Dollar context.

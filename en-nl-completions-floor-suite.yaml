@@ -1,4 +1,3 @@
-# file name: en-nl-completions-floor-suite.yaml
 kind: Ontology/v2
 name: en-nl-completions-floor-suite
 namespaces:
@@ -240,9 +239,9 @@ namespaces:
               multiple floors, use the floor-specific rows and do not assign the
               aggregate use-category total to one floor.
 
-              When the same floor contains two or more separately measured uses or
-              components, preserve each row as a separate record. Do not add those
-              areas merely because the floor_number is identical.
+              When the same floor contains two or more separately measured leased
+              uses or components, return that floor_number once and sum the distinct
+              expressly stated leased areas into one arrangement_space_area value.
 
               A whole-category total such as total office area is less specific than
               separate office rows for floor 0 and floor 1. A whole-floor total is
@@ -251,8 +250,8 @@ namespaces:
               area basis.
 
               Prefer the most specific complete set of tenant-applicable rows that
-              reconciles to the controlling aggregate. Use arithmetic only to check
-              reconciliation, never to create an output area.
+              reconciles to the controlling aggregate. Use arithmetic only to sum
+              distinct leased areas on the same floor and to check reconciliation.
 
               Do not assign an aggregate premises area to one floor merely because
               that floor is mentioned elsewhere in the lease.
@@ -261,16 +260,18 @@ namespaces:
               RECORD CREATION
               ================================================================
 
-              A valid record requires at least one of:
+              A valid record requires a supported non-empty numeric floor_number.
 
-              - a supported numeric floor or level; or
-              - an explicit Suite designation that can be returned in suite_number.
+              Do not create a record when floor_number is empty, even when an
+              explicit Suite, unit, area, mezzanine, named level, or other premises
+              designation exists.
 
-              Do not create a record when floor_number and suite_number would both
-              be empty.
+              suite_number may be returned only as additional information for a
+              record that already has a supported non-empty floor_number.
 
-              Create separate records when floor, suite, area, full-floor flag,
-              status, effective date, or premises arrangement differs.
+              Create separate records when the normalized floor differs. When the
+              normalized floor is the same, consolidate the leased areas into one
+              record. This changes only floor_number and arrangement_space_area.
               Do not create a Floor-Suite-Table record from a parking-space,
               vehicle-space, or bicycle-space entry, even when it mentions a floor.
 
@@ -288,12 +289,23 @@ namespaces:
               lease-specific drawing takes priority over a less granular aggregate
               premises area for arrangement_space_area.
 
+              When a NEN 2580 or measurement table contains multiple area columns,
+              use only the final lettable-area result for each applicable
+              function-and-floor row, such as final VVO/LFA including any allocated
+              common-space amount. Do not use BVO/GFA, NVO, GO, VVO/LFA excluding
+              allocated common space, corrections, subtotals, or building totals.
+
+              When a use-category total covers more than one floor and final
+              floor-specific rows exist, the category total is for reconciliation
+              only. Suppress that aggregate completely and use each final
+              floor-specific row exactly once.
+
               If separate areas are expressly stated for individual floors:
 
-              A complete floor-by-floor breakdown may include more than one record
-              on the same floor when different uses or components are separately
-              measured. Completeness is evaluated across all tenant-applicable
-              rows, not merely one row per floor.
+              A complete floor-by-floor breakdown may contain multiple measured
+              uses or components on the same floor. Evaluate all applicable rows,
+              but return one unique record per normalized floor with their distinct
+              leased areas summed.
 
               - create one record for each supported floor;
               - use only the area expressly stated for that floor;
@@ -310,9 +322,9 @@ namespaces:
               area, measurement-basis differences, expressly excluded components,
               or an identifiable document discrepancy.
 
-              Use arithmetic only to validate or understand reconciliation. Never
-              create, adjust, apportion, or correct an output area through
-              arithmetic.
+              Use arithmetic only to sum distinct expressly stated leased areas on
+              the same normalized floor and to validate reconciliation. Never
+              estimate, convert, adjust, apportion, or derive an area.
 
               Create an aggregate multi-floor record only when:
 
@@ -330,14 +342,14 @@ namespaces:
               premises description before returning JSON. Do not stop after the
               first supported floor-area pair.
 
-              Create a separate record for every expressly stated premises
-              component when its floor, area, suite, status, effective date, or
-              arrangement differs. Multiple components on the same floor remain
-              separate when each has its own expressly stated area.
+              Evaluate every expressly stated premises component when its floor,
+              area, suite, status, effective date, or arrangement differs. Multiple
+              components on the same normalized floor must be consolidated into one
+              record and their distinct leased areas must be summed.
 
               Business space, warehouse, office, canteen, showroom, storage, and
-              other components must each be retained when each component is tied
-              to a supported floor and its own stated area.
+              other leased components must each be included once in the same-floor
+              sum when tied to that floor and its own stated area.
 
               Before returning, compare proposed records with every supported line
               in the controlling premises list. Each supported line must appear
@@ -483,14 +495,25 @@ namespaces:
               FLOOR REQUIRED FOR AREA OUTPUT
 
               Return arrangement_space_area only when the same record has a
-              supported non-empty floor_number or explicit suite_number.
+              supported non-empty floor_number.
+
+              An explicit suite_number without a supported floor_number does not
+              permit creation of a record.
 
               Do not extract an area first and then infer, invent, or backfill
               floor_number "0".
 
-              If an area is not expressly tied to a supported numeric floor or
-              explicit Suite designation, delete the complete record. Do not
-              retain the area with an empty floor_number or suite_number.
+              If the record does not have a supported non-empty numeric
+              floor_number, delete the complete record.
+
+              When deleting the record, delete the values at the same index from
+              suite_number, arrangement_space_area,
+              ref_arrangement_space_area_uom_desc, full_floor_f,
+              tenancy_status_desc, tenancy_status_reason_desc, and
+              tenancy_status_reason_notes.
+
+              Never retain an area, Suite, unit, status, reason, note, or another
+              field value when floor_number is empty.
 
               Return only an expressly stated numeric leased area that applies
               specifically to the corresponding floor, suite, or coherent
@@ -519,14 +542,15 @@ namespaces:
               Do not replace them with the lease's combined premises area.
 
               If a measurement schedule provides an aggregate category in the lease
-              clause and then separates that category by floor, replace the aggregate
-              category record with all applicable floor-specific rows. Do not attach
-              the aggregate category area to the first, last, or most prominent floor.
+              clause and then separates that category by floor, suppress the aggregate
+              completely and use only the final floor-specific rows. Use the aggregate
+              only to verify reconciliation. Never attach, copy, add, or return that
+              aggregate as the area of any individual floor.
 
               If floor 0 contains a warehouse row and an office row, and floor 1
-              contains another office row, return all three rows separately when all
-              belong to the tenant's demise. Do not merge the two floor-0 rows and do
-              not assign total office area to floor 1.
+              contains another office row, return floor 0 once with its warehouse and
+              office areas summed, and return floor 1 once with its own office area.
+              Do not assign a cross-floor office total to either floor.
 
               Remove approximation wording, units, measurement bases, and thousands
               separators. Preserve stated decimal precision.
@@ -539,9 +563,9 @@ namespaces:
               - "1.239 sq m" -> "1239" when "." is a thousands separator
               - "1.239,50 sq m" -> "1239.50"
 
-              Never calculate, estimate, subtract, convert, divide, derive, or
-              apportion an area. If no specific area is expressly stated, return
-              "".
+              Calculate only the sum of distinct expressly stated leased areas on
+              the same normalized floor. Never estimate, subtract, convert, divide,
+              derive, or apportion an area. If no specific area is stated, return "".
 
               OUTDOOR AND NON-FLOOR AREA SEPARATION
 
@@ -927,7 +951,10 @@ namespaces:
 
               - only the "Floor-Suite-Table" object is returned;
               - exactly the eight required arrays are present and have equal length;
-              - each record has a supported non-empty floor_number or suite_number;
+              - each record has a supported non-empty numeric floor_number;
+              - no record was created from suite_number alone;
+              - if floor_number was empty, the complete record was removed from
+                all eight arrays;
               - no unnumbered named level was converted into a numeric floor;
               - every record belongs to the applicable tenant's premises;
               - every non-empty floor_number contains only normalized numeric floor
@@ -946,14 +973,15 @@ namespaces:
                 replaced by a less granular whole-property or use-category aggregate;
               - every aggregate use category was checked for a complete floor-specific
                 breakdown before an aggregate record was created;
-              - separately measured uses on the same floor were preserved as separate
-                records and were not added together;
+              - each normalized floor_number appears once and all distinct leased
+                components on that floor were summed without double-counting;
               - source priority determined premises scope and did not overwrite a
                 more specific supported floor-level measurement;
               - no calculated or converted area is returned;
               - no detailed record duplicates an aggregate record;
               - every supported line in the controlling premises list was evaluated;
-              - multiple separately stated components on the same floor were not collapsed;
+              - multiple leased components on the same normalized floor were
+                consolidated into one record and their distinct areas were summed;
               - an expressly parent-floor-linked component retained that parent floor;
               - dropdown fields use only allowed values;
               - duplicates and exclusions are removed; and
@@ -1067,14 +1095,26 @@ namespaces:
               Do not invent a numeric floor for an unnumbered named level. A
               negative floor requires an expressly numbered basement designation.
 
-              Do not create a record when floor_number and suite_number would both
-              be empty.
+              Do not create a record when floor_number is empty. An explicit Suite,
+              unit, area, status, or other value cannot create a record without a
+              supported numeric floor_number. If floor_number is empty, remove the
+              complete record from all eight arrays.
 
-              This is a mandatory complete-record deletion rule. If both
-              floor_number and suite_number are empty, delete the corresponding
-              arrangement_space_area, ref_arrangement_space_area_uom_desc,
-              full_floor_f, tenancy_status_desc, tenancy_status_reason_desc, and
-              tenancy_status_reason_notes values at the same index.
+              This is a mandatory complete-record deletion rule. If floor_number
+              is empty, delete the complete record at that index from all eight
+              arrays:
+
+              - floor_number
+              - suite_number
+              - arrangement_space_area
+              - ref_arrangement_space_area_uom_desc
+              - full_floor_f
+              - tenancy_status_desc
+              - tenancy_status_reason_desc
+              - tenancy_status_reason_notes
+
+              A suite-only, unit-only, area-only, status-only, or named-level-only
+              record is prohibited.
 
               Never return an area-only record. Never assign floor_number "0"
               merely because the premises are a warehouse, business space,
@@ -1094,8 +1134,8 @@ namespaces:
 
               When an aggregate use-category area is split into floor-specific rows,
               return every applicable floor-specific row and suppress the aggregate
-              category area. Preserve separately measured components on the same
-              floor as separate records.
+              category area. Consolidate separately measured leased components on
+              the same normalized floor into one record and sum their distinct areas.
 
               Do not add covered or uncovered outdoor area to an indoor floor area.
 
@@ -1104,8 +1144,44 @@ namespaces:
 
               Evaluate every supported floor-area line in the controlling premises
               clause, schedule, or incorporated measurement source. Do not stop
-              after the first valid record. Preserve separately stated components
-              on the same floor.
+              after the first valid record. Consolidate separately stated leased
+              components on the same floor and sum their distinct areas.
+
+              MANDATORY UNIQUE-FLOOR CONSOLIDATION
+
+              Perform this as the final floor-area step after identifying all
+              supported premises components. Group proposed records by normalized
+              floor_number. For each group, output exactly one record and set its
+              arrangement_space_area to the sum of all distinct expressly stated
+              same-unit leased areas in that group. Remove the pre-consolidation
+              component records, so a floor_number can never occur more than once.
+
+
+              Apply this order before consolidation:
+
+              1. If reliable final floor-specific VVO/LFA rows exist, select those
+                 final rows and suppress related cross-floor category totals.
+              2. Otherwise, use distinct leased components expressly tied to the
+                 floor in the controlling premises clause or incorporated schedule.
+              3. Sum selected same-unit components only within the same normalized
+                 floor.
+
+              Do not let the unique-floor rule remove a valid component from a floor.
+              It requires combining all selected same-floor components, not choosing
+              only the first, largest, or lease-summary value.
+
+              Example: ground-floor business space 1435 m2 plus a 240 m2 mezzanine
+              expressly within that ground-floor business space plus ground-floor
+              office space 822 m2 must return one floor 0 record with area 2497.
+              Do not return separate floor 0 records for 1435 and 240, and do not
+              omit the 822 ground-floor office area.
+
+
+              Example: an office category total of 179.96 m2 covers floors 0 and 1,
+              while final measurement rows state floor 0 office 92.65 m2 and floor 1
+              office 87.31 m2. Use 92.65 and 87.31 as the floor-specific values and
+              use 179.96 only for reconciliation. If floor 0 also has warehouse
+              19167.58 m2, return floor 0 area 19260.23 and floor 1 area 87.31.
 
               Determine tenancy_status_desc first, then regenerate both the reason
               and note only from that finalized status.
@@ -1142,8 +1218,9 @@ namespaces:
               Apply controlling executed amendments and avoid duplicated aggregate
               and detailed areas.
 
-              Never calculate, convert, estimate, subtract, divide, or apportion an
-              area.
+              Calculate only the required sum of distinct expressly stated
+              same-unit leased areas selected for the same normalized floor. Never
+              convert, estimate, subtract, divide, derive, or apportion an area.
 
               Return floor_number as normalized numeric floor information only.
 

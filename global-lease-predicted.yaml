@@ -28,7 +28,7 @@ defaults:
   kind_date_output_format: '%m/%d/%y'
 
   # turn off highlighted for testing
-  abstract_highlight: false
+  abstract_highlight: true
   abstract_highlight_search_length: 128
 
 # namespaces
@@ -112,7 +112,7 @@ namespaces:
           - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
           - =global-fields/self.Option_Notes
 
-  #   ##############################################################################################################
+    ##############################################################################################################
     
     Lease_Comp_Details:
       reduction:
@@ -224,3 +224,10 @@ namespaces:
             - =global-fields/self.Company-Name
           company_id:
             - =global-fields/self.Company-ID
+
+  ############################################################################################################
+
+    Property:
+      reduction:
+        $collate:
+          - =global-fields/self.property_name

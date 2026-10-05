@@ -748,7 +748,7 @@ namespaces:
               clause_intro_prompt: =self.clause-intro-prompt
               base_english_translation_prompt: =self.base-english-translation-prompt
               base_ocr_prompt: =self.base-ocr-prompt
-              base_no_markdown_prompt_clause: =self.base-no-markdown-prompt-clause-
+              base_no_markdown_prompt_clause: =self.base-no-markdown-prompt-clause
               base_professional_language_prompt: =self.base-professional-language-prompt
               expression: |
                 "\n\n".join([clause_intro_prompt, base_english_translation_prompt, base_ocr_prompt, base_no_markdown_prompt_clause, base_professional_language_prompt])

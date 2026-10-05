@@ -1,0 +1,137 @@
+# yaml-language-server: $schema=../schemas/ontology.schema.json
+# Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
+kind: Ontology/v2
+name: en-nl-completions-property
+
+namespaces:
+
+  self:
+    Property_Name:
+      reduction:
+        $match:
+          key: =global-fields/self.validation
+          default: =fuzzy.Property_Name
+          primary: =primary.Property_Name
+          secondary: =secondary.Property_Name
+
+  fuzzy:
+    Property_Name:
+      reduction:
+        $fuzzy:
+          $parallel:
+          - =primary.Property_Name
+          - =secondary.Property_Name
+
+
+
+  primary:
+    Property_Name:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          
+          prompt: |
+            What is the Property Name of the leased premises? Return only the name — exclude any address, city, state, tenant, or landlord details. If no Property Name is explicitly stated in the document, respond with "i dont know".
+          templates: =templates.Property_Name
+
+
+  secondary:
+    Property_Name:
+      confidence: 0.95
+      kind:
+        Instance:
+          Text: =global-fields/self.response_encoding
+      reduction:
+        $completion:
+          mode: chain
+          model: =global-config/primary.model
+          
+          prompt: |
+            What is the Property Name of the leased premises? Return only the name — exclude any address, city, state, tenant, or landlord details. If no Property Name is explicitly stated in the document, respond with "i dont know".
+          templates: =templates.Property_Name
+
+
+
+  templates:
+    Property_Name:
+      reduction:
+        $const:
+        - role: system
+          content: =global-prompts/self.generic-template-content
+        - role: system 
+          content: |
+            The Property Name is the specific name of the physical building, land, or site in which the building is located that is being leased.
+                The Property Name is typically found in the lease agreement in sections that describe the leased Title page, Premises, Property description, or in the preamble/recitals.
+
+                STRICTLY EXTRACT:
+                - The Title Page typically displays the Landlord and Tenant names alongside the lease type and property address along with Property Names       
+                - Look for a proper noun that includes a building designator (e.g., "One Liberty Plaza," "Empire State Building," "Sunset Tower", "Greensport Logistics Park", "The Shops at Evergreen Walk").
+                - The Property Name may appear alongside a property address; extract only the name itself — do not include any street number, street name, city, state, or other address components.
+                - If the document contains multiple buildings, identify the one that is explicitly associated with the leased premises.
+                - If no specific Property Name can be identified from the document, respond with: "i dont know".
+
+                STRICTLY DO NOT EXTRACT:
+                - **Strictly do not extract the tenant's and landlord's legal names as Property Names with or without suffixes (i.e., LLC, Inc., Corp, Corporation, etc. are not building names or without them).**
+                - Do not extract the property address, city, state, country or signage as part of the Property Name.
+                - Do not extract from the building plans, site plans, or any diagrams unless the specific name of the building is explicitly stated in the text of the lease agreement.
+                - Do not extract the building if it is presented as a street name address; return with "i dont know".
+                - Do not extract the association, local ordinance, or regulatory body names as Property Names.
+                - Do not extract the project name alone without the specific Property Name if both are present.
+                - Do not extract generic terms like "the building" or "the premises" without a specific name or Project name attached.
+
+        - role: system
+          content: |
+                ####
+                Examples:
+                1. Given: 
+                    Project: Greensport Logistics Park (containing approximately 535,478 square feet)
+                    Building: No. 2 (containing approximately 386,001 square feet)
+
+                    Note: As Greensport is Project name and Building No. 2 is the specific building being leased, the Building Name should be extracted as "Building No. 2, Greensport Logistics Park" to capture both the specific building and its associated project name for clarity.
+                    Response: "Building No. 2, Greensport Logistics Park"
+                
+                2. Given:
+                    The Premises consist of approximately 50,000 square feet of space on the 5th floor of the Empire State Building.
+
+                    Note: "Empire State Building" is the specific name of the building being leased, so it should be extracted as the Building Name.
+                   Response: "Empire State Building"
+
+                3. Given:
+                    This Lease Agreement is made for the premises located at 123 Main Street, known as "Sunset Tower," in Los Angeles, California.
+
+                    Note: "Sunset Tower" is the specific name of the building being leased, so it should be extracted as the Building Name.
+                   Response: "Sunset Tower"
+                
+                4. Given: Title Page
+                    COMMERCIAL OFFICE LEASE FOR 
+                    The Reserve at Westover Hills 
+                    9903 Westover Place, San Antonio, Texas
+                    
+                   Response: "The Reserve at Westover Hills"
+
+                4. Given:
+                    The building located at 140 East 45th Street, New York, New York, in the Borough of Manhattan, City, County and State of New York
+
+                    Note: The specific name of the building is not provided in this text. "The building located at 140 East 45th Street" is a description of the location but does not include a proper noun or specific building name. Therefore, the response should be "i dont know".
+                   Response: "i dont know"
+                
+                5. Given:
+                    at Lessee's expense and shall comply with all local ordinances, Pan American West Industrial Park regulations. and the Lessor's building signage standards.
+                   Response: "i dont know"
+
+                6. Given:
+                    Lessor: 
+                    NEW MIAMI WAREHOUSES, LLC 
+                    Lessee: 
+                    TOMOE FOOD SERVICES, INC
+                   Note: The text provided does not include a specific building name or property name. It only lists the names of the lessor and lessee. Therefore, the response should be "i dont know".
+                   Response: "i dont know"
+                ####
+
+        - role: user
+          content: "{prompt}"
