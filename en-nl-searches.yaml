@@ -5,6 +5,8 @@ namespaces:
 
   self:
 
+  ############  contacts
+
     Contacts-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -721,7 +723,7 @@ namespaces:
             magazijn, opslagruimte, entresol, buitenterrein, parkeerplaatsen,
             meetrapport, verhuurbaar vloeroppervlak, VVO, LFA
 
-  ###lease-break
+  ############  lease-break
     Lease-Break-Context:
       kind:
         Text: =global-fields/self.response_encoding

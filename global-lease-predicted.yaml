@@ -83,6 +83,7 @@ namespaces:
     # (i.e., labels with the first letter capitalized run concurrently)
     # however, the collate and join parameters run sequentially
 
+  #   #############################################################################################################
 
     Terms:
       reduction:
@@ -112,7 +113,7 @@ namespaces:
           - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
           - =global-fields/self.Option_Notes
 
-    ##############################################################################################################
+  #   #############################################################################################################
     
     Lease_Comp_Details:
       reduction:
@@ -225,7 +226,7 @@ namespaces:
           company_id:
             - =global-fields/self.Company-ID
 
-  ############################################################################################################
+  #   #############################################################################################################
 
     Property:
       reduction:
