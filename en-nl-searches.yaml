@@ -370,9 +370,45 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 15
           prompt: |
-            Extract the Service Charge, Operating Charge, CAM Charge, Common Area Maintenance Charge, Building Service Charge, Service Cost, Operating Expense Recovery, or Service Charge Rate per Area. If not found, respond "i dont know".
+            Find references related ONLY to Service Charges.
+
+            Include:
+            - Service Charge
+            - Service Charges
+            - Service Costs
+            - Servicekosten
+            - Voorschot Servicekosten
+            - Service Charge Advance
+            - Operating Costs
+            - Operating Charge
+            - CAM Charge
+            - Common Area Maintenance Charge
+            - Building Service Charge
+            - Operating Expense Recovery
+            - Recoverable Expenses
+            - Additional Service Charges
+            - Annual Service Charge
+            - Monthly Service Charge
+            - Quarterly Service Charge
+            - Triple Net
+            - NNN Lease
+            - Service Charge Included
+            - No Service Charge
+
+            Exclude:
+            - Rent
+            - Base Rent
+            - Huurprijs
+            - Asking Rent
+            - Effective Rent
+            - Rental Value
+            - Parking Charges
+            - VAT
+            - Insurance
+
+            Return surrounding text containing the service charge reference.
 
     Ref-Service-Charge-Per-Area-Value-Price-UOM-Search:
       kind:
@@ -381,10 +417,34 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 15
           prompt: |
-            Extract the Service Charge Unit of Measure. Look for per square foot per year, per square foot per month, per square metre per year, per square metre per month, annual service charge rate, monthly service charge rate. If not found, respond "i dont know".
+            Find the billing basis associated with Service Charges.
 
+            Look for:
+
+            per m² per year
+            per sqm per year
+            per square meter per year
+            per annum
+            annually
+            yearly
+
+            per month
+            monthly
+
+            per quarter
+            quarterly
+
+            Triple Net
+            NNN Lease
+
+            Included in rent
+
+            No service charge
+
+            Return surrounding text.
+            
     Number-Of-Month-Free-Rent-Search:
       kind:
         Text: =global-fields/self.response_encoding
