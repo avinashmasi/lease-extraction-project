@@ -94,9 +94,9 @@ namespaces:
           # - =global-fields/self.Occupancy_Date
           # - =global-fields/self.Lease_Term
           # - =global-fields/self.Ref_lease_term_uom_desc
-          # - =global-fields/self.Reserved_Parking_Spaces
-          # - =global-fields/self.Cost_per_Reserved_Parking_Space
-          # - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
+          - =global-fields/self.Reserved_Parking_Spaces
+          - =global-fields/self.Cost_per_Reserved_Parking_Space
+          - =global-fields/self.Ref_cost_per_reserved_parking_space_uom_desc
           # - =global-fields/self.Ref_property_space_quality_type_desc
           # - =global-fields/self.Arrangement_Signed_Date
           # - =global-fields/self.Asking_Rent_Monthly
@@ -107,8 +107,8 @@ namespaces:
           # - =global-fields/self.Ref_effective_rent_monthly_uom_desc
           # - =global-fields/self.Effective_Rent_Yearly
           # - =global-fields/self.Ref_effective_rent_yearly_uom_desc
-          - =global-fields/self.Service_Charge_Per_Area_Value
-          - =global-fields/self.Ref_service_charge_per_area_value_price_uom_desc
+          # - =global-fields/self.Service_Charge_Per_Area_Value
+          # - =global-fields/self.Ref_service_charge_per_area_value_price_uom_desc
           # - =global-fields/self.Number_Of_Month_Free_Rent
           # - =global-fields/self.Tenant_Improvement_Allowance
           # - =global-fields/self.Ref_tenant_improvement_allowance_uom_desc
@@ -1123,9 +1123,28 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicit Occupancy Date or Possession Date from the lease agreement.
-            Return only the date as IT IS written or formatted as DD/MM/YYYY.
-            If no explicit occupancy or possession date exists in the document, respond with 'i dont know'.
+            Extract the true Occupancy Date.
+
+            Occupancy Date means the date the tenant is contractually allowed
+            to occupy and use the premises.
+
+            Do NOT use:
+            - Early Access Date
+            - Key Transfer Date
+            - Sleuteloverdracht
+            - Fit-Out Access Date
+            - Construction Access Date
+            - Tenant Works Access Date
+
+            unless the lease explicitly states occupancy starts on that date.
+
+            If no Occupancy Date exists,
+            use the Commencement Date.
+
+            Return only DD/MM/YYYY.
+
+            If not found:
+            i dont know
           templates: =templates.Occupancy_Date
 
     Lease_Term:
@@ -1493,7 +1512,23 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Number of Months of Free Rent. If not found, respond "i dont know".
+            Extract the Number Of Month Free Rent.
+
+            Count only explicit rent-free months where rental payment is waived.
+
+            Do NOT count:
+            - early access
+            - key transfer periods
+            - fit-out periods
+            - tenant works access
+            - occupancy before commencement
+            - discounts
+            - reduced rent
+            - tenant improvement allowances
+
+            If no free rent exists return 0.
+
+            Return numeric value only.
           templates: =templates.Number_Of_Month_Free_Rent
 
     Tenant_Improvement_Allowance:
@@ -1571,19 +1606,38 @@ namespaces:
           templates: =templates.Arrangement_End_Date
 
     Occupancy_Date:
-      confidence: 0.85
+      confidence: 0.90
       kind:
         Instance:
           Text: =global-fields/self.response_encoding
       reduction:
         $completion:
           mode: chat
-          model: =global-config/secondary.model
+          model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicit Occupancy Date or Possession Date from the lease agreement.
-            Return only the date as IT IS written or formatted as DD/MM/YYYY.
-            If no explicit occupancy or possession date exists in the document, respond with 'i dont know'.
+            Extract the true Occupancy Date.
+
+            Occupancy Date means the date the tenant is contractually allowed
+            to occupy and use the premises.
+
+            Do NOT use:
+            - Early Access Date
+            - Key Transfer Date
+            - Sleuteloverdracht
+            - Fit-Out Access Date
+            - Construction Access Date
+            - Tenant Works Access Date
+
+            unless the lease explicitly states occupancy starts on that date.
+
+            If no Occupancy Date exists,
+            use the Commencement Date.
+
+            Return only DD/MM/YYYY.
+
+            If not found:
+            i dont know
           templates: =templates.Occupancy_Date
 
     Lease_Term:
@@ -1941,17 +1995,33 @@ namespaces:
           templates: =templates.Ref_service_charge_per_area_value_price_uom_desc
       
     Number_Of_Month_Free_Rent:
-      confidence: 0.80
+      confidence: 0.85
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
       reduction:
         $completion:
           mode: chat
-          model: =global-config/secondary.model
+          model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Number of Months of Free Rent. If not found, respond "i dont know".
+            Extract the Number Of Month Free Rent.
+
+            Count only explicit rent-free months where rental payment is waived.
+
+            Do NOT count:
+            - early access
+            - key transfer periods
+            - fit-out periods
+            - tenant works access
+            - occupancy before commencement
+            - discounts
+            - reduced rent
+            - tenant improvement allowances
+
+            If no free rent exists return 0.
+
+            Return numeric value only.
           templates: =templates.Number_Of_Month_Free_Rent
 
     Tenant_Improvement_Allowance:
@@ -2100,106 +2170,120 @@ namespaces:
         $const:
         - role: system
           content: =global-prompts/self.generic-template-content
-        - role: system
-          content: |
-            The 'Occupancy Date' (or 'Date of Occupancy') is the specific calendar date on which the tenant is permitted to occupy,
-            possess, or begin using the leased premises. This date is distinct from the lease execution date,
-            lease effective date, lease commencement date, or rent commencement date, unless explicitly stated as the same.
-
-            You are analyzing a lease document to extract the correct **occupancy date**. The document may contain multiple dates,
-            including commencement dates, possession dates, delivery dates, rent commencement dates, and projected dates.
-
-            Your task is to read and understand the lease language and return the **correct occupancy date** based on the following logic:
-
-            1. **Amendments or Expansions**:
-               If the document includes amendments, expansions, or new space,
-               prioritize the occupancy date associated with the new or modified premises.
-
-            2. **Explicit Dates**:
-               If the lease explicitly states the occupancy date
-               (e.g., "Tenant may occupy the Premises on June 1, 2025"),
-               return that date.
-
-            3. **Conditional Clauses**:
-               If occupancy is defined conditionally
-               (e.g., "the earlier of Substantial Completion or Tenant opening"),
-               evaluate the conditions.
-               If actual dates are provided, use the applicable occupancy date.
-               If not, use the fallback date referenced in the lease.
-
-            4. **Delivery-Based Occupancy**:
-               If occupancy begins upon delivery of the premises,
-               and a delivery date is provided,
-               use the delivery date unless the lease explicitly states otherwise.
-
-            5. **Projected or Targeted Dates**:
-               If the lease uses terms such as
-               "projected occupancy date",
-               "anticipated occupancy date",
-               or "target occupancy date",
-               and no confirmed occupancy date exists elsewhere,
-               treat that date as the occupancy date.
-
-            6. **Possession Date as Occupancy Date**:
-               If the lease states that the tenant may take possession of the premises on a specific date,
-               use that possession date as the occupancy date.
-
-            7. **Fallback to Fixed Dates**:
-               If no actual events such as occupancy, delivery, or completion are documented,
-               use the fixed occupancy date provided in the lease.
-
-            8. **Fallback to Commencement Date**:
-               If no occupancy-related language is available,
-               and the lease explicitly states that occupancy begins on the commencement date,
-               use the commencement date.
-
-            Return only the final occupancy date in DD/MM/YYYY format (e.g., 06/01/2025).
-            Do not include any explanation or additional text.
-
-            If the occupancy date cannot be determined from the lease text,
-            respond with "i dont know".
 
         - role: system
           content: |
-            ####
+            OBJECTIVE
+
+            Extract the true Occupancy Date.
+
+            Occupancy Date =
+            the date the tenant is legally entitled to occupy,
+            possess, or begin using the premises.
+
+            --------------------------------------------------
+
+            PRIORITY ORDER
+
+            1. Explicit Occupancy Date
+
+              Keywords:
+              - Occupancy Date
+              - Date of Occupancy
+              - Occupation Date
+              - Ingebruiknamedatum
+              - Datum van ingebruikname
+
+              If found:
+              return that date.
+
+            --------------------------------------------------
+
+            2. Possession Date
+
+              Use only if the lease explicitly states:
+
+              - possession equals occupancy
+              - tenant may occupy on possession date
+              - possession is commencement of use
+
+            --------------------------------------------------
+
+            3. Commencement Date
+
+              Use only when no explicit occupancy date exists.
+
+            --------------------------------------------------
+
+            NEVER USE THESE DATES
+
+            - Early Access
+            - Key Transfer
+            - Key Handover
+            - Sleuteloverdracht
+            - Fit-Out Access
+            - Construction Access
+            - Tenant Works Access
+            - Renovation Access
+
+            unless the lease explicitly says
+            occupancy starts on that date.
+
+            --------------------------------------------------
+
+            VALIDATION
+
+            If the selected date comes from text containing:
+
+            - sleuteloverdracht
+            - key transfer
+            - early access
+            - fit out
+            - inrichtingswerkzaamheden
+            - tenant works
+
+            AND another date exists labelled:
+
+            - occupancy date
+            - occupation date
+            - commencement date
+            - huuringangsdatum
+            - ingangsdatum
+            - ingebruiknamedatum
+
+            THEN:
+
+            use the occupancy/commencement date.
+
+            NEVER use early access dates.
+
+            --------------------------------------------------
+
+            DATE NORMALIZATION
+
+            Convert all output to:
+
+            DD/MM/YYYY
 
             Examples:
 
-            1. Given:
-              Occupancy Date: Upon lease execution.
-              Tenant may occupy the Premises beginning June 1, 2025.
+            16 February 2023 -> 16/02/2023
+            1 January 2025 -> 01/01/2025
+            1 juni 2027 -> 01/06/2027
+            1 May 2025 -> 01/05/2025
+            1 augustus 2026 -> 01/08/2026
+            15 juli 2026 -> 15/07/2026
+            01 April 2021 -> 01/04/2021
 
-            Response: "06/01/2025"
+            --------------------------------------------------
 
-            2. Given:
-              Tenant shall be entitled to occupy the Premises on August 1, 2022.
+            Output only:
 
-            Response: "08/01/2022"
+            DD/MM/YYYY
 
-            3. Given:
-              Occupancy Date shall be the earlier of
-              (i) Tenant opening for business or
-              (ii) February 1, 2024.
+            If unavailable:
 
-              Tenant opened for business on January 15, 2024.
-
-            Response: "15/01/2024"
-
-            4. Given:
-              Target Occupancy Date: July 1, 2011.
-
-            Response: "07/01/2011"
-
-            5. Given:
-              Tenant occupancy shall commence upon delivery of the Premises.
-              Landlord estimates delivery by January 1, 2011.
-
-            Response: "01/01/2011"
-
-            ####
-
-        - role: user
-          content: "{prompt}"
+            i dont know
 
     Lease_Term:
       reduction:
@@ -3951,71 +4035,198 @@ namespaces:
 
         - role: system
           content: |
-            ## ROLE
-            You are a commercial real estate lease analyst. Your task is to identify the total number of months of free rent provided as a concession.
+            ROLE
 
-            ## PRIMARY GOAL
-            Return only the count of months during which the tenant pays zero rent.
-            Do not return partial months, abatement percentages, rent reduction periods, or amounts.
+            You are a commercial lease analyst.
 
-            ## STRICT OUTPUT CONTRACT
-            Output must be one of the following only:
-            - a clean integer such as 0, 1, 3, 6, 12
-            - or exactly: i don't know
+            OBJECTIVE
 
-            Rules:
-            - Output only the integer representing full months of free rent.
-            - If there are multiple free rent periods, sum the total months.
-            - Do not include partial months; round down to the nearest full month if needed.
-            - If the lease provides a free rent allowance expressed as a dollar amount rather than months, output i don't know
-            - If rent is abated or reduced but not free, output i don't know
+            Extract ONLY the total number of FREE RENT months.
 
-            ## WHAT COUNTS AS FREE RENT
-            Count months only when the lease explicitly grants the tenant a period of zero rental obligation, such as:
-            - "3 months free rent"
-            - "rent abatement for 6 months"
-            - "first 2 months rent-free"
-            - "2 months free occupancy"
-            - "Tenant shall pay no rent for months 1-3"
-            - "3 maanden huurvrije periode" (Dutch: 3 months rent-free period)
-            - "huurkorting van 2 maanden" (Dutch: rent discount of 2 months)
-            - "de eerste 2 maanden is geen huur verschuldigd" (Dutch: no rent due for the first 2 months)
+            FREE RENT means:
 
-            ## WHAT DOES NOT COUNT
-            Exclude:
-            - rent abatement at a percentage or reduced rate
-            - rent holidays or concessions expressed as dollar amounts
-            - rental credits or allowances
-            - tenant improvement allowances applied to rent
-            - partial month concessions
+            The tenant owes ZERO BASE RENT during the stated period.
 
-            ## DECISION RULES
-            1. If the lease explicitly grants full months of free rent, count those months.
-            2. If multiple free rent periods are stated, sum the total full months.
-            3. If free rent is conditional on an event, count it only if the event is confirmed or assured.
-            4. If no free rent is granted, output 0.
-            5. If no explicit free rent months are stated, output i don't know
+            --------------------------------------------------
 
-            ## EXAMPLES
-            Example 1:
-            Input context: "Tenant shall have the first three (3) months of the Initial Term free of rent."
-            Response: 3
+            RETURN FORMAT
 
-            Example 2:
-            Input context: "Lease includes 2 months rent abatement at commencement and 1 month at lease renewal."
-            Response: 3
+            Return ONLY:
 
-            Example 3:
-            Input context: "Rent shall be abated at 50% for the first 12 months."
-            Response: i don't know
+            0
+            3
+            6
+            8
+            11.34
+            12
 
-            Example 4:
-            Input context: "Tenant shall receive a $150,000 free rent allowance."
-            Response: i don't know
+            If no free rent exists return:
 
-            Example 5:
-            Input context: "No rent concessions are provided."
-            Response: 0
+            0
+
+            Never return explanations.
+
+            --------------------------------------------------
+
+            COUNT ONLY
+
+            Examples:
+
+            - 3 months free rent
+            - first 3 months rent free
+            - huurvrije periode van 3 maanden
+            - tenant shall pay no rent for 6 months
+            - rent free period
+            - 8 months rent free
+            - rent holiday where rent = zero
+
+            --------------------------------------------------
+
+            DO NOT COUNT
+
+            - Early access
+            - Key transfer
+            - Sleuteloverdracht
+            - Possession before lease start
+            - Fit-out period
+            - Tenant works period
+            - Construction access
+            - Rent discount
+            - Reduced rent
+            - Percentage abatement
+            - Rental allowance
+            - TI allowance
+            - Improvement allowance
+            - Cash incentive
+            - Parking concessions
+
+            --------------------------------------------------
+
+            SPECIAL RULE
+
+            If lease contains:
+
+            3 months free rent
+            +
+            2.5 months early access
+
+            Return:
+
+            3
+
+            DO NOT return:
+
+            5
+
+            --------------------------------------------------
+
+            MULTIPLE FREE RENT PERIODS
+
+            Example:
+
+            4 months free rent
+            +
+            2 months free rent later
+
+            Return:
+
+            6
+
+            --------------------------------------------------
+
+            DECIMAL MONTHS
+
+            If the lease explicitly states:
+
+            11.34 months
+
+            Return:
+
+            11.34
+
+            Do NOT round.
+            Do NOT truncate.
+            Do NOT convert.
+
+            --------------------------------------------------
+
+            NO FREE RENT
+
+            If lease explicitly states:
+
+            - no rent concessions
+            - no free rent
+            - no rent holiday
+            - no huurvrije periode
+
+            Return:
+
+            0
+
+            If no free-rent language exists anywhere:
+
+            Return:
+
+            0
+
+            --------------------------------------------------
+
+            VALIDATION
+
+            Never treat the following as free rent:
+
+            - early access
+            - sleuteloverdracht
+            - key transfer
+            - fit-out access
+            - tenant works access
+            - pre-term occupancy
+
+            Example:
+
+            "Tenant receives 3 free months and 2.5 months early access"
+
+            Correct:
+
+            3
+
+            Incorrect:
+
+            5
+
+            --------------------------------------------------
+
+            Examples
+
+            Input:
+            First 3 months free rent
+
+            Output:
+            3
+
+            Input:
+            4 months rent free plus 2 additional free months in year 2
+
+            Output:
+            6
+
+            Input:
+            Tenant receives 11.34 months free rent
+
+            Output:
+            11.34
+
+            Input:
+            Early access for 2.5 months
+
+            Output:
+            0
+
+            Input:
+            No rent concessions
+
+            Output:
+            0
 
         - role: user
           content: "{prompt}"
@@ -4294,9 +4505,9 @@ namespaces:
         # - =self.Arrangement-End-Date-Search
         # - =self.Occupancy-Date-Search
         # - =self.Lease-Term-Search
-        # - =self.Reserved-Parking-Spaces-Search
-        # - =self.Cost-per-Reserved-Parking-Space-Search
-        # - =self.Parking-Search-Context
+        - =self.Reserved-Parking-Spaces-Search
+        - =self.Cost-per-Reserved-Parking-Space-Search
+        - =self.Parking-Search-Context
         # - =self.Property-Space-Quality-Type-Search
         # - =self.Arrangement-Signed-Date-Search
         # - =self.Asking-Rent-Monthly-Search
@@ -4307,8 +4518,8 @@ namespaces:
         # - =self.Ref-Effective-Rent-Monthly-UOM-Search
         # - =self.Effective-Rent-Yearly-Search
         # - =self.Ref-Effective-Rent-Yearly-UOM-Search
-        - =self.Service-Charge-Per-Area-Value-Search
-        - =self.Ref-Service-Charge-Per-Area-Value-Price-UOM-Search
+        # - =self.Service-Charge-Per-Area-Value-Search
+        # - =self.Ref-Service-Charge-Per-Area-Value-Price-UOM-Search
         # - =self.Number-Of-Month-Free-Rent-Search
         # - =self.Rent-Incentive-Search
         # - =self.Tenant-Improvement-Allowance-Search
@@ -4344,9 +4555,25 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 20
           prompt: |
-            Extract the Occupation Date / Possession Date (Opleverdatum / datum van ingebruikname) and format it as DD/MM/YYYY. If not found, respond "i dont know".
+            occupancy date
+            occupation date
+            date of occupancy
+            tenant may occupy
+            occupancy shall commence
+            ingebruiknamedatum
+            datum van ingebruikname
+            possession date
+            tenant may take possession
+            commencement date
+            huuringangsdatum
+            ingangsdatum
+            early access
+            key transfer
+            sleuteloverdracht
+            fit out access
+            tenant works access
 
     Lease-Term-Search:
       kind:
@@ -4639,9 +4866,21 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 20
           prompt: |
-            Extract the number of free rent months, free rent period, rent abatement period, rent holiday, concession period, promotional free rent, or months of rent forgiveness. If not found, respond "i dont know".
+            free rent
+            rent free
+            rent abatement
+            huurvrije periode
+            first months free
+            rent concession
+            rent holiday
+            no rent due
+            rental incentive
+            early access
+            key transfer
+            fit out period
+            huurkorting
 
     Rent-Incentive-Search:
       kind:

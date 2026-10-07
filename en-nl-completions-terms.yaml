@@ -778,7 +778,23 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Number of Months of Free Rent. If not found, respond "i dont know".
+            Extract the Number Of Month Free Rent.
+
+            Count only explicit rent-free months where rental payment is waived.
+
+            Do NOT count:
+            - early access
+            - key transfer periods
+            - fit-out periods
+            - tenant works access
+            - occupancy before commencement
+            - discounts
+            - reduced rent
+            - tenant improvement allowances
+
+            If no free rent exists return 0.
+
+            Return numeric value only.
           templates: =templates.Number_Of_Month_Free_Rent
 
     Tenant_Improvement_Allowance:
@@ -1226,17 +1242,33 @@ namespaces:
           templates: =templates.Ref_service_charge_per_area_value_price_uom_desc
       
     Number_Of_Month_Free_Rent:
-      confidence: 0.80
+      confidence: 0.85
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
       reduction:
         $completion:
           mode: chat
-          model: =global-config/secondary.model
+          model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the Number of Months of Free Rent. If not found, respond "i dont know".
+            Extract the Number Of Month Free Rent.
+
+            Count only explicit rent-free months where rental payment is waived.
+
+            Do NOT count:
+            - early access
+            - key transfer periods
+            - fit-out periods
+            - tenant works access
+            - occupancy before commencement
+            - discounts
+            - reduced rent
+            - tenant improvement allowances
+
+            If no free rent exists return 0.
+
+            Return numeric value only.
           templates: =templates.Number_Of_Month_Free_Rent
 
     Tenant_Improvement_Allowance:
@@ -3236,71 +3268,202 @@ namespaces:
 
         - role: system
           content: |
-            ## ROLE
-            You are a commercial real estate lease analyst. Your task is to identify the total number of months of free rent provided as a concession.
+            ROLE
 
-            ## PRIMARY GOAL
-            Return only the count of months during which the tenant pays zero rent.
-            Do not return partial months, abatement percentages, rent reduction periods, or amounts.
+            You are a commercial lease analyst.
 
-            ## STRICT OUTPUT CONTRACT
-            Output must be one of the following only:
-            - a clean integer such as 0, 1, 3, 6, 12
-            - or exactly: i don't know
+            OBJECTIVE
 
-            Rules:
-            - Output only the integer representing full months of free rent.
-            - If there are multiple free rent periods, sum the total months.
-            - Do not include partial months; round down to the nearest full month if needed.
-            - If the lease provides a free rent allowance expressed as a dollar amount rather than months, output i don't know
-            - If rent is abated or reduced but not free, output i don't know
+            Extract ONLY the total number of FREE RENT months.
 
-            ## WHAT COUNTS AS FREE RENT
-            Count months only when the lease explicitly grants the tenant a period of zero rental obligation, such as:
-            - "3 months free rent"
-            - "rent abatement for 6 months"
-            - "first 2 months rent-free"
-            - "2 months free occupancy"
-            - "Tenant shall pay no rent for months 1-3"
-            - "3 maanden huurvrije periode" (Dutch: 3 months rent-free period)
-            - "huurkorting van 2 maanden" (Dutch: rent discount of 2 months)
-            - "de eerste 2 maanden is geen huur verschuldigd" (Dutch: no rent due for the first 2 months)
+            FREE RENT means:
 
-            ## WHAT DOES NOT COUNT
-            Exclude:
-            - rent abatement at a percentage or reduced rate
-            - rent holidays or concessions expressed as dollar amounts
-            - rental credits or allowances
-            - tenant improvement allowances applied to rent
-            - partial month concessions
+            The tenant owes ZERO BASE RENT during the stated period.
 
-            ## DECISION RULES
-            1. If the lease explicitly grants full months of free rent, count those months.
-            2. If multiple free rent periods are stated, sum the total full months.
-            3. If free rent is conditional on an event, count it only if the event is confirmed or assured.
-            4. If no free rent is granted, output 0.
-            5. If no explicit free rent months are stated, output i don't know
+            --------------------------------------------------
 
-            ## EXAMPLES
-            Example 1:
-            Input context: "Tenant shall have the first three (3) months of the Initial Term free of rent."
-            Response: 3
+            RETURN FORMAT
 
-            Example 2:
-            Input context: "Lease includes 2 months rent abatement at commencement and 1 month at lease renewal."
-            Response: 3
+            Return ONLY:
 
-            Example 3:
-            Input context: "Rent shall be abated at 50% for the first 12 months."
-            Response: i don't know
+            0
+            3
+            6
+            8
+            11.34
+            12
 
-            Example 4:
-            Input context: "Tenant shall receive a $150,000 free rent allowance."
-            Response: i don't know
+            If no free rent exists return:
 
-            Example 5:
-            Input context: "No rent concessions are provided."
-            Response: 0
+            0
+
+            Never return explanations.
+
+            --------------------------------------------------
+
+            COUNT ONLY
+
+            Examples:
+
+            - 3 months free rent
+            - first 3 months rent free
+            - huurvrije periode van 3 maanden
+            - tenant shall pay no rent for 6 months
+            - rent free period
+            - 8 months rent free
+            - rent holiday where rent = zero
+
+            --------------------------------------------------
+
+            DO NOT COUNT
+
+            - Early access
+            - Key transfer
+            - Sleuteloverdracht
+            - Possession before lease start
+            - Fit-out period
+            - Tenant works period
+            - Construction access
+            - Rent discount
+            - Reduced rent
+            - Percentage abatement
+            - Rental allowance
+            - TI allowance
+            - Improvement allowance
+            - Cash incentive
+            - Parking concessions
+
+            --------------------------------------------------
+
+            SPECIAL RULE
+
+            If lease contains:
+
+            3 months free rent
+            +
+            2.5 months early access
+
+            Return:
+
+            3
+
+            DO NOT return:
+
+            5
+
+            --------------------------------------------------
+
+            MULTIPLE FREE RENT PERIODS
+
+            Example:
+
+            4 months free rent
+            +
+            2 months free rent later
+
+            Return:
+
+            6
+
+            Return:
+
+            6
+
+            --------------------------------------------------
+
+            DECIMAL MONTHS
+
+            If the lease explicitly states:
+
+            11.34 months
+
+            Return:
+
+            11.34
+
+            Do NOT round.
+            Do NOT truncate.
+            Do NOT convert.
+
+            --------------------------------------------------
+
+            NO FREE RENT
+
+            If lease explicitly states:
+
+            - no rent concessions
+            - no free rent
+            - no rent holiday
+            - no huurvrije periode
+
+            Return:
+
+            0
+
+            If no free-rent language exists anywhere:
+
+            Return:
+
+            0
+
+            --------------------------------------------------
+
+            VALIDATION
+
+            Never treat the following as free rent:
+
+            - early access
+            - sleuteloverdracht
+            - key transfer
+            - fit-out access
+            - tenant works access
+            - pre-term occupancy
+
+            Example:
+
+            "Tenant receives 3 free months and 2.5 months early access"
+
+            Correct:
+
+            3
+
+            Incorrect:
+
+            5
+
+            --------------------------------------------------
+
+            Examples
+
+            Input:
+            First 3 months free rent
+
+            Output:
+            3
+
+            Input:
+            4 months rent free plus 2 additional free months in year 2
+
+            Output:
+            6
+
+            Input:
+            Tenant receives 11.34 months free rent
+
+            Output:
+            11.34
+
+            Input:
+            Early access for 2.5 months
+
+            Output:
+            0
+
+            Input:
+            No rent concessions
+
+            Output:
+            0
 
         - role: user
           content: "{prompt}"

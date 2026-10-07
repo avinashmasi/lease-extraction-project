@@ -452,10 +452,22 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 20
           prompt: |
-            Extract the number of free rent months, free rent period, rent abatement period, rent holiday, concession period, promotional free rent, or months of rent forgiveness. If not found, respond "i dont know".
-
+            free rent
+            rent free
+            rent abatement
+            huurvrije periode
+            first months free
+            rent concession
+            rent holiday
+            no rent due
+            rental incentive
+            early access
+            key transfer
+            fit out period
+            huurkorting
+            
     Rent-Incentive-Search:
       kind:
         Text: =global-fields/self.response_encoding
