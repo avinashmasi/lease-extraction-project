@@ -2124,6 +2124,78 @@ namespaces:
 
               i dont know
 
+            7. DUTCH LEASE EXECUTION RULES
+
+            For Dutch lease documents prioritize dates that appear:
+
+            - Ondertekend
+            - Getekend
+            - Datum ondertekening
+            - Aldus opgemaakt en ondertekend
+            - Handtekening
+            - Verhuurder
+            - Huurder
+            - Namens verhuurder
+            - Namens huurder
+            - Docusign completed date
+
+            If multiple signature dates exist:
+
+            Return the latest date on which all parties have signed.
+
+            Example:
+
+            Huurder:
+            07/07/2025
+
+            Verhuurder:
+            12/07/2025
+
+            Return:
+            12/07/2025
+
+            8. REJECT THESE DATE TYPES
+
+            Never use dates that appear in:
+
+            - KVK uittreksel
+            - Kamer van Koophandel
+            - Handelsregister
+            - Passport
+            - Paspoort
+            - Energielabel
+            - NEN rapport
+            - Meetrapport
+            - Version
+            - Versie
+            - Concept
+            - Draft
+            - Building certificate
+            - Inspection report
+            - Registration date
+
+            Unless the same section explicitly contains:
+
+            - ondertekend
+            - getekend
+            - signed
+            - executed
+
+            9. ALLONGE RULE
+
+            If document is an Allonge, Addendum, Amendment or Extension:
+
+            Use the date on which that specific Allonge/Amendment was signed.
+
+            Do not use the original lease execution date.
+
+            10. DOCUSIGN RULE
+
+            If DocuSign completion dates exist:
+
+            Prefer the final completed signature date over draft dates,
+            version dates or document creation dates.
+
             ## OUTPUT FORMAT
 
             Return only the date in DD/MM/YYYY format.
@@ -2131,6 +2203,44 @@ namespaces:
             If no valid signed date exists, return:
 
             i dont know
+
+            VALIDATION
+
+            Reject extracted date when surrounding text contains:
+
+            - KvK
+            - Handelsregister
+            - Registration
+            - Passport
+            - Paspoort
+            - Energielabel
+            - Version
+            - Versie
+            - Concept
+            - Draft
+            - Created
+            - Date of birth
+
+            unless that same text also contains:
+
+            - signed
+            - executed
+            - ondertekend
+            - getekend
+            - handtekening
+
+            If both exist:
+
+            Commencement Date:
+            01/01/2027
+
+            Signed:
+            19/08/2026
+
+            Return:
+            19/08/2026
+
+            Never return the commencement date.
 
         - role: system
           content: |
@@ -2198,7 +2308,7 @@ namespaces:
 
         - role: user
           content: "{prompt}"
-
+          
     Asking_Rent_Monthly:
       reduction:
         $const:

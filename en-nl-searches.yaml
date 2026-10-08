@@ -232,10 +232,22 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 20 
           prompt: |
-            Extract the Arrangement Signed Date / Execution Date / Signature Date and format it as DD/MM/YYYY. Look for signed date, executed date, execution date, date signed, fully executed date, or agreement execution date. If not found, respond "i dont know".
-
+            ondertekend
+            getekend
+            handtekening
+            datum ondertekening
+            aldus opgemaakt en ondertekend
+            verhuurder
+            huurder
+            signed
+            executed
+            execution date
+            date signed
+            fully executed
+            docusign completed. If not found, respond "i dont know".
+            
     Asking-Rent-Monthly-Search:
       kind:
         Text: =global-fields/self.response_encoding
