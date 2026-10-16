@@ -98,6 +98,7 @@ namespaces:
 
   ############  Terms
 
+
     Terms-Context:
       kind:
         Text: =global-fields/self.response_encoding
@@ -157,10 +158,26 @@ namespaces:
         $search:
           mode: loader
           max_score: =global-config/search.chunk-max-l2-distance
-          top_k: 12
+          top_k: 20
           prompt: |
-            Extract the Occupation Date / Possession Date (Opleverdatum / datum van ingebruikname) and format it as DD/MM/YYYY. If not found, respond "i dont know".
-
+            occupancy date
+            occupation date
+            date of occupancy
+            tenant may occupy
+            occupancy shall commence
+            ingebruiknamedatum
+            datum van ingebruikname
+            possession date
+            tenant may take possession
+            commencement date
+            huuringangsdatum
+            ingangsdatum
+            early access
+            key transfer
+            sleuteloverdracht
+            fit out access
+            tenant works access
+            
     Lease-Term-Search:
       kind:
         Text: =global-fields/self.response_encoding
@@ -373,6 +390,7 @@ namespaces:
           max_score: =global-config/search.chunk-max-l2-distance
           top_k: 12
           prompt: |
+            
             Extract the Annual Effective Rent Unit of Measure. Look for per year, annual rental rate, per square foot per year, per square metre per year. If not found, respond "i dont know".
 
     Service-Charge-Per-Area-Value-Search:

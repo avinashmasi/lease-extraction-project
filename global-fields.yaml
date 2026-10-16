@@ -513,24 +513,24 @@ namespaces:
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-company-contact-role-addresses/self.role_desc
-          en-nl: =en-nl-completions-company-contact-role-addresses/self.role_desc
+          default: =en-nl-completions-companies/self.role_desc
+          en-nl: =en-nl-completions-companies/self.role_desc
 
     Company-Name:
       type: company_contact_role_addresses
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-company-contact-role-addresses/self.company_name
-          en-nl: =en-nl-completions-company-contact-role-addresses/self.company_name
+          default: =en-nl-completions-companies/self.company_name
+          en-nl: =en-nl-completions-companies/self.company_name
           
     Company-ID:
       type: company_contact_role_addresses
       reduction:
         $match:
           key: =self.jurisdiction
-          default: =en-nl-completions-company-contact-role-addresses/self.company_id
-          en-nl: =en-nl-completions-company-contact-role-addresses/self.company_id
+          default: =en-nl-completions-companies/self.company_id
+          en-nl: =en-nl-completions-companies/self.company_id
 
     ################################################################################################33
 

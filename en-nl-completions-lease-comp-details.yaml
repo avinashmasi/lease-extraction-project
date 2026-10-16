@@ -903,6 +903,7 @@ namespaces:
         - role: user
           content: "{prompt}"
 
+
     Ref_Lease_Activity_Type_Desc:
       reduction:
         $const:
@@ -911,87 +912,163 @@ namespaces:
 
         - role: system
           content: |
-            Classify the Lease Activity Type strictly into the allowed categories.
+            Classify the nature of the leasing event recorded by the document.
 
             Do not explain.
             Do not use quotes.
             Respond with ONLY the category name.
 
             Allowed categories:
-              - "Expansion"
-              - "New Lease"
-              - "Owner Occupation"
-              - "Pre-Lease"
-              - "Renewal"
-              - "Sale/Leaseback"
-              - "Unknown"
+              - Expansion
+              - New Lease
+              - Owner Occupation
+              - Pre-Lease
+              - Renewal
+              - Sale/Leaseback
+              - Unknown
 
             #### Classification Rules:
 
-            - "Expansion":
-              The lease or amendment increases the size of the tenant's premises.
-              Look for terms such as "Expansion Space", "Additional Premises", "Additional Space", or language indicating an increase in leased area.
+            - Expansion:
+              Select when the current transaction adds space to premises already leased or occupied by the same tenant.
 
-            - "New Lease":
-              A new lease agreement creating an initial tenancy relationship between landlord and tenant.
-              Use when the document is an original lease and not a renewal, expansion, or sale/leaseback transaction.
+              Indicators include:
+                - additional premises, units, floors, or area
+                - expansion space
+                - increased leased area under an amendment
+                - exercise of an expansion or right-of-first-offer provision
 
-            - "Owner Occupation":
-              The property is occupied by the owner rather than leased to a third-party tenant.
-              Look for language indicating ownership occupancy or owner-user arrangements.
+              Do not select Expansion merely because the tenant takes a large space, grows its business, or leases space at another property.
 
-            - "Pre-Lease":
-              The lease is executed before the premises are available for occupancy.
-              Common indicators include future construction, build-to-suit projects, premises under development, or future delivery dates.
+            - New Lease:
+              Select when the document creates the tenant's initial lease of the premises and is not a renewal, expansion, pre-lease, owner occupation, or sale/leaseback.
 
-            - "Renewal":
-              The document extends, renews, or continues an existing lease term.
-              Look for phrases such as "Renewal Amendment", "Lease Renewal", "Extension of Term", or exercise of a renewal option.
+              A sublease may still be New Lease for the activity field when it creates a new tenancy arrangement. The sublease structure is classified separately.
 
-            - "Sale/Leaseback":
-              The property owner sells the property and leases the property back from the purchaser as part of the same transaction.
-              Use only when a sale-leaseback structure is clearly stated.
+              Do not select New Lease merely because:
+                - the document is newly signed
+                - the document is titled Lease Agreement
+                - an existing lease has been replaced or restated
+                - the same tenant continues occupying the same premises
 
-            - "Unknown":
-              Use only if none of the above categories can be confidently determined from the lease document.
+            - Owner Occupation:
+              Select when the owner occupies or internally allocates its own property rather than leasing it to an independent third-party tenant.
+
+              Indicators include:
+                - the owner and occupier are the same legal entity
+                - the agreement is an internal arrangement between divisions of the property owner
+                - the document expressly describes owner-user occupation
+
+            - Pre-Lease:
+              Select when a specific property has been contractually leased before it is ready for normal occupation.
+
+              Indicators include:
+                - future construction or redevelopment
+                - premises still under development
+                - shell delivery or major landlord works scheduled after signing
+                - final measurement, separation, fit-out, or handover will occur later
+                - lease commencement or delivery is materially later than execution
+                - build-to-suit or turnkey works must be completed before occupation
+
+              Pre-Lease may apply to an existing building when the specific premises require substantial future construction, separation, redevelopment, or landlord fit-out before delivery.
+
+              Do not select Pre-Lease merely because:
+                - commencement is after signature
+                - minor repairs or ordinary fit-out works remain
+                - the document is a brokerage mandate, engagement letter, search instruction, or services agreement
+                - no specific property has been selected
+
+            - Renewal:
+              Select when the current transaction extends, renews, replaces, restates, or continues an existing lease or occupation for the same tenant and premises.
+
+              Indicators include:
+                - extension of term
+                - renewal or regear
+                - exercise of a renewal option
+                - an allonge, amendment, or replacement lease continuing the existing occupation
+                - an earlier lease is replaced or lapses when the new agreement starts
+                - the tenant continues using the premises without a new handover
+                - a termination notice is cancelled and the existing lease is extended
+
+              Classify the latest operative transaction. A newly executed replacement lease is Renewal when it continues an existing lease for the same tenant and premises.
+
+            - Sale/Leaseback:
+              Select only when the owner sells the property and leases it back from the purchaser as part of the same transaction.
+
+            - Unknown:
+              Select when no leasing event is completed or the activity cannot be reliably determined.
+
+              Use Unknown for:
+                - brokerage mandates
+                - engagement letters
+                - main work orders
+                - property-search instructions
+                - services agreements
+                - blank transaction templates
+                - documents discussing alternative possible transactions without confirming one
+                - documents with no selected property or executed lease event
+
+            #### Evidence Priority:
+
+              1. Latest executed amendment, allonge, rider, or addendum
+              2. Operative transaction and duration clauses
+              3. Recitals explaining prior and current lease arrangements
+              4. Lease summary
+              5. Historical references, templates, or standard terms
+
+            Use the latest operative leasing event, not an earlier historical transaction mentioned in the document.
 
             #### Examples:
 
             Given:
-            "First Amendment adding approximately 5,000 rentable square feet of Expansion Space."
+              "First Amendment adding 5,000 square feet of Expansion Space."
 
             Response:
-            Expansion
+              Expansion
 
             Given:
-            "Office Lease Agreement entered into between Landlord and Tenant effective January 1, 2025."
+              "This lease creates the tenant's first tenancy of the completed premises."
 
             Response:
-            New Lease
+              New Lease
 
             Given:
-            "Tenant exercises its option to renew the Lease for an additional five-year term."
+              "The existing lease is replaced by this agreement, and the tenant's use continues without a new handover."
 
             Response:
-            Renewal
+              Renewal
 
             Given:
-            "Lease Agreement for premises currently under construction with delivery scheduled upon completion."
+              "The lease was signed before shell delivery, landlord fit-out, final measurement, and future handover."
 
             Response:
-            Pre-Lease
+              Pre-Lease
 
             Given:
-            "Seller shall convey the Property to Purchaser and subsequently lease the Property from Purchaser."
+              "The parties cancelled the termination notice and extended the existing lease for five years."
 
             Response:
-            Sale/Leaseback
+              Renewal
 
             Given:
-            "Insufficient information to determine the transaction type."
+              "The owner internally allocates office space to another department of the same legal entity."
 
             Response:
-            Unknown
+              Owner Occupation
+
+            Given:
+              "CBRE is appointed to search for potential premises, but no property or lease has been agreed."
+
+            Response:
+              Unknown
+
+            Given:
+              "The seller transfers the property and leases it back from the purchaser."
+
+            Response:
+              Sale/Leaseback
+
+            Return exactly one allowed category.
 
         - role: user
           content: "{prompt}"
@@ -1081,7 +1158,10 @@ namespaces:
           content: =global-prompts/self.generic-template-content
         - role: system
           content: |
-            Classify the Total Leased Space as either "Actual" or "Assumed" based on the lease agreement language.
+            Classify the recorded Total Leased Space as either "Actual", "Assumed", or "Unknown" based on the lease agreement language and supporting measurement evidence.
+
+            Business definition:
+            Flag indicating that the recorded total leased space is approximate rather than a measured, contractually fixed figure.
 
             Do not explain.
             Do not use quotes.
@@ -1090,16 +1170,78 @@ namespaces:
             Allowed categories:
               - "Actual"
               - "Assumed"
+              - "Unknown"
 
             #### Classification Rules:
 
             - "Actual":
-              The leased space is based on actual measurements, exact square footage, or verified dimensions.
-              Look for terms such as "contains approximately", "measured", "actual square feet", "exact dimensions", or specific numeric values without qualifier language.
+              Select "Actual" only when the recorded Total Leased Space is presented as a definite, contractually fixed or verified measurement.
+
+              Indicators include:
+                - The area is stated as measured, surveyed, verified, certified, final, or exact.
+                - The area is supported by a final or definitive measurement report or certificate.
+                - The operative lease or latest amendment replaces an earlier approximate area with a precise measured area.
+                - A specific numerical value is stated without approximate or provisional qualifier language.
+                - A specific negotiated lease provision states a definite area and overrides a conflicting generic or standard provision.
+
+              Do not classify the area as "Actual" merely because:
+                - The value contains decimals.
+                - The value is used in a rent calculation.
+                - A measurement certificate is attached.
+                - The lease contains a specific numerical area.
+
+              If the operative lease still describes the area as approximate, estimated, provisional, subject to remeasurement, or subject to final confirmation, classify it as "Assumed" even when the value contains decimals or is supported by a measurement document.
 
             - "Assumed":
-              The leased space is based on assumed, estimated, or approximate values without actual measurement verification.
-              Look for terms such as "approximately", "estimated", "assumed", "roughly", "about", or language indicating the figures are not definitively measured.
+              Select "Assumed" when the recorded Total Leased Space is approximate, estimated, provisional, capped, rounded, derived from plans, or subject to later measurement or confirmation.
+
+              Indicators include:
+                - "approximately"
+                - "approx."
+                - "circa"
+                - "ca."
+                - "estimated"
+                - "assumed"
+                - "roughly"
+                - "about"
+                - "maximum" or "up to"
+                - "provisional measurement"
+                - "subject to final measurement"
+                - "to be remeasured"
+                - "the actual area may differ"
+                - rent or service charges will be adjusted after final measurement
+                - the measurement was prepared from drawings and was not verified on site
+                - the recorded total is rounded from more precise component or measurement values
+
+              Approximate qualifier language in the operative lease takes priority over:
+                - decimal precision
+                - rental calculations
+                - area schedules
+                - floor plans
+                - supporting measurement certificates
+
+              If any component included in the recorded Total Leased Space is approximate and the total is calculated from those components, classify the total as "Assumed".
+
+            - "Unknown":
+              Select "Unknown" when:
+                - No Total Leased Space value is stated or reliably derivable.
+                - The document is not a lease or property arrangement and contains only search criteria, target space, example areas, templates, or future requirements.
+                - An area rate such as rent per m² or a fee per m² is present, but the total leased area is not stated.
+                - The available values relate only to example properties, potential properties, gross site area, plot size, or non-leased space.
+                - The document contains conflicting area values and does not provide enough evidence to identify the controlling value.
+
+            #### Evidence Priority:
+
+            Apply the following priority when clauses conflict:
+
+              1. Latest executed amendment, allonge, rider, or addendum
+              2. Specific negotiated lease provision
+              3. Operative clause describing the demised premises
+              4. Final or definitive measurement certificate
+              5. Lease summary or commercial schedule
+              6. General conditions, standard wording, drawings, examples, or templates
+
+            Always classify the status of the recorded Total Leased Space selected from the highest-priority controlling source.
 
             #### Examples:
 
@@ -1116,7 +1258,7 @@ namespaces:
               Actual
 
             3. Given:
-              "Suite 100 contains 3,500 square feet (exact dimensions per survey)."
+              "Suite 100 contains 3,500 square feet, exact dimensions per final survey."
 
               Response:
               Actual
@@ -1127,6 +1269,53 @@ namespaces:
               Response:
               Assumed
 
+            5. Given:
+              "The premises comprise ca. 1,001.08 m² VVO according to the attached measurement certificate."
+
+              Response:
+              Assumed
+
+            6. Given:
+              "The current area is based on a provisional measurement certificate. A final measurement will be completed after delivery."
+
+              Response:
+              Assumed
+
+            7. Given:
+              "The premises comprise 1,130.98 m² VVO according to the definitive Type A measurement certificate. This amendment replaces the previous approximate area."
+
+              Response:
+              Actual
+
+            8. Given:
+              "The premises comprise a maximum of 10 m²."
+
+              Response:
+              Assumed
+
+            9. Given:
+              "The rent is €200 per m², but the total leased area is not stated."
+
+              Response:
+              Unknown
+
+            10. Given:
+              "The tenant is seeking premises of approximately 800–900 m²."
+
+              Response:
+              Unknown
+
+            11. Given:
+              "Office space: ca. 1,226 m². Archive space: ca. 353.8 m²."
+
+              Response:
+              Assumed
+
+            12. Given:
+              "The specific negotiated clause defines the leased equipment area as 15 m² without qualification. A standard appendix separately refers to 12 m²."
+
+              Response:
+              Actual
         - role: user
           content: "{prompt}"
 
@@ -1212,7 +1401,10 @@ namespaces:
 
         - role: system
           content: |
-            Classify the Lease Arrangement Reason Type strictly into the allowed categories.
+            Classify the Lease Arrangement Reason Type strictly into the allowed categories based on the tenant's underlying motivation for the transaction.
+
+            Business definition:
+            The tenant's underlying motivation for the transaction, for example growth, consolidation, cost reduction, quality upgrade, lease expiry, or relocation.
 
             Do not explain.
             Do not use quotes.
@@ -1226,34 +1418,168 @@ namespaces:
               - "Relocation"
               - "Unknown"
 
+            #### General Classification Principles:
+
+            - Classify the tenant's underlying business motivation, not merely the legal lease activity, arrangement type, intended use, property location, or physical fit-out.
+
+            - Select a category only when the lease, amendment, recitals, heads of terms, transaction summary, or another operative provision explicitly states the reason or provides strong and unambiguous evidence of that reason.
+
+            - Do not infer the reason solely from:
+              - the document being a new lease
+              - the tenant being described as a new tenant
+              - the lease commencing at a new property
+              - the tenant having a registered address different from the leased property
+              - the tenant taking premises in another city
+              - the premises having a new intended use
+              - the tenant carrying out fit-out, renovation, or specialist installation works
+              - the premises being delivered before or after completion
+              - the size of the leased space
+              - the lease being long-term or short-term
+              - the existence of a rent-free period or incentive
+              - relocation costs being one permitted use of an incentive
+              - the document mentioning existing business operations without stating that the lease maintains them
+              - the ordinary continuation or automatic extension provisions contained in most leases
+
+            - If two or more reasons are possible and the document does not clearly establish which reason caused the transaction, classify as "Unknown".
+
+            - Historical background must not be treated as the current transaction reason unless the latest operative document clearly links that background to the current lease event.
+
             #### Classification Rules:
 
             - "Business Continuity"
-              - The lease is intended to maintain existing business operations.
-              - Look for lease renewals, replacement space, maintaining occupancy, continuity of operations, business retention, or continuing current activities.
+              - The transaction is intended to maintain, preserve, replace, renew, or continue existing business operations or an existing occupation.
+              - Use when the document clearly indicates:
+                - renewal or regear of the same tenant's existing lease for the same premises
+                - replacement of an existing lease while the same tenant continues occupying the same premises
+                - a temporary or bridging arrangement designed to avoid interruption of existing operations
+                - continuation of an existing operational site, facility, office, telecommunications installation, or business function
+                - replacement premises required because the existing premises or arrangement will expire, terminate, become unavailable, or undergo redevelopment
+                - the document expressly refers to operational continuity, business continuity, continuity of use, maintaining occupancy, or continuing current activities
+
+              - A renewal of the same tenant's occupation at the same property normally supports "Business Continuity" unless the document states another reason.
+
+              - Do not select "Business Continuity" merely because:
+                - the tenant is an existing company
+                - business operations will take place in the premises
+                - the lease contains automatic renewal provisions
+                - the transaction is a new lease with no evidence of a replaced or continued arrangement
+                - the agreement generally supports the tenant's business
 
             - "Business Growth"
-              - The lease is driven by expansion or growth of the business.
-              - Look for references to expansion, increased headcount, additional space requirements, growing operations, business expansion, or increased capacity.
+              - The lease is driven by expansion or growth of the tenant's business.
+              - Use when the document clearly indicates:
+                - increased headcount
+                - increased operational capacity
+                - additional premises or additional floors, units, or space required because existing space is insufficient
+                - expansion of an established office, store network, laboratory, warehouse, or operational facility
+                - growth in customer demand, production, staffing, services, or business activity
+                - the new premises are additional to retained existing premises and are required for expansion
+
+              - Do not select "Business Growth" solely because:
+                - the leased premises are large
+                - the tenant is opening a location
+                - the tenant is taking additional space without a stated connection to growth
+                - the document describes the tenant as developing or operating a business
+                - the transaction may support future growth but growth is not stated as the reason
 
             - "Downsizing"
-              - The lease is driven by a reduction in occupied space or business footprint.
-              - Look for references to reducing premises size, consolidation, cost reduction, footprint reduction, or occupancy reduction.
+              - The lease is driven by a reduction in occupied space, operating capacity, cost, or business footprint.
+              - Use when the document clearly indicates:
+                - reduction in premises size
+                - fewer floors, units, desks, employees, or locations
+                - consolidation into a smaller footprint
+                - release, surrender, or disposal of surplus space
+                - cost reduction achieved by reducing occupied premises
+                - reduced staffing or operational requirements
+
+              - Do not select "Downsizing" merely because:
+                - the leased area is small
+                - the tenant takes flexible or temporary space
+                - the transaction includes cost-saving terms
+                - part of the existing space is surrendered without evidence that footprint reduction motivated the transaction
 
             - "New Establishment"
-              - The lease establishes a new business location, office, branch, facility, or operation.
-              - Look for references to opening a new location, startup operations, first office, new branch, or new facility.
+              - The transaction establishes a genuinely new business location, office, branch, store, facility, operational site, or business presence.
+              - Use when the document clearly indicates:
+                - first office, first store, first branch, or first facility
+                - opening or establishing a new location
+                - entering a new city, region, or market while retaining existing operations
+                - creation of an additional operational site that did not previously exist
+                - establishment of a new telecommunications site, laboratory, educational site, healthcare location, or similar operation
+                - the document explicitly states that the tenant will establish its business at the premises
+                - the tenant first occupies temporary space at the same property while permanent space is prepared as part of establishing the new location
+
+              - A new lease does not automatically mean "New Establishment".
+
+              - Do not select "New Establishment" solely because:
+                - the tenant is called a new tenant
+                - the lease is the first lease between the parties
+                - the premises are in a different city from the tenant's registered address
+                - the premises require fit-out or specialist installations
+                - a new use will commence at the premises
+                - no previous lease at the property is mentioned
+                - the tenant is an existing company taking another property without an explicit or strongly supported new-location purpose
+
+              - If the document only establishes that the transaction is a new lease, but does not establish that the premises are a new business location or operation, classify as "Unknown".
 
             - "Relocation"
-              - The lease involves moving operations from one location to another.
-              - Look for relocation, move, transfer of premises, replacement premises, or moving business operations.
+              - The transaction involves moving existing business operations, employees, equipment, laboratories, offices, or another existing function from one property to another.
+              - Use when the document clearly indicates:
+                - relocation, move, transfer, migration, or consolidation from identified existing premises
+                - the existing location will be vacated, closed, surrendered, sold, leased out, or replaced
+                - employees, operations, equipment, laboratories, or business functions will move from an existing property to the new premises
+                - multiple existing locations will be moved and combined into the new premises
+                - the new premises are expressly described as replacement premises for the tenant's current location
+
+              - Do not select "Relocation" solely because:
+                - the tenant's registered, correspondence, invoice, or visiting address differs from the leased-property address
+                - the tenant takes premises in another city
+                - relocation expenses are one possible use of a landlord incentive
+                - the lease permits moving between units within the same property
+                - temporary accommodation is used before the permanent unit at the same property becomes available
+                - the tenant receives keys to a new property
+                - the lease concerns new premises but does not state what happens to the existing premises
+
+              - An internal move between temporary and permanent units within the same property does not by itself establish "Relocation" as the underlying transaction reason.
 
             - "Unknown"
-              - Use only when the reason for the lease arrangement cannot be clearly determined from the lease document.
+              - Use when the tenant's underlying motivation cannot be clearly determined from the lease document.
+              - Use "Unknown" when:
+                - the document states only the intended use of the premises
+                - the document identifies a new lease but provides no reason for taking it
+                - the tenant's registered address differs from the leased-property address, but no move or closure is stated
+                - the document supports multiple possible reasons
+                - the conclusion would depend only on assumptions about the tenant's business plans
+                - the document is a brokerage mandate, engagement letter, main work order, search instruction, or services agreement and no completed property transaction reason is identified
+                - the document provides alternative possible outcomes, such as relocation or expansion, without confirming which outcome occurred
 
-            ####
+            #### Evidence Priority:
 
-            Examples:
+            When evidence conflicts, apply the following priority:
+
+              1. Latest executed amendment, allonge, rider, or addendum
+              2. Explicit statement of the tenant's transaction motivation
+              3. Recitals or background clauses directly explaining why the transaction occurred
+              4. Operative provisions showing an unambiguous continuation, move, expansion, or reduction
+              5. Transaction summary or heads of terms
+              6. Contextual indicators such as address differences, fit-out works, incentives, or intended use
+
+            Evidence from levels 1 through 5 may support a category when sufficiently clear.
+            Evidence from level 6 alone is not sufficient and should result in "Unknown".
+
+            #### Special Rules for Amendments and Combined Documents:
+
+            - Determine the reason for the latest operative transaction, not an earlier historical event mentioned in the document.
+
+            - When an amendment renews the same tenant at the same premises, classify as "Business Continuity" unless the amendment explicitly states another motivation.
+
+            - When a prior assignment, relocation, or expansion is mentioned only as historical background, do not use that historical reason for the current amendment.
+
+            - When an earlier termination notice is expressly cancelled or treated as not sent and the lease is extended, the extension normally supports "Business Continuity".
+
+            - When the document is a short bridging lease connected to continuation into a replacement or successor arrangement, classify as "Business Continuity" only if the link is clearly documented.
+
+            #### Examples:
 
             1. Given:
               "Tenant requires additional office space to accommodate projected employee growth."
@@ -1291,7 +1617,77 @@ namespaces:
               Response:
               Unknown
 
-            ####
+            7. Given:
+              "The tenant's registered address is in Utrecht, and the leased premises are in Eindhoven."
+
+              Response:
+              Unknown
+
+            8. Given:
+              "The landlord contribution may be used for fit-out costs and/or relocation costs."
+
+              Response:
+              Unknown
+
+            9. Given:
+              "The tenant will move and combine six existing laboratories into one new facility."
+
+              Response:
+              Relocation
+
+            10. Given:
+              "The parties replace the prior lease for the same premises, and the tenant's use continues without a new handover."
+
+              Response:
+              Business Continuity
+
+            11. Given:
+              "The agreement creates a new lease, and the premises will be used as office space."
+
+              Response:
+              Unknown
+
+            12. Given:
+              "The provider will allow the tenant to establish its business at the new serviced-office location."
+
+              Response:
+              New Establishment
+
+            13. Given:
+              "The tenant is described as a new tenant of the building."
+
+              Response:
+              Unknown
+
+            14. Given:
+              "The tenant will open an additional branch in a new region while retaining its existing locations."
+
+              Response:
+              New Establishment
+
+            15. Given:
+              "The tenant requires additional warehouse capacity because its existing operations have grown."
+
+              Response:
+              Business Growth
+
+            16. Given:
+              "The engagement may result either in relocation to a new building or expansion in the current building."
+
+              Response:
+              Unknown
+
+            17. Given:
+              "The transaction extends the existing lease for the same tenant and same premises."
+
+              Response:
+              Business Continuity
+
+            18. Given:
+              "The tenant will initially occupy a temporary unit in the same building until its permanent new office is completed."
+
+              Response:
+              New Establishment
 
         - role: user
           content: "{prompt}"
@@ -1488,84 +1884,6 @@ namespaces:
         - role: user
           content: "{prompt}"
 
-    ACT_1954_F:
-      reduction:
-        $const:
-        - role: system
-          content: =global-prompts/self.generic-template-content
-
-        - role: system
-          content: |
-            Determine whether the lease is protected by the Landlord and Tenant Act 1954.
-
-            Respond ONLY with one of the following values:
-
-              "Y"
-              "N"
-
-            Do not explain.
-            Do not use quotes.
-            Do not provide additional text.
-
-            #### Classification Rules:
-
-            - "Y"
-              - The lease benefits from security of tenure under the Landlord and Tenant Act 1954.
-              - Look for phrases such as:
-                - protected by the Landlord and Tenant Act 1954
-                - security of tenure
-                - inside the Act
-                - tenancy protected by Part II of the Landlord and Tenant Act 1954
-                - tenant has statutory renewal rights
-
-            - "N"
-              - The lease has been contracted out of the Landlord and Tenant Act 1954.
-              - Look for phrases such as:
-                - outside the Landlord and Tenant Act 1954
-                - contracted out
-                - exclusion of sections 24-28
-                - statutory declaration
-                - simple declaration
-                - no security of tenure
-                - tenancy excluded from Part II of the Act
-
-            - If the lease clearly states that it is contracted out of the Act, respond with "N".
-
-            - If the lease clearly states that security of tenure applies under the Act, respond with "Y".
-
-            ####
-
-            Examples:
-
-            1. Given:
-              "This Lease is protected by the security of tenure provisions of the Landlord and Tenant Act 1954."
-
-              Response:
-              Y
-
-            2. Given:
-              "The parties agree that the tenancy is excluded from Sections 24 to 28 of the Landlord and Tenant Act 1954."
-
-              Response:
-              N
-
-            3. Given:
-              "Tenant has the benefit of statutory renewal rights under Part II of the Act."
-
-              Response:
-              Y
-
-            4. Given:
-              "The Lease has been contracted out of the security of tenure provisions of the Landlord and Tenant Act 1954."
-
-              Response:
-              N
-
-            ####
-
-        - role: user
-          content: "{prompt}"
-
     Space_Condition_Type_Desc:
       reduction:
         $const:
@@ -1574,176 +1892,127 @@ namespaces:
 
         - role: system
           content: |
-            Classify the Space Condition Type strictly into one of the allowed categories.
+            Classify the physical condition in which the premises are contractually delivered to the tenant.
 
             Do not explain.
             Do not use quotation marks.
-            Respond with ONLY the category name.
+            Respond with ONLY one category.
 
             Allowed categories:
               - Core And Shell
               - Fitted Out
               - To Be Agreed Upon
               - Turn-Key
+              - Unknown
 
-            Classify the condition in which the landlord is contractually required
-            to deliver the premises to the tenant.
+            Review the specific delivery clause, landlord works, tenant works, fit-out specification, handover report, and existing improvements. Classify the condition at contractual delivery, not the condition before landlord works or after the tenant completes its own works.
 
-            Review all relevant delivery condition, handover condition, landlord
-            works, tenant works, fit-out, alterations, and reinstatement provisions.
+            #### Classification Rules:
 
-            Do not classify based only on a single keyword.
+            - Core And Shell:
+              Select when the premises are delivered as shell, core and shell, casco, bare, raw, substantially unfinished, or when the tenant must complete substantial internal fit-out before normal occupation.
 
-            Classification Rules:
+              Base-building items may still be present, including ceilings, lighting, raised floors, climate systems, sanitary facilities, utilities, lifts, cable trays, common areas, or limited landlord works.
 
-            - Core And Shell
-              - Select when the premises are delivered in a basic, shell, raw,
-                substantially unfinished, or minimally completed condition.
-              - The tenant is responsible for substantial interior construction,
-                installation, or fit-out work before normal occupation.
-              - Basic building structure, external walls, essential building
-                systems, utility connections, and limited landlord works may
-                still be included.
-              - Look for terms such as:
-                  - shell space
-                  - shell condition
-                  - core and shell
-                  - raw space
-                  - unfinished premises
-                  - bare premises
-                  - tenant responsible for fit-out
-                  - tenant improvements required
+              Select Core And Shell when the lease expressly states shell or casco delivery even if some base installations are included.
 
-            - Fitted Out
-              - Select when substantial usable interior improvements already
-                exist or will be provided, but some tenant-specific work,
-                customization, furniture, branding, or minor installation may
-                still be required.
-              - Relevant improvements may include:
-                  - completed flooring
-                  - ceilings and lighting
-                  - internal partitions
-                  - offices or meeting rooms
-                  - pantry or kitchen facilities
-                  - electrical or data cabling
-                  - existing tenant improvements
-              - Furniture is not required for classification as Fitted Out.
-              - Look for terms such as:
-                  - fitted out
-                  - fully fitted
-                  - existing fit-out
-                  - existing improvements
-                  - built-out premises
-                  - completed office layout
+            - Fitted Out:
+              Select when usable interior improvements already exist and are delivered with the premises.
 
-            - Turn-Key
-              - Select only when the landlord must deliver the premises fully
-                completed and ready for the tenant to occupy and operate with
-                little or no construction or fit-out work remaining.
-              - The completed condition may be based on an agreed specification,
-                scope of works, drawings, or tenant requirements.
-              - Look for terms such as:
-                  - turnkey
-                  - turn-key
-                  - move-in ready
-                  - ready for immediate occupancy
-                  - fully completed premises
-                  - landlord will complete all agreed tenant improvements
+              Examples include flooring, ceilings, lighting, partitions, offices, meeting rooms, pantry, cabling, access control, sanitary facilities, or an existing fit-out package.
 
-            - To Be Agreed Upon
-              - Select only when the final delivery condition, fit-out scope,
-                specification, or allocation of fit-out responsibilities is
-                explicitly left for future agreement or determination.
-              - Look for terms such as:
-                  - to be agreed
-                  - condition to be agreed
-                  - fit-out to be determined
-                  - specification to be agreed
-                  - mutually agreed improvements
-                  - subject to future agreement
+              Also select Fitted Out for an existing furnished or serviced office. Furniture and operational services do not by themselves make the premises Turn-Key.
 
-            Additional Interpretation Rules:
+              Minor repairs, cleaning, painting, alterations, tenant branding, furniture installation, or limited tenant customization do not prevent classification as Fitted Out.
 
-            - "As is" or "current condition" does not automatically correspond
-              to any one category. Review the document for details of the
-              existing physical condition and fit-out.
-            - If an "as is" space has substantial existing usable interiors,
-              classify it as Fitted Out.
-            - If an "as is" space is described as shell, bare, raw, or
-              substantially unfinished, classify it as Core And Shell.
-            - Do not classify a space as Turn-Key merely because the landlord
-              performs some construction or improvement work.
-            - Limited landlord works do not prevent classification as
-              Core And Shell when substantial tenant fit-out is still required.
-            - A delivery report, condition report, schedule of condition, drawing,
-              or inspection to be completed later does not by itself mean
-              To Be Agreed Upon.
-            - Tenant alterations requiring landlord approval do not by themselves
-              mean To Be Agreed Upon.
-            - Reinstatement obligations at lease expiry should not override the
-              condition in which the premises are delivered at commencement.
-            - Give greater weight to specific delivery and fit-out clauses than
-              to generic definitions in standard terms and conditions.
-            - If clauses conflict, use the specific negotiated clause governing
-              the premises rather than generic or template wording.
-            - If the document expressly leaves the delivery condition unresolved,
-              classify it as To Be Agreed Upon.
-            - If evidence is genuinely insufficient but one allowed category must
-              be returned, classify as To Be Agreed Upon only when the document
-              indicates that the condition or works remain subject to agreement.
-              Do not use To Be Agreed Upon merely as a substitute for Unknown.
+            - Turn-Key:
+              Select only when the landlord is contractually responsible for completing and delivering the premises ready for the tenant's intended operation, according to an agreed specification, scope of works, drawings, or tenant requirements.
 
-            Examples:
+              Turn-Key may include landlord-provided partitions, finishes, furniture, laboratory installations, specialist systems, commissioning, or other tenant-specific works.
 
-            1. Given:
-              "Landlord shall deliver the Premises in shell condition with
-              utilities stubbed to the space."
+              Select Turn-Key based on the final delivery condition even if the premises are shell before the landlord completes the works.
 
-              Response:
+              Do not select Turn-Key merely because:
+                - the premises are already furnished
+                - the office is move-in ready when contracted
+                - services such as internet, reception, cleaning, or furniture are included
+                - the landlord performs only minor repairs or limited improvements
+
+            - To Be Agreed Upon:
+              Select only when a specific property's final delivery condition or allocation of fit-out responsibilities is explicitly left for future agreement.
+
+              A future handover report, condition report, final inspection, or approval process does not by itself mean To Be Agreed Upon.
+
+              Do not use To Be Agreed Upon as a substitute for missing information.
+
+            - Unknown:
+              Select when:
+                - no reliable delivery-condition evidence is provided
+                - the document is not a lease or property arrangement
+                - no specific premises have been selected
+                - the document is only a brokerage mandate, engagement letter, search instruction, template, or services framework
+                - the available evidence cannot distinguish among the permitted conditions
+
+            #### Interpretation Priority:
+
+              1. Latest executed amendment, rider, or allonge
+              2. Specific negotiated delivery or fit-out clause
+              3. Agreed landlord works or tenant specification
+              4. Signed handover or condition report
+              5. Description of existing fit-out
+              6. General conditions or standard wording
+
+            - "As is" or "current condition" is not a category. Use the physical details:
+                - usable existing interiors → Fitted Out
+                - bare or substantially unfinished space → Core And Shell
+                - insufficient description → Unknown
+
+            - Tenant alteration rights and expiry reinstatement obligations do not determine the commencement condition.
+
+            - If different parts have different conditions, classify the predominant leased area. If no predominant condition can be determined, return Unknown.
+
+            #### Examples:
+
+            Given:
+              "The premises will be delivered in casco condition with climate systems, sanitary facilities, lighting, and raised floors. The tenant will install partitions, finishes, pantry, and cabling."
+
+            Response:
               Core And Shell
 
-            2. Given:
-              "The premises contain completed flooring, ceilings, lighting,
-              meeting rooms, and an installed pantry. The tenant will provide
-              its own furniture."
+            Given:
+              "The existing fit-out, including flooring, ceilings, lighting, partitions, pantry, and access control, is transferred to the tenant."
 
-              Response:
+            Response:
               Fitted Out
 
-            3. Given:
-              "The landlord will complete all improvements according to the
-              agreed specification and deliver the premises ready for the
-              tenant's immediate occupancy."
+            Given:
+              "The landlord will complete the fit-out, furniture, laboratory installations, testing, and commissioning in accordance with the tenant's specification."
 
-              Response:
+            Response:
               Turn-Key
 
-            4. Given:
-              "The final delivery condition and allocation of fit-out work will
-              be agreed between the parties at a later date."
+            Given:
+              "The serviced office is completely furnished and includes internet, reception, and cleaning."
 
-              Response:
-              To Be Agreed Upon
-
-            5. Given:
-              "The premises are delivered as is with the existing offices,
-              meeting rooms, finished flooring, lighting, and pantry remaining."
-
-              Response:
+            Response:
               Fitted Out
 
-            6. Given:
-              "The premises are delivered as is in a bare shell condition, and
-              the tenant is responsible for the complete internal fit-out."
+            Given:
+              "The final delivery specification and division of fit-out works will be agreed later."
 
-              Response:
-              Core And Shell
+            Response:
+              To Be Agreed Upon
+
+            Given:
+              "CBRE is appointed to search for potential premises. No property has been selected."
+
+            Response:
+              Unknown
 
             Return exactly one allowed category.
 
         - role: user
           content: "{prompt}"
-
 
           
     Arrangement_End_Future_Action_Type_Desc:
@@ -1998,12 +2267,14 @@ namespaces:
 
         - role: system
           content: |
-            Classify the Arrangement End Action Status Type strictly into one
-            of the allowed categories.
+            Classify the status of the expected arrangement-end action.
+
+            Business definition:
+            The status of the expected action, for example actioned, to expire, future action, or not actioned.
 
             Do not explain.
             Do not use quotation marks.
-            Respond with ONLY the category name.
+            Respond with ONLY one allowed category.
 
             Allowed categories:
               - Actioned
@@ -2011,279 +2282,113 @@ namespaces:
               - Not Actioned
               - To Expire
 
-            This field describes the status of an action relating to the end,
-            expiry, renewal, break, termination, surrender, or continuation of
-            the lease arrangement.
+            Assess the status as of the assessment date supplied in the context. If no assessment date is supplied, use the current date.
 
-            Assess the status as of the current date on which the extraction
-            is being performed.
+            #### Classification Rules:
 
-            Give priority to explicit workflow information, current decisions,
-            completed actions, notices, amendments, and instructions.
+            - Actioned:
+              Select when the relevant arrangement-end event or action has already occurred or been completed.
 
-            Do not determine the status solely from the existence of a contractual
-            expiry date, break option, renewal option, or termination right.
+              Examples:
+                - termination or break notice was validly served
+                - renewal, extension, surrender, amendment, or revised end date was executed
+                - a fixed arrangement ended automatically and its end date has passed
+                - the initial term ended and the documented continuation or rollover has already taken effect
 
-            Classification Rules:
+              Do not select Actioned for a historical event when the lease is now active in a later renewal period. Assess the next relevant action for the current arrangement.
 
-            - Actioned
-              - Select only when the relevant arrangement-end action has already
-                been completed, executed, formally confirmed, served, implemented,
-                or recorded.
+            - Future Action:
+              Select when a specific future decision, notice, review, option, response, or other affirmative action is required or expected.
 
-              - Relevant completed actions may include:
-                  - renewal agreement executed
-                  - lease extension completed
-                  - break notice validly served
-                  - termination notice issued
-                  - surrender agreement executed
-                  - termination completed
-                  - arrangement end date formally amended
-                  - new break date formally agreed
-                  - lease-end record updated following a confirmed instruction
+              Examples:
+                - a future break option requires the tenant to decide and serve notice
+                - a renewal or extension option requires a future election
+                - the lease continues automatically unless future termination notice is served
+                - a landlord or occupier response is awaited
+                - the arrangement is marked To Be Revisited
+                - a future end date requires review or instructions
+                - a future amendment, surrender, termination, or date update remains pending
 
-              - Relevant wording may include:
-                  - action completed
-                  - completed and recorded
-                  - finalized
-                  - executed renewal
-                  - executed surrender
-                  - notice served
-                  - termination completed
-                  - amendment executed
-                  - arrangement updated
-                  - request fulfilled
+              Future Action does not require wording such as "under consideration" when the contract itself clearly requires a future decision or action at the selected future-action date.
 
-              - Do not select Actioned merely because:
-                  - the original lease was signed or executed
-                  - the lease contains an expiry date
-                  - the lease contains a break option
-                  - the lease contains a renewal option
-                  - a future action is contractually permitted
-                  - a landlord or tenant has a future contractual right
+            - Not Actioned:
+              Select only when a required or intended action was not completed and the applicable deadline has passed.
 
-            - Future Action
-              - Select when a specific future arrangement-end action has been
-                identified and remains planned, scheduled, pending, awaiting a
-                decision, or awaiting completion.
+              Examples:
+                - required notice was not served by the deadline
+                - an instructed update remains overdue
+                - a scheduled action was missed or not implemented
 
-              - The document or supplied context must indicate an actual future
-                action or current decision process.
+              Do not select Not Actioned merely because an optional break or renewal right was not exercised.
 
-              - Relevant future actions may include:
-                  - renewal decision pending
-                  - landlord response awaited
-                  - occupier instruction awaited
-                  - break notice to be served
-                  - termination documentation to be completed
-                  - lease-end review scheduled
-                  - confirmed follow-up required
-                  - arrangement-end date to be updated
-                  - surrender under negotiation
+            - To Expire:
+              Select when the current arrangement is simply running toward its operative fixed expiry or automatic end date and no specific future decision, option, notice, review, or pending action is tied to that date.
 
-              - Relevant wording may include:
-                  - future action required
-                  - awaiting decision
-                  - awaiting landlord response
-                  - awaiting occupier instruction
-                  - pending approval
-                  - follow-up required
-                  - review scheduled
-                  - renewal under consideration
-                  - termination under consideration
-                  - action outstanding
+              Examples:
+                - a fixed-term lease will end automatically without notice
+                - the current term has a stated expiry and no break, renewal election, or identified decision applies
+                - no arrangement-end action is required before natural expiry
 
-              - Do not select Future Action merely because:
-                  - a future expiry date exists
-                  - an unexercised break option exists
-                  - a future rent review date exists
-                  - the lease permits future renewal
-                  - a notice period is stated
-                  - an event may occur in the future
-                  - early termination is conditional on an event that has not
-                    occurred
-                  - the document does not confirm that anyone is currently
-                    considering or performing the action
+              Do not select To Expire when:
+                - a break option requires a future decision
+                - a renewal or extension option requires an election
+                - future notice is required to prevent automatic continuation
+                - the future action type is Decisions Ongoing, New Break Date, New Date Given By Client, New Rent Review Date, or To Be Revisited
+                - a follow-up or review is required
 
-            - Not Actioned
-              - Select only when a required, expected, requested, or previously
-                identified arrangement-end action has not been completed.
+            #### Decision Priority:
 
-              - There must be evidence that:
-                  - an action was required, requested, assigned, or expected; and
-                  - the action was not taken, was missed, or remains overdue.
+              1. Actioned, if the relevant action or end event is completed.
+              2. Not Actioned, if a required action is explicitly overdue or missed.
+              3. Future Action, if a future decision, notice, option, review, or follow-up is required.
+              4. To Expire, if the arrangement will naturally end without another action.
 
-              - Relevant wording may include:
-                  - no action taken
-                  - action not completed
-                  - notice was not served
-                  - deadline missed
-                  - not processed
-                  - request not implemented
-                  - required update not made
-                  - follow-up not performed
-                  - action remains overdue
+            #### Current-Period Rules:
 
-              - Do not select Not Actioned merely because:
-                  - no renewal has been completed
-                  - no break notice has been served
-                  - an option has not been exercised
-                  - the document is silent about an action
-                  - an optional right remains unused
-                  - the lease contains an unresolved future event
+            - Use the latest executed amendment, allonge, rider, notice, or workflow update.
+            - Assess the current operative term, not an expired historical term.
+            - If a prior term automatically renewed and the arrangement is now active in a later period, classify the next relevant action for the later period.
+            - A past automatic expiry is Actioned only when that arrangement actually ended.
+            - If the arrangement continued into a new period, do not mark the historical expiry as Actioned.
+            - For non-lease agreements, apply the same rules only when the supplied context treats the agreement's termination or review as the expected arrangement-end action.
 
-              - Failure to exercise an optional break or renewal right is not
-                Not Actioned unless the supplied information confirms that the
-                action was intended, required, requested, or missed.
+            #### Examples:
 
-            - To Expire
-              - Select when the arrangement is expected to reach its operative
-                contractual expiry or confirmed end date without a completed
-                renewal, extension, break, surrender, or replacement arrangement.
+            Given:
+              "The fixed sublease ended automatically on 31 May 2026, and that date has passed."
 
-              - Use the current operative end date after considering any confirmed:
-                  - amendments
-                  - extensions
-                  - exercised break options
-                  - termination notices
-                  - surrender agreements
-                  - automatic termination provisions
-
-              - Relevant wording may include:
-                  - due to expire
-                  - approaching expiry
-                  - will expire
-                  - lease ending without renewal
-                  - expiry upcoming
-                  - arrangement will run to expiry
-                  - no renewal will be pursued
-                  - tenant will vacate at expiry
-
-              - Do not select To Expire merely because:
-                  - the lease states a normal expiry date
-                  - the expiry date is many years in the future
-                  - the document does not mention renewal
-                  - an unexercised break option exists
-                  - an automatic termination provision is conditional on an
-                    event that has not occurred
-
-              - Select To Expire when the supplied information indicates that
-                natural expiry is the relevant expected arrangement-end outcome.
-
-            Decision Priority:
-
-              1. Select Actioned when a relevant action is explicitly completed.
-
-              2. Select Not Actioned when a required or intended action is
-                explicitly missed, overdue, or not completed.
-
-              3. Select Future Action when a specific action or decision is
-                explicitly pending, planned, scheduled, or awaiting completion.
-
-              4. Select To Expire when natural expiry is explicitly identified
-                as the expected arrangement-end outcome and no other action has
-                been completed or is pending.
-
-            Interpretation Rules:
-
-              - Distinguish a contractual option from an actual action.
-              - The existence of a break option does not mean it will be exercised.
-              - A break option becomes Actioned only when the required notice or
-                agreement has been completed.
-              - A break option becomes Future Action only when the supplied
-                information confirms that it is being considered, planned, or
-                prepared for action.
-              - The existence of a renewal option does not mean renewal is being
-                considered or completed.
-              - An original signed lease is not evidence that an arrangement-end
-                action has been Actioned.
-              - A conditional termination event is not treated as completed until
-                the condition has occurred or termination has been confirmed.
-              - Distinguish the lease expiry date, break effective date, notice
-                deadline, rent review date, and document signature date.
-              - Use specific negotiated lease provisions instead of generic
-                provisions, templates, examples, or standard terms.
-              - Ignore dates and actions from unrelated agreements, appendices,
-                example clauses, headers, footers, and signature certificates.
-              - Do not invent a pending action or decision when the document is
-                silent.
-              - If supplied workflow notes conflict with the original lease,
-                prefer the most recent explicit and reliable workflow update.
-              - If no category is conclusively supported, select To Expire only
-                when natural expiry is clearly the expected outcome. Otherwise,
-                select Future Action only when further review or follow-up is
-                explicitly required by the supplied context.
-
-            Examples:
-
-            1. Given:
-              "The renewal agreement was signed by both parties and the revised
-              expiry date has been recorded."
-
-              Response:
+            Response:
               Actioned
 
-            2. Given:
-              "The tenant is reviewing whether to exercise its break option and
-              will provide instructions next month."
+            Given:
+              "The tenant may exercise a break option on 30 March 2029 by serving twelve months' notice."
 
-              Response:
+            Response:
               Future Action
 
-            3. Given:
-              "The break notice was required by 31 March 2026, but no notice was
-              served before the deadline."
+            Given:
+              "The lease continues automatically unless the tenant serves notice before the future deadline."
 
-              Response:
+            Response:
+              Future Action
+
+            Given:
+              "The notice deadline passed, but the required notice was not served."
+
+            Response:
               Not Actioned
 
-            4. Given:
-              "The lease will expire on 31 December 2028, and the parties have
-              confirmed that no renewal will be pursued."
+            Given:
+              "The fixed sublease ends automatically on 31 July 2029 without notice or renewal rights."
 
-              Response:
+            Response:
               To Expire
 
-            5. Given:
-              "The lease contains a tenant break option on 1 June 2029. There is
-              no evidence that the tenant is considering or exercising it."
+            Given:
+              "The 2025 term end passed and the lease automatically continued through 2030."
 
-              Response:
+            Response:
               To Expire
-
-            6. Given:
-              "The landlord has received a renewal proposal and is currently
-              reviewing it."
-
-              Response:
-              Future Action
-
-            7. Given:
-              "The tenant validly served notice to exercise the break option."
-
-              Response:
-              Actioned
-
-            8. Given:
-              "The lease permits renewal for another five years, but no renewal
-              decision or process is mentioned."
-
-              Response:
-              To Expire
-
-            9. Given:
-              "Termination documents were prepared but remain unsigned, and
-              follow-up with the parties is required."
-
-              Response:
-              Future Action
-
-            10. Given:
-              "The client instructed the team to update the arrangement end date,
-              but the update has not been completed and is overdue."
-
-              Response:
-              Not Actioned
 
             Return exactly one allowed category.
 
@@ -2301,216 +2406,134 @@ namespaces:
             Extract the Arrangement End Future Action Date.
 
             Definition:
+            The date on or by which the expected arrangement-end action is anticipated.
 
-            The Arrangement End Future Action Date is the specific date on which,
-            or by which, an identified future action relating to the end of the
-            lease arrangement is expected, scheduled, required, or anticipated
-            to occur.
-
-            The action may include:
-              - a lease-end follow-up
-              - a renewal decision or discussion
-              - a landlord decision or response
-              - an occupier decision or response
-              - a break option action
-              - a rent review action
-              - a scheduled future review
-              - another identified pending arrangement-end action
-
-            Output Rules:
-
-              # kind: Instance: Date parses input as kind_date_input_format (MDY);
-              # ISO text here fails that parse and the value is demoted to `hint`
-              # instead of being promoted to `abstract`.
-              - Return ONLY the date in MM/DD/YYYY format.
-              - Always return a four-digit year.
-              - Do not use quotation marks.
-              - Do not return explanatory text.
-              - Preserve the century and year exactly as stated in the source.
-              - Never convert a year beginning with 20 into a year beginning
-                with 19.
-              - For example:
-                  - 31 March 2031 must be returned as 03/31/2031
-                  - 30 April 2032 must be returned as 04/30/2032
-              - If no reliable future action date can be identified, return:
-                i dont know
-
-            Extraction Rules:
-
-              - Extract a date only when it is specifically associated with an
-                identified future action.
-              - Use the date connected to the related future action type when
-                that information is available.
-              - Give priority to explicit workflow notes, client instructions,
-                amendments, notices, and specific negotiated lease provisions.
-              - The date must be explicitly stated or unambiguously calculable
-                from dates and periods stated in the document.
-              - If calculating a date, use only clearly defined contractual
-                information and retain the correct four-digit year.
-
-            Future Action Type Guidance:
-
-              - For Decisions Ongoing With Landlord:
-                Extract the date by which the landlord is expected to respond,
-                decide, approve, or complete the identified action.
-
-              - For Decisions Ongoing With Occupier:
-                Extract the date by which the occupier or tenant is expected to
-                decide, respond, provide instructions, or complete the action.
-
-              - For End Date Not Correct:
-                Extract the corrected arrangement end date only when the corrected
-                date is explicitly provided.
-
-              - For New Break Date:
-                Extract the effective date of the revised, amended, newly agreed,
-                or newly identified break option.
-
-              - For New Date Given By Client:
-                Extract the replacement date explicitly supplied or confirmed
-                by the client.
-
-              - For New Rent Review Date:
-                Extract the revised or newly identified rent review date.
-
-              - For To Be Revisited:
-                Extract the date on which the matter is scheduled to be reviewed
-                again.
-
-            Break Option Rules:
-
-              - Distinguish between:
-                  - the break effective date; and
-                  - the deadline for serving break notice.
-              - For New Break Date, return the break effective date unless the
-                supplied context explicitly identifies the notice deadline as
-                the required future action date.
-              - A notice period alone is not a future action date.
-              - A break date may be calculated only when the lease provides:
-                  - a clear commencement date; and
-                  - an unambiguous period after which the break becomes effective.
-              - If the break date depends on an unresolved event and cannot be
-                determined reliably, return:
-                i dont know
-
-            Conditional Date Rules:
-
-              - Do not extract a conditional or possible termination date as a
-                confirmed future action date unless the related future action is
-                specifically tied to monitoring or acting on that date.
-              - Phrases such as "may terminate," "if the event occurs," "no earlier
-                than," and "subject to" indicate that the date may be conditional.
-              - If a conditional date is the only date available and no action is
-                explicitly scheduled for it, return:
-                i dont know
-              - Do not convert an earliest possible termination date into a
-                confirmed break date or arrangement end date.
-
-            Do Not Extract:
-
-              - lease commencement date
-              - lease execution or signature date
-              - rent commencement date
-              - original lease expiry date
-              - payment date
-              - document creation date
-              - dates from general terms or template examples
-              - dates from unrelated agreements
-              - dates from headers, footers, certificates, or appendices
-
-            An original lease expiry date may be extracted only when the supplied
-            context explicitly identifies that date as the date of the expected
-            future action.
-
-            Multiple Date Rules:
-
-              - If multiple dates are present, select the date most directly tied
-                to the identified future action.
-              - Prefer a specific scheduled action date over a general lease date.
-              - Prefer a revised or amended date over an original superseded date.
-              - Do not combine parts of different dates.
-              - Do not select the earliest date merely because it occurs first in
-                the document.
-              - If two or more dates are equally plausible and the correct date
-                cannot be determined reliably, return:
-                i dont know
-
-            Date Validation:
-
-              - Confirm that the extracted day, month, and year come from the same
-                source date.
-              - Confirm that the date is a valid calendar date.
-              - Confirm that the year contains four digits.
-              - Confirm that the output year matches the source year exactly.
-              - If the source states 2031, output 2031 and never 1931.
-              - If the source states 2032, output 2032 and never 1932.
-              - Do not infer a missing century unless it can be established
-                unambiguously from the document.
-              - When a two-digit year is genuinely ambiguous, return:
-                i dont know
-
-            Examples:
-
-              Given:
-                "The matter shall be revisited on 15 March 2028."
-
-              Response:
-                03/15/2028
-
-              Given:
-                "The landlord is expected to provide a response by June 30, 2027."
-
-              Response:
-                06/30/2027
-
-              Given:
-                "The amended break option is effective on 1 July 2029."
-
-              Response:
-                07/01/2029
-
-              Given:
-                "The break option is effective on 31 March 2031, subject to
-                twelve months' prior notice."
-
-              Response:
-                03/31/2031
-
-              Given:
-                "The notice must be served no later than 31 March 2030 for the
-                break to take effect on 31 March 2031."
-
-              Response:
-                03/31/2031
-
-              Given:
-                "Client requested a follow-up review on 10 February 2028."
-
-              Response:
-                02/10/2028
-
-              Given:
-                "The lease commenced on 1 January 2025."
-
-              Response:
-                i dont know
-
-              Given:
-                "The lease expires on 31 December 2035, but no future action is
-                associated with that date."
-
-              Response:
-                i dont know
-
-              Given:
-                "The lease may terminate if the superior lease ends, which may
-                occur no earlier than 30 April 2032."
-
-              Response:
-                i dont know
-
-            Return exactly one date in MM/DD/YYYY format or:
+            Do not explain.
+            Do not use quotes.
+            Return ONLY one date in MM/DD/YYYY format.
+            If no reliable date exists, return:
             i dont know
+
+            #### Date Selection Rules:
+
+            - Extract the date directly connected to the identified future action type.
+
+            - Use this priority:
+              1. Date explicitly supplied by the client, notice, workflow note, or latest amendment.
+              2. Effective date of a revised or newly introduced break option.
+              3. Date of a specifically scheduled landlord, occupier, renewal, rent-review, or follow-up action.
+              4. Next applicable break date.
+              5. Next applicable end date of the current contractual period.
+
+            - For "To Be Revisited", use the explicit revisit date. If no separate revisit date is stated, use the next applicable break date or current contractual period-end date.
+
+            - For "New Break Date", return the effective break date, not the notice deadline.
+
+            - Do not return a notice deadline unless the context explicitly identifies the notice deadline itself as the expected action date.
+
+            #### Current-Term and Renewal Rules:
+
+            - Determine the current applicable contractual period using the assessment date supplied in the context. If no assessment date is supplied, use the current date.
+
+            - Do not return a term-end or break date that has already passed unless the arrangement has ended and the action status is "Actioned".
+
+            - If a fixed term automatically renews and the prior term-end date has passed with no documented termination, calculate the end of the current renewed period using the stated renewal length.
+
+            - Example:
+              A term ended on 09/30/2025 and automatically renewed for five years with no termination evidence.
+              Return:
+              09/30/2030
+
+            - Do not assume automatic renewal if the document states that renewal requires an affirmative option, signed amendment, mutual agreement, or another unresolved condition.
+
+            - When the current notice deadline has passed without documented termination and the lease automatically continues, use the end date of the resulting renewal period.
+
+            - When the initial term-end date is still in the future, use that date rather than a later automatic-extension end date, unless an earlier applicable break or scheduled action date exists.
+
+            #### Amendments and Conflicting Dates:
+
+            - Use the latest executed amendment, allonge, rider, or addendum over the original lease.
+
+            - Ignore dates that are expressly cancelled, superseded, corrected, treated as not sent, or replaced.
+
+            - Prefer the detailed operative clause over a conflicting summary.
+
+            - If an amendment introduces a whole-arrangement break date earlier than the renewed expiry, use the earlier break date.
+
+            - Do not use a break applying only to part of the premises as the end date for the entire arrangement.
+
+            #### Calculation Rules:
+
+            - A date may be calculated only from a clear commencement or prior term-end date and an unambiguous term or renewal period.
+
+            - Preserve the contractual day and month when calculating successive periods.
+
+            - If a term begins on the first day of a month, the corresponding full-year term normally ends on the final day of the preceding month.
+
+            - Use the exact date printed in the signed operative clause even if a mathematical calculation would produce a date one day later, unless the date is an obvious typographical error and the intended date is unambiguous.
+
+            - Preserve the four-digit year exactly. Never convert a year beginning with 20 into a year beginning with 19.
+
+            #### Conditional Dates:
+
+            - Use a conditional break date only when the future action is specifically tied to monitoring, reviewing, or exercising that break.
+
+            - Do not use an earliest possible termination date, an unresolved event date, or a hypothetical date when no related action is identified.
+
+            - If the date depends on an unresolved event and cannot be determined reliably, return:
+              i dont know
+
+            #### Do Not Extract:
+
+            - commencement date
+            - signature or execution date
+            - rent commencement date
+            - payment date
+            - notice deadline, unless explicitly required as the action date
+            - an expired historical term-end date, unless status is "Actioned"
+            - a later renewal expiry when an earlier current term-end or whole-arrangement break date applies
+            - dates from templates, examples, unrelated agreements, headers, or footers
+            - a services-contract end date when the document does not contain a property arrangement
+
+            #### Validation:
+
+            - Confirm that the selected date is applicable to the current arrangement.
+            - Confirm that day, month, and year come from the same date.
+            - Confirm that the date is valid and uses a four-digit year.
+            - If multiple dates remain equally plausible, return:
+              i dont know
+
+            #### Examples:
+
+            Given:
+              "The amended break option is effective on 1 July 2029, subject to twelve months' notice."
+
+            Response:
+              07/01/2029
+
+            Given:
+              "The initial term ends on 31 July 2032 and then automatically continues through 31 July 2037."
+
+            Response:
+              07/31/2032
+
+            Given:
+              "The term ended on 30 April 2024 and continues for successive five-year periods. No termination is documented."
+
+            Response:
+              04/30/2029
+
+            Given:
+              "The lease ended automatically on 31 May 2026 and the action status is Actioned."
+
+            Response:
+              05/31/2026
+
+            Given:
+              "Either party may terminate on 90 days' notice, but no notice has been issued."
+
+            Response:
+              i dont know
 
         - role: user
           content: "{prompt}"

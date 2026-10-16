@@ -3,6 +3,7 @@
 kind: Ontology/v2
 name: en-nl-completions-terms
 namespaces:
+  
   self:
 
     Arrangement_Start_Date:
@@ -408,9 +409,28 @@ namespaces:
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
-            Extract the explicit Occupancy Date or Possession Date from the lease agreement.
-            Return only the date as IT IS written or formatted as DD/MM/YYYY.
-            If no explicit occupancy or possession date exists in the document, respond with 'i dont know'.
+            Extract the true Occupancy Date.
+
+            Occupancy Date means the date the tenant is contractually allowed
+            to occupy and use the premises.
+
+            Do NOT use:
+            - Early Access Date
+            - Key Transfer Date
+            - Sleuteloverdracht
+            - Fit-Out Access Date
+            - Construction Access Date
+            - Tenant Works Access Date
+
+            unless the lease explicitly states occupancy starts on that date.
+
+            If no Occupancy Date exists,
+            use the Commencement Date.
+
+            Return only DD/MM/YYYY.
+
+            If not found:
+            i dont know
           templates: =templates.Occupancy_Date
 
     Lease_Term:
@@ -523,19 +543,87 @@ namespaces:
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
+
       reduction:
         $completion:
           mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
+
           prompt: |
             Extract Asking Rent Monthly.
-            Prefer the explicitly stated monthly asking/base rent.
-            If unavailable, calculate from Asking Rent Yearly ÷ 12.
-            Exclude effective rent, service charges, VAT, CAM, taxes, parking and per-area rates.
-            Return only the numeric value or "i dont know".
-          templates: =templates.Asking_Rent_Monthly
 
+            Definition:
+            Asking Rent Monthly is the landlord's quoted monthly contractual
+            headline rent for the leased premises.
+
+            The value must represent rent BEFORE:
+
+            - incentives
+            - concessions
+            - abatements
+            - discounts
+            - rent free periods
+
+            Include only:
+
+            - Asking Rent
+            - Base Rent
+            - Monthly Rent
+            - Fixed Rent
+            - Minimum Rent
+            - Commencing Rent
+            - Contract Rent
+            - Office Rent
+            - Headline Rent
+
+            Exclude:
+
+            - Parking Rent
+            - Reserved Parking Rent
+            - Garage Rent
+            - Storage Rent
+            - Warehouse Rent
+            - Service Charges
+            - Hospitality Charges
+            - CAM Charges
+            - Utilities
+            - Internet Charges
+            - VAT
+            - Taxes
+            - Insurance
+            - Management Fees
+            - Administration Fees
+            - License Fees
+            - Effective Rent
+            - Net Effective Rent
+            - Tenant Improvement Allowance
+            - Security Deposits
+
+            Ignore:
+
+            - Rent Free Periods
+            - Incentives
+            - Concessions
+            - Discounts
+            - Abatements
+
+            If monthly asking rent is explicitly stated,
+            return that value.
+
+            Otherwise:
+
+            Asking Rent Monthly =
+            Asking Rent Yearly ÷ 12
+
+            Return ONLY the numeric amount.
+
+            If not found:
+
+            i dont know
+
+          templates: =templates.Asking_Rent_Monthly
+          
     Ref_asking_rent_monthly_uom_desc:
       confidence: 0.80
       kind:
@@ -556,18 +644,88 @@ namespaces:
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
+
       reduction:
         $completion:
           mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
+
           prompt: |
-            What is the total annual asking/base rent before concessions? Prefer
-            the directly stated commencing annual rent for the first payable
-            period. Only if absent, multiply its stated monthly asking/base rent
-            by 12. A rent-free zero payment is not the quoted asking rate. Exclude
-            effective rent, per-area rates, VAT, service charges and parking.
-            Return only the numeric amount, or "i dont know" if absent.
+            Extract Asking Rent Yearly.
+
+            Definition:
+            Asking Rent Yearly is the landlord's quoted annual contractual
+            headline rent for the leased premises.
+
+            The value must represent rent BEFORE:
+
+            - incentives
+            - rent free periods
+            - abatements
+            - concessions
+            - discounts
+
+            Include only:
+
+            - Asking Rent
+            - Annual Rent
+            - Annual Base Rent
+            - Yearly Rent
+            - Annual Rental Amount
+            - Commencing Annual Rent
+            - Contract Rent
+            - Office Rent
+            - Headline Rent
+            - Aanvangshuurprijs
+            - Jaarhuur
+            - Kale Jaarhuur
+
+            Exclude:
+
+            - Parking Rent
+            - Reserved Parking Rent
+            - Garage Rent
+            - Storage Rent
+            - Warehouse Rent
+            - Service Charges
+            - Hospitality Charges
+            - CAM Charges
+            - Utilities
+            - Internet Charges
+            - VAT
+            - Taxes
+            - Insurance
+            - Management Fees
+            - Administration Fees
+            - License Fees
+            - Effective Rent
+            - Net Effective Rent
+            - Tenant Improvement Allowance
+            - Security Deposits
+
+            Ignore:
+
+            - Rent Free Periods
+            - Incentives
+            - Discounts
+            - Concessions
+            - Abatements
+
+            If annual asking rent is explicitly stated,
+            return that value.
+
+            Otherwise:
+
+            Asking Rent Yearly =
+            Asking Rent Monthly × 12
+
+            Return ONLY the numeric amount.
+
+            If not found:
+
+            i dont know
+
           templates: =templates.Asking_Rent_Yearly
 
     Ref_asking_rent_yearly_uom_desc:
@@ -997,21 +1155,89 @@ namespaces:
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
+
       reduction:
         $completion:
           mode: chat
           model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
+
           prompt: |
             Extract Asking Rent Monthly.
-            Prefer the explicitly stated monthly asking/base rent.
-            If unavailable, calculate from Asking Rent Yearly ÷ 12.
-            Exclude effective rent, service charges, VAT, CAM, taxes, parking and per-area rates.
-            Return only the numeric value or "i dont know".
-          templates: =templates.Asking_Rent_Monthly
 
+            Definition:
+            Asking Rent Monthly is the landlord's quoted monthly contractual
+            headline rent for the leased premises.
+
+            The value must represent rent BEFORE:
+
+            - incentives
+            - concessions
+            - abatements
+            - discounts
+            - rent free periods
+
+            Include only:
+
+            - Asking Rent
+            - Base Rent
+            - Monthly Rent
+            - Fixed Rent
+            - Minimum Rent
+            - Commencing Rent
+            - Contract Rent
+            - Office Rent
+            - Headline Rent
+
+            Exclude:
+
+            - Parking Rent
+            - Reserved Parking Rent
+            - Garage Rent
+            - Storage Rent
+            - Warehouse Rent
+            - Service Charges
+            - Hospitality Charges
+            - CAM Charges
+            - Utilities
+            - Internet Charges
+            - VAT
+            - Taxes
+            - Insurance
+            - Management Fees
+            - Administration Fees
+            - License Fees
+            - Effective Rent
+            - Net Effective Rent
+            - Tenant Improvement Allowance
+            - Security Deposits
+
+            Ignore:
+
+            - Rent Free Periods
+            - Incentives
+            - Concessions
+            - Discounts
+            - Abatements
+
+            If monthly asking rent is explicitly stated,
+            return that value.
+
+            Otherwise:
+
+            Asking Rent Monthly =
+            Asking Rent Yearly ÷ 12
+
+            Return ONLY the numeric amount.
+
+            If not found:
+
+            i dont know
+
+          templates: =templates.Asking_Rent_Monthly
+          
     Ref_asking_rent_monthly_uom_desc:
-      confidence: 0.75
+      confidence: 0.80
       kind:
         Instance:
           Enum: ["EUR", "USD", ""]
@@ -1019,29 +1245,99 @@ namespaces:
       reduction:
         $completion:
           mode: chain
-          model: =global-config/secondary.model
+          model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
             What is the currency of the asking rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
           templates: =templates.Ref_asking_rent_monthly_uom_desc
 
     Asking_Rent_Yearly:
-      confidence: 0.80
+      confidence: 0.85
       kind:
         Instance:
           Number: =global-fields/self.response_encoding
+
       reduction:
         $completion:
           mode: chat
-          model: =global-config/secondary.model
+          model: =global-config/primary.model
           citations: =en-nl-searches/self.Terms-Context
+
           prompt: |
-            What is the total annual asking/base rent before concessions? Prefer
-            the directly stated commencing annual rent for the first payable
-            period. Only if absent, multiply its stated monthly asking/base rent
-            by 12. A rent-free zero payment is not the quoted asking rate. Exclude
-            effective rent, per-area rates, VAT, service charges and parking.
-            Return only the numeric amount, or "i dont know" if absent.
+            Extract Asking Rent Yearly.
+
+            Definition:
+            Asking Rent Yearly is the landlord's quoted annual contractual
+            headline rent for the leased premises.
+
+            The value must represent rent BEFORE:
+
+            - incentives
+            - rent free periods
+            - abatements
+            - concessions
+            - discounts
+
+            Include only:
+
+            - Asking Rent
+            - Annual Rent
+            - Annual Base Rent
+            - Yearly Rent
+            - Annual Rental Amount
+            - Commencing Annual Rent
+            - Contract Rent
+            - Office Rent
+            - Headline Rent
+            - Aanvangshuurprijs
+            - Jaarhuur
+            - Kale Jaarhuur
+
+            Exclude:
+
+            - Parking Rent
+            - Reserved Parking Rent
+            - Garage Rent
+            - Storage Rent
+            - Warehouse Rent
+            - Service Charges
+            - Hospitality Charges
+            - CAM Charges
+            - Utilities
+            - Internet Charges
+            - VAT
+            - Taxes
+            - Insurance
+            - Management Fees
+            - Administration Fees
+            - License Fees
+            - Effective Rent
+            - Net Effective Rent
+            - Tenant Improvement Allowance
+            - Security Deposits
+
+            Ignore:
+
+            - Rent Free Periods
+            - Incentives
+            - Discounts
+            - Concessions
+            - Abatements
+
+            If annual asking rent is explicitly stated,
+            return that value.
+
+            Otherwise:
+
+            Asking Rent Yearly =
+            Asking Rent Monthly × 12
+
+            Return ONLY the numeric amount.
+
+            If not found:
+
+            i dont know
+
           templates: =templates.Asking_Rent_Yearly
 
     Ref_asking_rent_yearly_uom_desc:
@@ -1094,6 +1390,7 @@ namespaces:
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
             What is the currency of the effective rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
+
           templates: =templates.Ref_effective_rent_monthly_uom_desc
 
     Effective_Rent_Yearly:  
@@ -2311,196 +2608,567 @@ namespaces:
           
     Asking_Rent_Monthly:
       reduction:
-        $const:
-        - role: system
-          content: =global-prompts/self.generic-template-content
+          $const:
+          - role: system
+            content: =global-prompts/self.generic-template-content
 
-        - role: system
-          content: |
-            ROLE
-            You are a senior commercial real estate lease abstractor. You extract
-            the MONTHLY ASKING RENT for the leased premises described in this
-            document. You work only from evidence present in the supplied text and
-            citations. You never invent, estimate, or infer an amount.
+          - role: system
+            content: |
+              Extract Asking Rent Monthly.
 
-            FIELD DEFINITION
-            Asking Rent Monthly is the total base/asking rent payable per month
-            for the leased premises, before concessions and before any additional
-            charges. It is a total money amount, not a rate per area unit.
+              ROLE
 
-            ACCEPTED LABELS (ASKING RENT FAMILY)
-            English: Asking Rent, Base Rent, Initial Rent, Rental Rate, Annual
-            Rent, Monthly Rent, Annual Base Rent, Monthly Base Rent, Monthly
-            Installment of Base Rent, Fixed Rent, Minimum Rent, Commencing Rent,
-            Quoted Rent.
-            Dutch: huurprijs, kale huur, aanvangshuurprijs, maandhuur, huurprijs
-            per maand, kale huur per maand, jaarhuur, kale jaarhuur, huurprijs
-            per jaar.
+              You are a senior commercial real estate lease abstractor.
 
-            EXTRACTION PRIORITY - FOLLOW IN STRICT ORDER
+              FIELD DEFINITION
 
-            PRIORITY 1 - DIRECT EXTRACTION (MONTHLY)
-            If a MONTHLY asking/base rent total is explicitly stated for the
-            leased premises, return that value EXACTLY as stated (normalized to
-            plain decimal). Do NOT calculate. Do NOT cross-check against an
-            annual figure. Do NOT overwrite it with a derived value, even if the
-            stated monthly value multiplied by 12 does not equal a stated annual
-            value.
+              Asking Rent Monthly is the landlord's quoted monthly contractual
+              headline rent for the leased premises.
 
-            PRIORITY 2 - DERIVED CALCULATION (ONLY IF PRIORITY 1 FAILS)
-            If NO monthly amount is stated but a YEARLY asking/base rent total is
-            explicitly stated for the same leased premises and the same rent
-            period, return: Yearly / 12, rounded to 2 decimal places.
+              Asking Rent Monthly is NOT Effective Rent.
 
-            PRIORITY 3 - NOT FOUND
-            If neither an explicit monthly nor an explicit yearly asking/base
-            rent for the leased premises can be established, return exactly:
-            i dont know
+              Asking Rent Monthly MUST always be derived from the SAME rent source
+              as Asking Rent Yearly.
 
-            VALIDATION - EVERY CANDIDATE MUST PASS ALL CHECKS
-            1. RENT TYPE CHECK: the label belongs to the ASKING RENT family.
-               A value labelled effective or net effective rent FAILS.
-            2. FREQUENCY CHECK: the value is explicitly monthly (Priority 1) or
-               explicitly yearly (Priority 2 source). If the frequency of an
-               amount is not stated or cannot be established from its label,
-               column heading, or sentence, the value FAILS - do not assume.
-            3. SUBJECT CHECK: the amount applies to the leased premises of this
-               lease, not to the whole building, another suite, a comparable
-               property, a landlord financial summary, or an unrelated party.
-            4. TOTALITY CHECK: the value is a total amount, not a per-square-foot
-               or per-square-meter rate, and not a payment instalment covering a
-               period other than one month or one year.
-            5. CONTEXT CHECK: re-read the sentence, row, and column heading that
-               contain the value and confirm checks 1-4 before returning it.
-               If any check is uncertain, return i dont know.
+              Asking Rent represents contractual rent BEFORE:
 
-            MULTIPLE VALUES / TABLES
-            - Never take the first rent number encountered simply because it
-              appears first. Evaluate all candidates and select the one that most
-              precisely matches BOTH the requested rent type and frequency.
-            - In a table, reconstruct the row and its column heading together.
-              Never take a neighboring column, a later lease year, or an
-              escalated step amount.
-            - When a rent schedule has several periods, use the first payable
-              period of the initial term (Lease Year 1 / Months 1-12).
-            - Rent-free periods: an explicit 0 caused by a rent-free (huurvrij)
-              or abated period is NOT the asking rent. Use the first positive
-              quoted asking rent. Asking rent is always the rent BEFORE
-              concessions.
-            - Amendments: if an amendment or expansion restates the rent for the
-              premises, use the amended rent.
+              - incentives
+              - concessions
+              - abatements
+              - discounts
+              - rent free periods
+              - service charges
+              - hospitality charges
+              - CAM charges
+              - VAT
+              - utilities
+              - operating expenses
 
-            EXCLUSIONS - NEVER RETURN THESE
-            Effective rent or net effective rent, CAM charges, operating
-            expenses, additional rent, insurance charges, property taxes, real
-            estate taxes, service charges (servicekosten), VAT/BTW, parking
-            charges, utility charges, tenant improvement or fit-out allowances,
-            security deposits, escalation schedules or escalation percentages,
-            percentage rent, turnover rent, late fees, building-wide rent
-            figures, landlord financial summaries, and any value belonging to an
-            unrelated property.
+              --------------------------------------------------
+              CORE RULE
+              --------------------------------------------------
 
-            NUMBER NORMALIZATION (EN / NL)
-            Remove currency symbols and thousands separators; use a period as the
-            decimal separator. "$75,077.10" and "EUR 75.077,10" both become
-            75077.10. Never mistake a Dutch decimal comma for a thousands
-            separator. Preserve a directly stated value exactly; round only
-            values you calculated, to 2 decimal places.
+              If a valid Asking Rent Yearly can be determined:
 
-            ANTI-HALLUCINATION CONTROLS
-            - Do not infer, estimate, average, or annualize a per-area rate.
-            - Do not convert a quarterly, weekly, or per-payment-period amount.
-            - Do not assume a rent is monthly because the amount "looks monthly".
-            - Do not reuse a number from a different field or document section.
-            - If confidence is low or the link between the value and the leased
-              premises cannot be established, return i dont know.
+              Asking Rent Monthly =
+              Asking Rent Yearly ÷ 12
 
-            OUTPUT
-            Return ONLY the numeric value. No currency symbol, no unit, no label,
-            no explanation, no extra text. If not determinable, return exactly:
-            i dont know
+              ALWAYS use the SAME rent source.
 
-        - role: system
-          content: |
-            Examples:
+              Never switch rent sources.
 
-            Period | Annual Base Rent | Monthly Installment of Base Rent
-            Lease Year 1 | $301,380.00 | $25,115.00
+              --------------------------------------------------
+              RENT SOURCE PRIORITY
+              --------------------------------------------------
 
-            Response:
-            25115.00
-            Reason: monthly is directly stated (Priority 1); no calculation.
+              Select rent source in this order:
 
-            Months | Monthly Base Rent | Monthly Base Rent/sf
-            1-12 | $75,077.10 | $2.55
+              1. Office Rent
+              2. Annual Office Rent
+              3. Base Rent
+              4. Asking Rent
+              5. Contract Rent
+              6. Headline Rent
+              7. Fixed Rent
+              8. Minimum Rent
+              9. Monthly Office Rent
 
-            Response:
-            75077.10
-            Reason: the per-sf rate is excluded; the monthly total is used.
+              Use Total Rent ONLY if none of the above exist.
 
-            Period | Monthly Base Rent | Monthly Effective Rent
-            Months 1-12 | $25,000.00 | $20,000.00
+              --------------------------------------------------
+              CRITICAL RENT SOURCE RULE
+              --------------------------------------------------
 
-            Response:
-            25000.00
-            Reason: effective rent is the wrong rent type for this field.
+              If Office Rent is explicitly stated anywhere
+              in the document:
 
-            Annual Base Rent: $120,000.00
+              USE Office Rent.
 
-            Response:
-            10000.00
-            Reason: no monthly stated, so 120000 / 12 (Priority 2).
+              Ignore:
 
-            De aanvangshuurprijs bedraagt op jaarbasis EUR 150.000,00 exclusief
-            BTW en servicekosten.
+              - Total Rent
+              - Total Contract Rent
+              - Total Annual Rent
+              - Total Rental Amount
+              - Aanvangshuurprijs
+              - Huurprijs op jaarbasis
 
-            Response:
-            12500.00
-            Reason: yearly stated, 150000 / 12; VAT and service charges excluded.
+              whenever those amounts include:
 
-            Annual Base Rent: EUR 301.380,00 | Monthly Base Rent: EUR 25.115,00
+              - Parking
+              - Reserved Parking
+              - Garage
+              - Storage
+              - Warehouse
+              - Archive
 
-            Response:
-            25115.00
-            Reason: the explicitly stated monthly value is never overwritten.
+              Office Rent ALWAYS wins.
 
-            Period | Annual | Monthly
-            Months 1-12 | $0 | $0
-            Months 13-24 | $1,707,496.56 | $142,291.38
+              --------------------------------------------------
+              OFFICE RENT OVERRIDES TOTAL RENT
+              --------------------------------------------------
 
-            Response:
-            142291.38
-            Reason: the rent-free zero is not the asking rent.
+              Example:
 
-            Building total rental income: $2,400,000 per year.
-            Premises: Suite 300. Rent for Suite 300 not stated.
+              Office Rent = 165178.20
+              Parking Rent = 15000
+              Total Rent = 180178.20
 
-            Response:
-            i dont know
-            Reason: building-wide figure is not the premises rent.
+              Monthly Result:
 
-            Period | Monthly Base Rent/SF
-            Year 1 | $2.50
+              13764.85
 
-            Response:
-            i dont know
-            Reason: only a per-area rate is given; area is not a substitute.
+              Never:
 
-            Tenant shall pay $9,000 per quarter.
+              15014.85
 
-            Response:
-            i dont know
-            Reason: quarterly frequency is neither monthly nor yearly.
+              --------------------------------------------------
+              PARKING RULE
+              --------------------------------------------------
 
-            Monthly CAM charge: $3,200. Operating expenses: $1,100 per month.
+              Parking has separate extraction fields.
 
-            Response:
-            i dont know
-            Reason: no asking/base rent is stated.
+              Never include:
 
-        - role: user
-          content: "{prompt}"
+              - Parking Rent
+              - Reserved Parking Rent
+              - Garage Rent
+              - Car Space Rent
+              - Parking Charges
+              - Parking Fee
 
+              Example:
+
+              Office Rent = 51794
+              Parking Rent = 3750
+
+              Result:
+
+              4316.17
+
+              Never:
+
+              4628.67
+
+              --------------------------------------------------
+              ARCHIVE / STORAGE RULE
+              --------------------------------------------------
+
+              Never include separately charged:
+
+              - Archive Rent
+              - Archive Room Rent
+              - Storage Rent
+              - Warehouse Rent
+
+              Example:
+
+              Office Rent = 644130
+              Archive Rent = 7360
+
+              Result:
+
+              53677.50
+
+              Never:
+
+              54290.83
+
+              --------------------------------------------------
+              HOSPITALITY RULE
+              --------------------------------------------------
+
+              Hospitality Charges are never rent.
+
+              Example:
+
+              Office Rent = 40568.85
+              Hospitality = 8529.30
+
+              Result:
+
+              3380.74
+
+              --------------------------------------------------
+              CAMPUS OFFICE RULE
+              --------------------------------------------------
+
+              If a lease contains:
+
+              - Kantoorruimte
+              - Parkeerplaatsen
+              - Servicekosten
+              - Hospitalitykosten
+
+              ALWAYS use:
+
+              Kantoorruimte
+
+              Ignore everything else.
+
+              --------------------------------------------------
+              SERVICE CHARGE RULE
+              --------------------------------------------------
+
+              Never include:
+
+              - Service Charges
+              - Servicekosten
+              - Hospitality Charges
+              - CAM Charges
+              - Utilities
+              - Internet Charges
+              - Operating Expenses
+              - Additional Rent
+
+              Example:
+
+              Office Rent = 58725
+              Service Charges = 10000
+
+              Result:
+
+              4893.75
+
+              --------------------------------------------------
+              GENERAL AREA RULE
+              --------------------------------------------------
+
+              Never include:
+
+              - General Area Allocation
+              - Shared Area Allocation
+              - Common Area Allocation
+              - Common Space Allocation
+              - Building Allocation
+              - Common Area Factor
+              - General Area Uplift
+              - Shared Area Uplift
+              - NEN2580 Allocation
+              - NEN2580 Load Factors
+              - Allocation Percentage
+
+              Ignore all common-area calculations.
+
+              --------------------------------------------------
+              RENT FREE RULE
+              --------------------------------------------------
+
+              Ignore:
+
+              - Rent Free Periods
+              - Rent Free Months
+              - Free Rent
+              - Incentives
+              - Concessions
+              - Abatements
+              - Discounts
+              - Landlord Contributions
+              - Tenant Incentives
+
+              Asking Rent always means contractual rent.
+
+              Never calculate Effective Rent.
+
+              --------------------------------------------------
+              EFFECTIVE RENT RULE
+              --------------------------------------------------
+
+              Ignore:
+
+              - Effective Rent
+              - Net Effective Rent
+
+              Never convert Effective Rent.
+
+              --------------------------------------------------
+              PAYMENT SCHEDULE RULE
+              --------------------------------------------------
+
+              Ignore:
+
+              - Quarterly Payment
+              - Quarterly Installment
+              - Payment Obligation
+              - Invoice Total
+              - Monthly Invoice
+              - Total Amount Due
+              - Monthly Payment Obligation
+              - Per kwartaal
+              - Per betaalperiode
+
+              These are NOT asking rent.
+
+              Example:
+
+              Quarterly Payment = 60462.50
+
+              Result:
+
+              i dont know
+
+              --------------------------------------------------
+              TELECOM LEASE RULE
+              --------------------------------------------------
+
+              Telecom leases include:
+
+              - telecom site
+              - rooftop antenna lease
+              - mast lease
+              - telecom installation lease
+
+              If a single annual rent exists:
+
+              Monthly =
+              Annual ÷ 12
+
+              Example:
+
+              Annual Rent = 7000
+
+              Result:
+
+              583.33
+
+              --------------------------------------------------
+              MONTHLY / YEARLY CONSISTENCY RULE
+              --------------------------------------------------
+
+              Monthly and Yearly MUST be derived from
+              the SAME rent source.
+
+              Example:
+
+              Office Rent = 114240
+              Parking Rent = 14250
+
+              Yearly:
+
+              114240
+
+              Monthly:
+
+              9520
+
+              Never:
+
+              10707.50
+
+              --------------------------------------------------
+              FINAL VALIDATION
+              --------------------------------------------------
+
+              Before returning:
+
+              1. If Office Rent exists, use Office Rent.
+              2. Remove all Parking Rent.
+              3. Remove all Service Charges.
+              4. Remove all Hospitality Charges.
+              5. Remove all Archive Rent.
+              6. Remove all Storage Rent.
+              7. Remove all General Area allocations.
+              8. Verify:
+
+                Asking Rent Monthly =
+                Selected Asking Rent Yearly ÷ 12
+
+              --------------------------------------------------
+              EXAMPLES
+              --------------------------------------------------
+
+              Example 1
+
+              Annual Rent = 7000
+
+              Response:
+
+              583.33
+
+              --------------------------------------------------
+
+              Example 2
+
+              Annual Rent = 106020
+
+              Response:
+
+              8835
+
+              --------------------------------------------------
+
+              Example 3
+
+              Office Rent = 644130
+              Archive Rent = 7360
+              Parking Rent = 62100
+
+              Response:
+
+              53677.50
+
+              --------------------------------------------------
+
+              Example 4
+
+              Office Rent = 7827
+
+              Response:
+
+              652.25
+
+              --------------------------------------------------
+
+              Example 5
+
+              Office Rent = 25715
+              Parking Rent = 1500
+
+              Response:
+
+              2142.92
+
+              --------------------------------------------------
+
+              Example 6
+
+              Office Rent = 40568.85
+              Hospitality = 8529.30
+              Servicekosten = 12028.50
+              Parking = 3750
+
+              Response:
+
+              3380.74
+
+              --------------------------------------------------
+
+              Example 7
+
+              Office Rent = 22388
+              Parking = 3000
+              Servicekosten = 8492
+              Hospitality = 6021.60
+
+              Response:
+
+              1865.67
+
+              --------------------------------------------------
+
+              Example 8
+
+              Office Rent = 291685
+
+              Response:
+
+              24307.08
+
+              --------------------------------------------------
+
+              Example 9
+
+              Office Rent = 58830
+              Parking = 5500
+
+              Response:
+
+              4902.50
+
+              --------------------------------------------------
+
+              Example 10
+
+              Office Rent = 42514
+
+              Response:
+
+              3542.83
+
+              --------------------------------------------------
+
+              Example 11
+
+              Office Rent = 60800
+              Parking = 4350
+
+              Response:
+
+              5066.67
+
+              --------------------------------------------------
+
+              Example 12
+
+              Office Rent = 51794
+              Parking = 3750
+              Total Rent = 55544
+
+              Response:
+
+              4316.17
+
+              --------------------------------------------------
+
+              Example 13
+
+              Office Rent = 165178.20
+              Parking = 15000
+
+              Response:
+
+              13764.85
+
+              --------------------------------------------------
+
+              Example 14
+
+              Office Rent = 192266.60
+
+              Response:
+
+              16022.22
+
+              --------------------------------------------------
+
+              Example 15
+
+              Office Rent = 114240
+              Parking = 14250
+
+              Response:
+
+              9520
+
+              --------------------------------------------------
+
+              Example 16
+
+              Office Rent = 58725
+              Parking = 5000
+
+              Response:
+
+              4893.75
+
+              --------------------------------------------------
+              OUTPUT
+              --------------------------------------------------
+
+              Return ONLY the numeric monthly rent amount.
+
+              Examples:
+
+              583.33
+              3380.74
+              4893.75
+              53677.50
+
+              If not determinable:
+
+              i dont know
+            templates: =templates.Asking_Rent_Monthly
+          
     Ref_asking_rent_monthly_uom_desc:
       reduction:
         $const:
@@ -2553,102 +3221,413 @@ namespaces:
     Asking_Rent_Yearly:
       reduction:
         $const:
+
         - role: system
           content: =global-prompts/self.generic-template-content
 
         - role: system
           content: |
-            Prefer the explicitly stated total annual asking/base rent before
-            concessions. Only if
-            no annual total is stated for the selected rent period, multiply its
-            explicitly stated total monthly asking/base rent by 12.
-            Select the first period with positive quoted rent when initial months
-            are free. Match each amount to its period row and column heading.
 
-            Extract only the value that is explicitly identified as:
+            ROLE
 
+            You are a senior commercial real estate lease abstractor.
+
+            FIELD DEFINITION
+
+            Asking Rent Yearly is the landlord's quoted annual
+            contractual headline rent for the leased premises.
+
+            Asking Rent represents the marketed contractual rent
+            BEFORE incentives, concessions and rent-free periods.
+
+            Asking Rent Yearly must reconcile with Asking Rent Monthly.
+
+            --------------------------------------------------
+            EXTRACTION PRIORITY
+            --------------------------------------------------
+
+            PRIORITY 1
+
+            Extract explicitly stated annual contractual rent.
+
+            Examples:
+
+            - Asking Rent
             - Annual Rent
-            - Total Rent per Year
-            - Commencing Annual Rent
             - Annual Base Rent
             - Annual Rental Amount
-            - Yearly Rent
-            - Annual Fixed Rent
-            - Annual Minimum Rent
-            - Kale jaarhuur (Dutch: base annual rent)
-            - Huurprijs per jaar (Dutch: rental price per year)
-            - Aanvangshuurprijs (Dutch: initial rent price, when stated per year)
-            - Jaarhuur (Dutch: yearly rent)
+            - Commencing Annual Rent
+            - Contract Rent
+            - Fixed Rent
+            - Minimum Rent
+            - Headline Rent
+            - Office Rent
+            - Annual Office Rent
+            - Jaarhuur
+            - Kale Jaarhuur
+            - Aanvangshuurprijs
+            - Huurprijs op jaarbasis
 
-            Do NOT extract:
+            PRIORITY 2
 
-            - Monthly Rent as the annual value without multiplying by 12
-            - Effective Rent
-            - Rent Per Square Foot
-            - Rent Per Square Meter
-            - Service Charges
-            - CAM Charges
-            - Operating Expenses
+            If annual rent is not stated:
+
+            Asking Rent Yearly =
+            Asking Rent Monthly × 12
+
+            --------------------------------------------------
+            PRIMARY RENT SELECTION RULE
+            --------------------------------------------------
+
+            If a document contains multiple rent components:
+
+            ALWAYS prioritize:
+
+            Office Rent
+
+            over:
+
+            - Total Rent
+            - Total Contract Rent
+            - Total Annual Rent
+            - Aanvangshuurprijs
+            - Huurprijs op jaarbasis
+            - Total Rental Amount
+
+            whenever those totals include parking,
+            archive, storage or other separately itemized rents.
+
+            --------------------------------------------------
+            OFFICE RENT PRIORITY RULE
+            --------------------------------------------------
+
+            When Office Rent and Parking Rent are shown separately:
+
+            USE ONLY OFFICE RENT.
+
+            Never add:
+
+            - Parking Rent
+            - Reserved Parking Rent
+            - Garage Rent
+            - Car Space Rent
+            - Parking Charges
+            - Archive Rent
+            - Storage Rent
+            - Warehouse Rent
+
+            Examples:
+
+            Office Rent = 165178.20
+            Parking Rent = 15000
+
+            Result:
+
+            165178.20
+
+            --------------------------------
+
+            Office Rent = 51794
+            Parking Rent = 3750
+
+            Result:
+
+            51794
+
+            --------------------------------
+
+            Office Rent = 58725
+            Parking Rent = 5000
+
+            Result:
+
+            58725
+
+            --------------------------------
+
+            Office Rent = 114240
+            Parking Rent = 14250
+
+            Result:
+
+            114240
+
+            --------------------------------
+
+            Total Rent = 713590
+            Office Rent = 644130
+            Parking Rent = 62100
+            Archive Rent = 7360
+
+            Result:
+
+            644130
+
+            --------------------------------------------------
+            INCLUDED
+            --------------------------------------------------
+
+            Include ONLY:
+
+            - Asking Rent
+            - Office Rent
+            - Base Rent
+            - Contract Rent
+            - Fixed Rent
+            - Minimum Rent
+            - Headline Rent
+            - Annual Rental Amount
+            - Annual Office Rent
+            - Commencing Annual Rent
+            - Monthly Office Rent converted to annual
+
+            --------------------------------------------------
+            EXCLUDE
+            --------------------------------------------------
+
+            - Parking Rent
+            - Reserved Parking Rent
+            - Garage Rent
+            - Car Space Rent
             - Parking Charges
 
-            ## NUMBER FORMAT NORMALIZATION (EN/NL)
-            Lease documents may use US/UK number formatting (e.g., "$301,380.00") or European/Dutch number formatting (e.g., "€ 301.380,00", where the comma is the decimal separator).
-            Normalize all extracted numbers to plain decimal notation using a period as the decimal separator and no thousands separators. Do not confuse a Dutch decimal comma with a thousands separator.
+            - Archive Rent
+            - Archive Room Rent
+            - Storage Rent
+            - Warehouse Rent
 
-            Return only the numeric annual rent amount. Never annualize a per-area
-            rate, quarterly payment, service charge, or an effective rent value.
+            - Service Charges
+            - Servicekosten
+            - Hospitality Charges
+            - CAM Charges
+            - Common Area Maintenance
+            - Utilities
+            - Internet Charges
+            - Operating Expenses
+            - Additional Rent
 
-            If neither a total annual nor a total monthly asking/base rent is provided, return:
-            "i dont know"
+            - VAT
+            - BTW
+            - Taxes
+            - Insurance
 
-            Here is an example:
+            - Management Fees
+            - Administration Fees
+            - License Fees
 
-            "Period During Lease Term     | Annual Base Rent | Monthly Installment of Base Rent | Annual Base Rental Rate Per Rentable Square Foot
-            Lease Year 1 – Lease Year 5   | $301,380.00      | $25,115.00                       | $60.00"
+            - Security Deposits
+            - Tenant Improvement Allowance
+            - Tenant Contributions
+            - Landlord Contributions
 
-            Expected Output:
-            301380
+            - Effective Rent
+            - Net Effective Rent
 
-            Reason:
-            The value is explicitly listed under "Annual Base Rent".
+            - High Performance Package
 
-            Here is another example:
+            --------------------------------------------------
+            GENERAL AREA RULE
+            --------------------------------------------------
 
-            | Time Period  | PSF Annually | Annual        | Monthly     |
-            |--------------|--------------|---------------|-------------|
-            | Months 1-12  | $0           | $0            | $0          |
-            | Months 13-24 | $7.92        | $1,707,496.56 | $142,291.38 |
-            | Months 25-26 | $8.16        | $1,750,721.46 | $146,560.12 |
+            Never include:
 
-            Expected Output:
-            1707496.56
+            - General Area Allocation
+            - Common Area Allocation
+            - Common Area Factor
+            - Building Allocation
+            - Shared Area Allocation
+            - General Area Uplift
+            - Shared Area Uplift
+            - NEN2580 Allocation
+            - Common Space Allocation
+            - Pro Rata General Areas
 
-            Reason:
-            The value is explicitly listed under the "Annual" column.
+            Only use rent directly attributable to
+            the leased premises.
 
-            Here is another example:
+            --------------------------------------------------
+            RENT FREE RULE
+            --------------------------------------------------
 
-            "Base Rent shall be $25,000 per month."
+            Ignore:
 
-            Expected Output:
-            300000
+            - Free Rent
+            - Rent Free Periods
+            - Rent Free Months
+            - Incentives
+            - Discounts
+            - Concessions
+            - Abatements
+            - Rent Holidays
+            - Tenant Incentives
+            - Landlord Contributions
 
-            Reason:
-            No annual total is given; the stated total monthly base rent is multiplied by 12.
+            Asking Rent must always represent
+            contractual headline rent.
 
-            Here is another example:
+            Never calculate Effective Rent.
 
-            "Annual Base Rent: € 301.380,00 | Monthly Base Rent: € 25.000,00"
+            --------------------------------------------------
+            PAYMENT SCHEDULE RULE
+            --------------------------------------------------
 
-            Expected Output:
-            301380.00
+            Ignore:
 
-            Reason:
-            The directly stated annual value takes priority over the calculated amount.
+            - Quarterly Rent
+            - Quarterly Payment
+            - Quarterly Installment
+            - Payment Obligation
+            - Monthly Invoice
+            - Total Amount Due
+            - Invoice Total
+            - Periodic Payment
+
+            - per kwartaal
+            - per betaalperiode
+
+            These are payment schedules,
+            not Asking Rent.
+
+            --------------------------------------------------
+            TELECOM LEASE RULE
+            --------------------------------------------------
+
+            For telecom tower/site leases:
+
+            - telecom site
+            - rooftop antenna lease
+            - mast agreement
+            - mobile network site
+            - antenna installation
+
+            If only one contractual annual rent exists,
+            use that annual rent.
+
+            Example:
+
+            Annual Rent = 7000
+
+            Result:
+
+            7000
+
+            --------------------------------------------------
+            NUMBER NORMALIZATION
+            --------------------------------------------------
+
+            €106.020,00 → 106020.00
+
+            €644.130,00 → 644130.00
+
+            €291.685,00 → 291685.00
+
+            €7.827,00 → 7827.00
+
+            €1.234.567,89 → 1234567.89
+
+            --------------------------------------------------
+            OUTPUT
+            --------------------------------------------------
+
+            Return ONLY the numeric annual rent amount.
+
+            No explanations.
+
+            If not determinable:
+
+            i dont know
+
+        - role: system
+          content: |
+
+            Example 1
+
+            Annual Rent = 36000
+
+            Response:
+
+            36000
+
+            --------------------------------------------------
+
+            Example 2
+
+            Monthly Rent = 3000
+
+            Response:
+
+            36000
+
+            --------------------------------------------------
+
+            Example 3
+
+            Office Rent = 58725
+            Parking Rent = 5000
+
+            Response:
+
+            58725
+
+            --------------------------------------------------
+
+            Example 4
+
+            Office Rent = 51794
+            Parking Rent = 3750
+
+            Response:
+
+            51794
+
+            --------------------------------------------------
+
+            Example 5
+
+            Office Rent = 165178.20
+            Parking Rent = 15000
+
+            Response:
+
+            165178.20
+
+            --------------------------------------------------
+
+            Example 6
+
+            Total Rent = 713590
+            Office Rent = 644130
+            Archive Rent = 7360
+            Parking Rent = 62100
+
+            Response:
+
+            644130
+
+            --------------------------------------------------
+
+            Example 7
+
+            Annual Rent = 119948.20
+            Rent Free = 8 months
+
+            Response:
+
+            119948.20
+
+            --------------------------------------------------
+
+            Example 8
+
+            Telecom Site Rent = 7000 per year
+
+            Response:
+
+            7000
 
         - role: user
           content: "{prompt}"
-
+          
     Ref_asking_rent_yearly_uom_desc:
 
       reduction:
@@ -3175,7 +4154,6 @@ namespaces:
 
         - role: user
           content: "{prompt}"
-
     Service_Charge_Per_Area_Value:
       reduction:
         $const:
@@ -3834,8 +4812,6 @@ namespaces:
           content: "{prompt}"
 
     
-
-
 
 
 
