@@ -377,44 +377,56 @@ namespaces:
               ANNUAL ASKING RENT RULES
               ================================================================
 
-              Populate asking_rent_yearly only when an explicit annual amount is attributable
-              to the same measurement component. Recognize annual rent, yearly rent, annual
-              base rent, annual rental amount, annual fixed rent, jaarhuur, huurprijs per jaar,
-              huur op jaarbasis, and per annum.
+              Asking Rent Yearly is the landlord's quoted annual contractual headline rent for
+              the leased premises, before incentives, concessions, or rent-free periods.
+              Reconcile it with the contractual monthly asking rent when both are stated.
 
-              Use the first applicable current or initial lease period when multiple periods are
-              listed, unless a later executed amendment explicitly makes another period current.
-              Do not use renewal or option rent, deposits, VAT, service charges, operating
-              expenses, incentives, free rent, or a per-area rate as annual rent.
+              Priority 1: extract an explicitly stated annual contractual rent, including Asking
+              Rent, Annual Rent, Annual Base Rent, Annual Rental Amount, Commencing Annual Rent,
+              Contract Rent, Fixed Rent, Minimum Rent, Headline Rent, Office Rent, Annual Office
+              Rent, jaarhuur, kale jaarhuur, aanvangshuurprijs, or huurprijs op jaarbasis.
+              Use the applicable current or initial lease period unless a later executed
+              amendment explicitly makes another period current.
 
-              Never calculate annual rent from monthly rent, a per-area rate, or the measurement
-              size. A stated annual amount remains annual even if payable monthly or quarterly.
-              If only monthly or per-area rent is available, leave asking_rent_yearly empty and
-              preserve the related rate in notes when useful.
+              Priority 2: if no annual amount is stated, calculate asking_rent_yearly as the
+              contractual Asking Rent Monthly multiplied by 12. Use only a stated monthly
+              contractual rent, not a per-area rate, invoice, installment, or payment schedule.
+              Do not use renewal or option rent.
 
-              Normalize numeric formatting without changing the amount: "$301,380.00" ->
-              "301380.00" and "€ 301.380,00" -> "301380.00" when the convention is clear.
+              When Office Rent and Parking Rent are shown separately, use only Office Rent.
+              Prefer Office Rent over any total that includes separately itemized parking,
+              archive, storage, warehouse, or other non-office rent. Never add Parking Rent,
+              Reserved Parking Rent, Garage Rent, Car Space Rent, Parking Charges, Archive Rent,
+              Archive Room Rent, Storage Rent, or Warehouse Rent. Exclude service/CAM/hospitality
+              charges, utilities, operating expenses, additional rent, VAT/BTW, taxes, insurance,
+              management/administration/license fees, deposits, tenant or landlord contributions,
+              effective/net effective rent, and High Performance Package charges.
+
+              Exclude general/common area allocation, common area factors, building/shared area
+              uplifts, NEN2580 allocation, and pro rata general areas. Use rent directly
+              attributable to the leased premises only. Ignore rent-free periods, incentives,
+              discounts, concessions, abatements, rent holidays, and contributions; never
+              calculate effective rent. Ignore quarterly rent/payment, installments, payment
+              obligations, monthly invoices, amounts due, invoice totals, and per-period amounts.
+              For telecom site, rooftop antenna, mast, mobile network, or antenna installation
+              leases, use the sole contractual annual rent when only one exists.
+
+              Normalize the amount without changing its value: €106.020,00 -> 106020.00,
+              €644.130,00 -> 644130.00, and €1.234.567,89 -> 1234567.89. Keep decimal precision.
+              A monthly-to-annual conversion is the only permitted rent calculation.
 
               ================================================================
               CURRENCY RULES
               ================================================================
 
-              Use these canonical asking_rent_yearly_uom values when the currency is clear:
+              asking_rent_yearly_uom must be exactly EUR, USD, or "". Identify the currency
+              associated with the annual asking rent. If the annual amount was calculated from
+              monthly asking rent, use the monthly source's currency.
 
-              - EUR
-              - USD
-              - ""
-
-              Use EUR for EUR, euro, euros, or €. Use USD for USD, US$, explicitly identified
-              US dollars, or a bare $ only when the source establishes a US Dollar context.
-              For another explicit currency, preserve the original currency code or symbol in
-              asking_rent_yearly_uom and notes instead of dropping the rent. Never convert
-              currencies or copy currency from an unrelated charge. If the rent is absent or
-              the currency is genuinely unreadable, use "".
-
-              A currency code or symbol must be associated with the same annual rent amount or
-              its containing row. Do not copy EUR, USD, or another currency from a different
-              charge, page, tenant, or table merely because it is nearby.
+              Use EUR for €, EUR, or Euro(s). Use USD for $, USD, US Dollar(s), or Dollar(s) only
+              when the document establishes a US Dollar context. If "$" is ambiguous or the
+              currency cannot be clearly determined, use "". Do not copy currency from an
+              unrelated charge, page, tenant, or table, and do not output other currency codes.
 
               ================================================================
               NOTES AND RELATED FACTS
@@ -445,12 +457,18 @@ namespaces:
               - two distinct source rows were never collapsed because their type or UOM matched;
               - every canonical UOM is SqM, SqFt, Ac, Ha, SqKm, or SqMi, and unsupported
                 explicit units are preserved as source text;
-              - every rent is explicitly annual and tied to that row;
-              - every canonical currency is EUR or USD, and another explicit currency is
-                preserved as source text;
+              - every rent is an explicitly stated annual contractual amount or a stated
+                contractual monthly asking rent multiplied by 12, and is tied to that row;
+              - office rent is selected over totals containing separately itemized non-office
+                rents, and excluded charges, incentives, allocations, and payment schedules are
+                not included;
+              - every asking-rent currency is exactly EUR, USD, or "", using the source currency
+                when a monthly rent was annualized;
               - separate floors, suites, units, and components were not merged;
               - duplicate mentions of the same physical component were removed;
-              - no values were calculated, inferred, converted, or copied from unrelated text;
+              - no values were inferred, converted between currencies, or copied from unrelated
+                text; the only permitted calculation is contractual monthly asking rent multiplied
+                by 12;
               - notes contain only source-supported facts and are at most 300 characters;
               - no markdown, explanation, null, placeholder, or additional key is returned.
 
@@ -509,8 +527,9 @@ namespaces:
               confidently mapped, preserve its original source label instead of dropping it
               or forcing it into another category.
 
-              Extract only values explicitly present in the PDF. Never calculate, total,
-              convert, estimate, infer, or copy values from another row.
+              Extract values from the PDF. Do not total, estimate, infer, or copy values from
+              another row. The only permitted calculation is annualizing an explicitly stated
+              contractual monthly asking rent by multiplying it by 12.
 
               Before returning the result, perform a complete-page audit and verify that every
               distinct tenant measurement found in the PDF is represented exactly once.
