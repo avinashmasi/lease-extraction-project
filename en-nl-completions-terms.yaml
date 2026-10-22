@@ -1,3 +1,4 @@
+# file name: en-nl-completions-terms.yaml
 # yaml-language-server: $schema=../schemas/ontology.schema.json
 # Copyright (C) 2024-2025 CBRE Inc. All rights reserved.
 kind: Ontology/v2
@@ -1390,7 +1391,6 @@ namespaces:
           citations: =en-nl-searches/self.Terms-Context
           prompt: |
             What is the currency of the effective rent monthly value (e.g., EUR, USD)? If the currency cannot be determined, respond "".
-
           templates: =templates.Ref_effective_rent_monthly_uom_desc
 
     Effective_Rent_Yearly:  
@@ -4154,6 +4154,7 @@ namespaces:
 
         - role: user
           content: "{prompt}"
+    
     Service_Charge_Per_Area_Value:
       reduction:
         $const:
@@ -4812,7 +4813,6 @@ namespaces:
           content: "{prompt}"
 
     
-
 
 
 

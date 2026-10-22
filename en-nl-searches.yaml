@@ -1,3 +1,4 @@
+# file name: en-nl-searches.yaml
 kind: Ontology/v2
 name: en-nl-searches
 
@@ -97,7 +98,6 @@ namespaces:
             contact information
 
   ############  Terms
-
 
     Terms-Context:
       kind:
@@ -390,7 +390,6 @@ namespaces:
           max_score: =global-config/search.chunk-max-l2-distance
           top_k: 12
           prompt: |
-            
             Extract the Annual Effective Rent Unit of Measure. Look for per year, annual rental rate, per square foot per year, per square metre per year. If not found, respond "i dont know".
 
     Service-Charge-Per-Area-Value-Search:
